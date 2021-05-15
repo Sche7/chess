@@ -3,7 +3,7 @@ from chess_pieces import ChessPiece
 from chess_pieces.schema import Color, Group
 
 
-class Pawn(ChessPiece):
+class Rook(ChessPiece):
     def __init__(
         self,
         position: Tuple,
@@ -15,15 +15,10 @@ class Pawn(ChessPiece):
             group=group,
             color=color
         )
-
+    
     @property
     def moves(self):
-        if self.group == Group.lower:
-            return [(-1, 1), (0, 1), (1, 1)]
-        elif self.group == Group.upper:
-            return [(1, -1), (0, -1), (-1, -1)]
-        else:
-            raise ValueError(f'Group [{str(self.group)}] is not supported')
+        pass
 
     def get_applied_moves(self) -> list:
         output = [self.apply_move(move) for move in self.moves]

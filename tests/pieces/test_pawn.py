@@ -1,3 +1,5 @@
+import pytest
+
 from chess_pieces.pawn import Pawn
 from chess_pieces.schema import Color, Group
 
@@ -108,3 +110,14 @@ def test_pawn_moves_upper_8_8():
     for move in moves:
         assert move in expected_applied_moves
     assert len(expected_applied_moves) == len(moves)
+
+
+def test_pawn_moves_exception():
+    pawn = Pawn(
+        position=(8, 8),
+        group='not working',
+        color=Color.black
+    )
+    with pytest.raises(ValueError) as e:
+        pawn.moves()
+        assert 'Group [not working] is not supported' == str(e.value)
