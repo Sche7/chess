@@ -24,8 +24,3 @@ class Pawn(ChessPiece):
             return [(1, -1), (0, -1), (-1, -1)]
         else:
             raise ValueError(f'Group [{str(self.group)}] is not supported')
-
-    def get_applied_moves(self) -> list:
-        output = [self.apply_move(move) for move in self.moves]
-
-        return output
