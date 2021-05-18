@@ -40,22 +40,15 @@ def test_pawn_moves_lower_4_5():
     assert len(expected_applied_moves) == len(moves)
 
 
-# Test lower pawn moves from position (8, 8)
-def test_pawn_moves_lower_8_8():
-    expected_applied_moves = [
-        (7, 9),
-        (8, 9),
-        (9, 9)
-    ]
+# Test lower pawn moves from position (7, 7)
+def test_pawn_moves_lower_7_7():
     pawn = Pawn(
-        position=(8, 8),
+        position=(7, 7),
         group=Group.lower,
         color=Color.white
     )
     moves = pawn.get_applied_moves()
-    for move in moves:
-        assert move in expected_applied_moves
-    assert len(expected_applied_moves) == len(moves)
+    assert 0 == len(moves)
 
 
 # Test upper pawn moves from position (1, 1)
@@ -95,14 +88,13 @@ def test_pawn_moves_upper_4_5():
 
 
 # Test upper pawn moves from position (8, 8)
-def test_pawn_moves_upper_8_8():
+def test_pawn_moves_upper_7_7():
     expected_applied_moves = [
-        (7, 7),
-        (8, 7),
-        (9, 7)
+        (6, 6),
+        (7, 6)
     ]
     pawn = Pawn(
-        position=(8, 8),
+        position=(7, 7),
         group=Group.upper,
         color=Color.black
     )
