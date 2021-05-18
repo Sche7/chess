@@ -22,3 +22,12 @@ def test_update_position():
     assert chess_piece.position == (1, 2)
     chess_piece.update(move=(-1, 3))
     assert chess_piece.position == (0, 5)
+
+
+def test_filter_by_grid_size():
+    chess_piece = ChessPiece(
+        position=(8, 8),
+        group=Group.lower,
+        color=Color.white
+    )
+    assert chess_piece.position == (8, 8)
