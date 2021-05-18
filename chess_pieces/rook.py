@@ -15,12 +15,10 @@ class Rook(ChessPiece):
             group=group,
             color=color
         )
-    
+
     @property
     def moves(self):
-        pass
-
-    def get_applied_moves(self) -> list:
-        output = [self.apply_move(move) for move in self.moves]
-
+        output = []
+        for i in range(1, self.grid_size):
+            output.extend([(i, 0), (0, i), (-i, 0), (0, -i)])
         return output
