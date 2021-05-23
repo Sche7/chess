@@ -18,16 +18,22 @@ White                        Black
 """
 
 
+import numpy as np
 from numpy import matrix
 from board.view import View
 
 
 class TerminalView(View):
     def __init__(self, config_path: str):
-        super.__init__(config_path=config_path)
+        super().__init__(config_path=config_path)
 
     def generate_view(self, board: matrix) -> str:
         grid_size = len(board)
+
+        # numpy matrix indexing works top and down,
+        # therefore it is necessary to flip the table for
+        # correct indexing
+        flipped_board = np.flip(board).copy()
         line = f'{(grid_size*4+5)*"-"}\n'
 
         # Start with two whitespaces
@@ -46,7 +52,9 @@ class TerminalView(View):
         for i in range(grid_size-1, -1, -1):
             output.append(f"{i} ")
             for j in range(grid_size):
-                output.append(f"| {self.representation.get(board[i, j])} ")
+                output.append(
+                    f"| {self.representation.get(flipped_board[i, j])} "
+                )
             divider()
         return "".join(output)
 

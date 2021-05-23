@@ -1,3 +1,4 @@
+import numpy as np
 from numpy import matrix
 
 from board.files import read_yaml
@@ -58,7 +59,13 @@ class Engine:
         self.pieces = pieces
 
     def start_game(self) -> None:
-        self.game_state = matrix(self.start_state).astype(int)
+        game_state = matrix(self.start_state).astype(int)
+
+        # numpy matrix indexing works top and down,
+        # therefore it is necessary to flip the table for
+        # correct indexing
+        self.game_state = np.flip(game_state).copy()
+
         self.initiate_pieces(board=self.game_state)
 
     def update_game_state(self, board: matrix) -> None:
