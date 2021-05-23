@@ -63,10 +63,7 @@ def test_knight_moves_lower_4_4():
 
 # Test lower knight moves from position (7, 7)
 def test_knight_moves_lower_7_7():
-    expected_applied_moves = [
-        (5, 6),
-        (6, 5)
-    ]
+    expected_applied_moves = [(5, 6), (6, 5)]
     knight = Knight(
         position=(7, 7),
         group=Group.lower,
