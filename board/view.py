@@ -23,7 +23,6 @@ class View:
     def __init__(self, config_path: str):
         self.config = read_yaml(config_path)
         self.representation = self.config['PIECE_REPRESENTATION']
-        self.game_state = self.config['GAME_START']
 
     def generate_view(self, board: matrix) -> str:
         grid_size = len(board)
