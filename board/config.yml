@@ -4,7 +4,7 @@
 
 # White                        Black
 # -------------------          ------------------
-# | 1 | Pawn    | W |         | 7 | Pawn    | w |
+# | 1 | Pawn    | P |         | 7 | Pawn    | p |
 # | 2 | Rook    | R |         | 8 | Rook    | r |
 # | 3 | Knight  | N |         | 9 | Knight  | n |
 # | 4 | Bishop  | B |         | 10| Bishop  | b |
