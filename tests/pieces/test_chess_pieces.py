@@ -24,10 +24,44 @@ def test_update_position():
     assert chess_piece.position == (0, 5)
 
 
-def test_filter_by_grid_size():
+def test_filter_by_grid_size_8():
     chess_piece = ChessPiece(
-        position=(8, 8),
+        position=(7, 7),
         group=Group.lower,
         color=Color.white
     )
-    assert chess_piece.position == (8, 8)
+
+    # Make sure grid size is 8 when testing
+    chess_piece.set_grid_size(size=8)
+
+    moves_outside = [(8, 7), (0, 9), (-5, 8), (-6, -6)]
+    moves_inside = [(4, 4), (5, 5), (1, 5), (6, 7)]
+
+    # all moves
+    moves = moves_outside + moves_inside
+
+    # see that the moves outside grid are filtered away
+    assert chess_piece.filter_by_grid_size(moves) == moves_inside
+
+
+def test_filter_by_grid_size_5():
+    chess_piece = ChessPiece(
+        position=(3, 3),
+        group=Group.lower,
+        color=Color.white
+    )
+
+    # Make sure grid size is 5 when testing
+    chess_piece.set_grid_size(size=5)
+
+    moves_outside = [
+        (8, 7), (0, 9), (-5, 8),
+        (-6, -6), (5, 5), (1, 5), (6, 7)
+    ]
+    moves_inside = [(0, 0), (1, 1), (2, 2), (4, 4), (2, 2)]
+
+    # all moves
+    moves = moves_outside + moves_inside
+
+    # see that the moves outside grid are filtered away
+    assert chess_piece.filter_by_grid_size(moves) == moves_inside

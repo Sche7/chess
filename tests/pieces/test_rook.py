@@ -17,6 +17,10 @@ def test_pawn_rook_lower_0_0():
         group=Group.lower,
         color=Color.white
     )
+
+    # Make sure grid size is 8 when testing
+    rook.set_grid_size(size=8)
+
     moves = rook.get_applied_moves()
     for move in moves:
         assert move in expected_applied_moves
@@ -37,6 +41,34 @@ def test_pawn_rook_lower_4_4():
         group=Group.lower,
         color=Color.white
     )
+
+    # Make sure grid size is 8 when testing
+    rook.set_grid_size(size=8)
+
+    moves = rook.get_applied_moves()
+    for move in moves:
+        assert move in expected_applied_moves
+    assert len(expected_applied_moves) == len(moves)
+
+
+# Test lower rook moves from position (7, 7)
+def test_pawn_rook_lower_7_7():
+    expected_applied_moves = [
+        (7, 0), (7, 1), (7, 2),
+        (7, 3), (7, 4), (7, 5),
+        (7, 6), (0, 7), (1, 7),
+        (2, 7), (3, 7), (4, 7),
+        (5, 7), (6, 7)
+    ]
+    rook = Rook(
+        position=(7, 7),
+        group=Group.lower,
+        color=Color.white
+    )
+
+    # Make sure grid size is 8 when testing
+    rook.set_grid_size(size=8)
+
     moves = rook.get_applied_moves()
     for move in moves:
         assert move in expected_applied_moves

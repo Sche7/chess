@@ -43,11 +43,13 @@ class ChessPiece(object):
     def update(self, move: Tuple) -> None:
         self.position = self.apply_move(move)
 
+    def set_grid_size(self, size: int):
+        self.grid_size = size
+
     def get_applied_moves(self) -> list:
         output = self.filter_by_grid_size(
             [self.apply_move(move) for move in self.moves]
         )
-
         return output
 
     def kill(self) -> None:

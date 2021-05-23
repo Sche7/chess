@@ -3,7 +3,7 @@ from chess_pieces import ChessPiece
 from chess_pieces.schema import Color, Group
 
 
-class Pawn(ChessPiece):
+class Queen(ChessPiece):
     def __init__(
         self,
         position: Tuple,
@@ -18,9 +18,14 @@ class Pawn(ChessPiece):
 
     @property
     def moves(self):
-        if self.group == Group.lower:
-            return [(-1, 1), (0, 1), (1, 1), (0, 2)]
-        elif self.group == Group.upper:
-            return [(1, -1), (0, -1), (-1, -1), (0, -2)]
-        else:
-            raise ValueError(f'Group [{str(self.group)}] is not supported')
+        output = []
+
+        # Straight moves
+        for i in range(1, self.grid_size):
+            output.extend([(i, 0), (0, i), (-i, 0), (0, -i)])
+
+        # Diagonal moves
+        for i in range(1, self.grid_size):
+            output.extend([(i, i), (-i, i), (i, -i), (-i, -i)])
+
+        return output
