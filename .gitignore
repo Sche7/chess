@@ -4,3 +4,4 @@
 *.pytest_cache
 *.mypy_cache
 *.pyc
+tmp
