@@ -2,3 +2,4 @@ pytest
 ipython
 numpy
 pyyaml
+nptyping

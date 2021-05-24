@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import matrix
+from nptyping import NDArray
 from typing import Dict
 
 from board.files import read_yaml
@@ -57,12 +57,12 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: matrix) -> Dict[list, list]:
+    def initiate_pieces(self, board: NDArray) -> Dict[list, list]:
         black_pieces = []
         white_pieces = []
         nrows, ncols = board.shape
 
-        # Loop through all entries in matrix to create pieces
+        # Loop through all entries in array to create pieces
         for i in range(nrows):
             for j in range(ncols):
                 created_piece = self.create_piece(
@@ -83,6 +83,25 @@ class Engine:
             'black': black_pieces
         }
 
+    def check_game_state(self):
+        pass
+
+    def update_game_state(self, board: NDArray) -> None:
+        pass
+
+    def handle_game(self, player_input) -> None:
+        pass
+
+    def get_possible_actions(self) -> dict:
+        pass
+
+    def switch_turn(self) -> None:
+        switch = {
+            'white': 'black',
+            'black': 'white'
+        }
+        self.player_turn = switch[self.player_turn]
+
     def start_game(self) -> None:
         """
         Initiates a new game.
@@ -90,7 +109,7 @@ class Engine:
         """
         game_state = np.array(self.start_state).astype(int)
 
-        # numpy matrix indexing works top and down,
+        # numpy array indexing works top and down,
         # therefore it is necessary to flip the table for
         # correct indexing
         self.game_state = np.flip(game_state).copy()
@@ -98,8 +117,9 @@ class Engine:
         # Create pieces in game
         self.pieces = self.initiate_pieces(board=self.game_state)
 
-    def update_game_state(self, board: matrix) -> None:
-        pass
+        # Starting game
+        self.game_over = False
+        self.player_turn = 'white'
 
     def get_white_pawns(self):
         return self._get_pieces('pawn', self.pieces.get('white', []))

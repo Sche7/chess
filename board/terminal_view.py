@@ -19,7 +19,7 @@ White                        Black
 
 
 import numpy as np
-from numpy import matrix
+from nptyping import NDArray
 from board.view import View
 
 
@@ -27,7 +27,7 @@ class TerminalView(View):
     def __init__(self, config_path: str):
         super().__init__(config_path=config_path)
 
-    def generate_view(self, board: matrix) -> str:
+    def generate_view(self, board: NDArray) -> str:
         grid_size = len(board)
 
         # numpy matrix indexing works top and down,
@@ -58,5 +58,11 @@ class TerminalView(View):
             divider()
         return "".join(output)
 
-    def display_board(self, board: matrix) -> None:
+    def display_board(self, board: NDArray) -> None:
         print(self.generate_view(board))
+
+    def display_player_turn(self, player: str) -> None:
+        print(f'It is {player}´s turn to make a move')
+
+    def await_input(self, possible_actions: dict):
+        raise NotImplementedError('method "await_input" is not implemented')
