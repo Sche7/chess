@@ -1,9 +1,11 @@
+from typing import Type
+
 from board.engine import Engine
 from board.view import View
 
 
 class ChessBoard(Engine):
-    def __init__(self, config_path: str, displayer: View):
+    def __init__(self, config_path: str, displayer: Type[View]):
         super().__init__(config_path=config_path)
 
         self.displayer = displayer(config_path)
