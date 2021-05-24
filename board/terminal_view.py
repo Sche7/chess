@@ -7,7 +7,7 @@ The representation of each piece are described below:
 
 White                        Black
 -------------------          ------------------
-| 1 | Pawn    | W |         | 7 | Pawn    | w |
+| 1 | Pawn    | P |         | 7 | Pawn    | p |
 | 2 | Rook    | R |         | 8 | Rook    | r |
 | 3 | Knight  | N |         | 9 | Knight  | n |
 | 4 | Bishop  | B |         | 10| Bishop  | b |
@@ -18,7 +18,6 @@ White                        Black
 """
 
 
-import numpy as np
 from nptyping import NDArray
 from board.view import View
 
@@ -30,10 +29,6 @@ class TerminalView(View):
     def generate_view(self, board: NDArray) -> str:
         grid_size = len(board)
 
-        # numpy matrix indexing works top and down,
-        # therefore it is necessary to flip the table for
-        # correct indexing
-        flipped_board = np.flip(board).copy()
         line = f'{(grid_size*4+5)*"-"}\n'
 
         # Start with two whitespaces
@@ -53,16 +48,22 @@ class TerminalView(View):
             output.append(f"{i} ")
             for j in range(grid_size):
                 output.append(
-                    f"| {self.representation.get(flipped_board[i, j])} "
+                    f"| {self.representation.get(board[i, j])} "
                 )
             divider()
         return "".join(output)
 
     def display_board(self, board: NDArray) -> None:
-        print(self.generate_view(board))
+        # Clear terminal
+        print("\033c")
+
+        # Print new board
+        print(self.generate_view(board), flush=True)
 
     def display_player_turn(self, player: str) -> None:
         print(f'It is {player}´s turn to make a move')
 
     def await_input(self, possible_actions: dict):
-        raise NotImplementedError('method "await_input" is not implemented')
+        print('What will you do?')
+        action = input()
+        return action
