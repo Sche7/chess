@@ -1,0 +1,40 @@
+# 0 - Empty tiles
+# 13 - Possible moves
+
+# White                        Black
+# -------------------          ------------------
+# | 1 | Pawn    | P |         | 7 | Pawn    | p |
+# | 2 | Rook    | R |         | 8 | Rook    | r |
+# | 3 | Knight  | N |         | 9 | Knight  | n |
+# | 4 | Bishop  | B |         | 10| Bishop  | b |
+# | 5 | Queen   | Q |         | 11| Queen   | q |
+# | 6 | King    | K |         | 12| King    | k |
+# -------------------         -------------------
+
+GRID_SIZE: 8
+
+GAME_START:
+  - [8,  9, 10, 12, 11, 10,  9,  8]
+  - [7,  7,  7,  7,  7,  7,  7,  7]
+  - [0,  0,  0,  0,  0,  0,  0,  0]  
+  - [0,  0,  0,  0,  0,  0,  0,  0]  
+  - [0,  0,  0,  0,  0,  0,  0,  0]  
+  - [0,  0,  0,  0,  0,  0,  0,  0]
+  - [1,  1,  1,  1,  1,  1,  1,  1]
+  - [2,  3,  4,  6,  5,  4,  3,  2]
+
+PIECE_REPRESENTATION:
+  0: ' '   # Empty tiles 
+  1: 'P'   # White Pawn
+  2: 'R'   # White Rook
+  3: 'N'   # White Knight
+  4: 'B'   # White Bishop
+  5: 'Q'   # White Queen
+  6: 'K'   # White King
+  7: 'p'   # Black Pawn
+  8: 'r'   # Black Rook
+  9: 'n'   # Black Knight
+  10: 'b'  # Black Bishop
+  11: 'q'  # Black Queen
+  12: 'k'  # Black King
+  13: '+'  # Possible moves
