@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import matrix
+from typing import Dict
 
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
@@ -32,6 +33,8 @@ class Engine:
         kwargs = {
             'position': position,
         }
+        # TODO: Eventually make it possible to
+        # open game with lower/upper options
         if (piece < 7) and (piece > 0):
             kwargs['group'] = Group.lower
             kwargs['color'] = Color.white
@@ -54,7 +57,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: matrix) -> None:
+    def initiate_pieces(self, board: matrix) -> Dict[list, list]:
         black_pieces = []
         white_pieces = []
         nrows, ncols = board.shape
@@ -75,20 +78,25 @@ class Engine:
                     elif created_piece.color.name == 'black':
                         black_pieces.append(created_piece)
 
-        self.pieces = {
+        return {
             'white': white_pieces,
             'black': black_pieces
         }
 
     def start_game(self) -> None:
-        game_state = matrix(self.start_state).astype(int)
+        """
+        Initiates a new game.
+        Starting game state depends on config.GAME_START input.
+        """
+        game_state = np.array(self.start_state).astype(int)
 
         # numpy matrix indexing works top and down,
         # therefore it is necessary to flip the table for
         # correct indexing
         self.game_state = np.flip(game_state).copy()
 
-        self.initiate_pieces(board=self.game_state)
+        # Create pieces in game
+        self.pieces = self.initiate_pieces(board=self.game_state)
 
     def update_game_state(self, board: matrix) -> None:
         pass
