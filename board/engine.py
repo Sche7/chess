@@ -20,14 +20,24 @@ class Engine:
         self.grid_size = self.config['GRID_SIZE']
         self.pieces = {}
 
-    def _get_pieces(self, name: str, pieces: list):
+    def start_game(self) -> None:
         """
-        Method to filter on list of pieces
+        Initiates a new game.
+        Starting game state depends on config.GAME_START input.
         """
-        return [
-            piece for piece in pieces
-            if piece.__class__.__name__.lower() == name.lower()
-        ]
+        game_state = np.array(self.start_state).astype(int)
+
+        # numpy array indexing works top and down,
+        # therefore it is necessary to flip the table for
+        # correct indexing
+        self.game_state = np.flip(game_state).copy()
+
+        # Create pieces in game
+        self.pieces = self.initiate_pieces(board=self.game_state)
+
+        # Starting game
+        self.game_over = False
+        self.player_turn = 'white'
 
     def create_piece(self, piece: int, position: tuple) -> None:
         kwargs = {
@@ -102,24 +112,14 @@ class Engine:
         }
         self.player_turn = switch[self.player_turn]
 
-    def start_game(self) -> None:
+    def _get_pieces(self, name: str, pieces: list):
         """
-        Initiates a new game.
-        Starting game state depends on config.GAME_START input.
+        Method to filter on list of pieces
         """
-        game_state = np.array(self.start_state).astype(int)
-
-        # numpy array indexing works top and down,
-        # therefore it is necessary to flip the table for
-        # correct indexing
-        self.game_state = np.flip(game_state).copy()
-
-        # Create pieces in game
-        self.pieces = self.initiate_pieces(board=self.game_state)
-
-        # Starting game
-        self.game_over = False
-        self.player_turn = 'white'
+        return [
+            piece for piece in pieces
+            if piece.__class__.__name__.lower() == name.lower()
+        ]
 
     def get_white_pawns(self):
         return self._get_pieces('pawn', self.pieces.get('white', []))
