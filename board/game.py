@@ -2,7 +2,7 @@ from board.engine import Engine
 from board.view.displayer_factory import displayer_factory, Displayer
 
 
-class ChessBoard(Engine):
+class Chess(Engine):
     def __init__(self, config_path: str, displayer: Displayer):
         super().__init__(config_path=config_path)
 
