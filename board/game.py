@@ -3,6 +3,20 @@ from board.view.displayer_factory import displayer_factory, Displayer
 
 
 class Chess(Engine):
+    """
+    This is the main chess game class.
+
+    Parameters
+    ----
+    config_path: str
+        Folder path to game configuration file.
+        Has to be a yaml-file.
+    displayer: Displayer
+        The desired displayer for playing chess.
+        See: chess/board/view/displayer_factory.py
+        for more info.
+    """
+
     def __init__(self, config_path: str, displayer: Displayer):
         super().__init__(config_path=config_path)
 
