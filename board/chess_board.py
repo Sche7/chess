@@ -1,14 +1,15 @@
-from typing import Type
-
 from board.engine import Engine
-from board.view import View
+from board.displayer_factory import display_factory, Displayer
 
 
 class ChessBoard(Engine):
-    def __init__(self, config_path: str, displayer: Type[View]):
+    def __init__(self, config_path: str, displayer: Displayer):
         super().__init__(config_path=config_path)
 
-        self.displayer = displayer(config_path)
+        self.displayer = display_factory(
+            displayer=displayer,
+            config_path=config_path
+        )
 
     def run(self):
         self.start_game()
