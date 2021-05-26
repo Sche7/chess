@@ -1,12 +1,12 @@
 from board.engine import Engine
-from board.displayer_factory import display_factory, Displayer
+from board.view.displayer_factory import displayer_factory, Displayer
 
 
 class ChessBoard(Engine):
     def __init__(self, config_path: str, displayer: Displayer):
         super().__init__(config_path=config_path)
 
-        self.displayer = display_factory(
+        self.displayer = displayer_factory(
             displayer=displayer,
             config_path=config_path
         )
