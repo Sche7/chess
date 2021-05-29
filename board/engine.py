@@ -1,7 +1,7 @@
 from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, Type
+from typing import Dict, List, Type
 
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
@@ -126,16 +126,18 @@ class Engine:
             move for move in moves if move not in ally_positions
         ]
 
-    def get_possible_actions(self, id: int) -> dict:
+    def get_piece_by_id(self, id: int, player: str) -> Type[ChessPiece]:
         """
-        Get all possible actions on specific chess piece
-        on players turn.
+        Get piece in game by instance ID.
 
         Parameters
         ----
-        id: int, the instance id of chess piece
+        id: int
+            the instance id of chess piece
+        player: str
+            possible values are 'white' or 'black'
         """
-        player_pieces = self.pieces.get(self.player_turn)
+        player_pieces = self.pieces.get(player)
         piece = [piece for piece in player_pieces if piece.id == id]
 
         if len(piece) == 0:
@@ -144,7 +146,20 @@ class Engine:
         if len(piece) > 1:
             raise ValueError(f'Two or more instances has same id [{id}]')
 
-        return self.apply_game_rules(piece[0])
+        return piece[0]
+
+    def get_possible_actions(self, id: int) -> List[tuple]:
+        """
+        Get all possible actions on specific chess piece
+        on players turn.
+
+        Parameters
+        ----
+        id: int, the instance id of chess piece
+        """
+        piece = self.get_piece_by_id(id=id, player=self.player_turn)
+
+        return self.apply_game_rules(piece)
 
     def switch_turn(self) -> None:
         switch = {
