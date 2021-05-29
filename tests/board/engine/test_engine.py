@@ -1,3 +1,4 @@
+import pytest
 from board.engine import Engine
 
 
@@ -80,3 +81,26 @@ def test_create_piece_none(config_path):
     created_piece_none = engine.create_piece(piece=15, position=(1, 4))
     # See that nothing was created
     assert created_piece_none is None
+
+
+def test_get_possible_actions(config_path):
+    engine = Engine(config_path)
+    engine.start_game()
+
+    king = engine.get_white_king()[0]
+
+    possibe_actions = engine.get_possible_actions(king.id)
+
+    # King should not have any possible moves
+    # at start of the game
+    assert len(possibe_actions) == 0
+
+
+def test_get_possible_actions_invalid_id(config_path):
+    engine = Engine(config_path)
+    engine.start_game()
+
+    # Apply method with invalid id
+    with pytest.raises(ValueError) as e:
+        engine.get_possible_actions(12345)
+        assert 'ID [12345] does not exist' == str(e.value)
