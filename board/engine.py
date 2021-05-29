@@ -30,12 +30,14 @@ class Engine:
         # numpy array indexing works top and down,
         # therefore it is necessary to flip the table for
         # correct indexing
-        self.game_state = np.flip(game_state).copy()
+        game_state = np.flip(game_state).copy()
 
-        # Create pieces in game
-        self.pieces = self.initiate_pieces(board=self.game_state)
+        # Create pieces in game and save in dictionary
+        # for later monitoring of each pieces position
+        self.pieces = self.initiate_pieces(board=game_state)
 
         # Starting game
+        self.game_state = game_state
         self.game_over = False
         self.player_turn = 'white'
 
@@ -68,6 +70,16 @@ class Engine:
             return
 
     def initiate_pieces(self, board: NDArray) -> Dict[list, list]:
+        """
+        Method used to initiate and keep track of position
+        of each piece in the game.
+
+        Returns a dictionary with white and black pieces:
+            {
+                'white': [...],
+                'black': [...]
+            }
+        """
         black_pieces = []
         white_pieces = []
         nrows, ncols = board.shape
