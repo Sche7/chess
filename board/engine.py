@@ -115,16 +115,39 @@ class Engine:
     def handle_game(self, player_input) -> None:
         pass
 
-    def apply_game_rules(self, piece: Type[ChessPiece]) -> list:
-        ally_positions = [
+    def get_ally_positions(self):
+        return [
             piece.position for piece in
             self.pieces.get(self.player_turn)
         ]
+
+    def get_enemy_positions(self):
+        switch = {
+            'white': 'black',
+            'black': 'white'
+        }
+        return [
+            piece.position for piece in
+            self.pieces.get(switch[self.player_turn])
+        ]
+
+    def apply_game_rules(self, piece: Type[ChessPiece]) -> list:
         moves = piece.get_applied_moves()
 
-        return [
-            move for move in moves if move not in ally_positions
-        ]
+        if piece.name == 'Pawn':
+            moves = self.pawn_rules(moves)
+        elif piece.name == 'Rook':
+            moves = self.rook_rules(moves)
+        elif piece.name == 'Bishop':
+            moves = self.bishop_rules(moves)
+        elif piece.name == 'Knight':
+            moves = self.knight_rules(moves)
+        elif piece.name == 'Queen':
+            moves = self.queen_rules(moves)
+        elif piece.name == 'King':
+            moves = self.king_rules(moves)
+
+        return moves
 
     def get_piece_by_id(self, id: int, player: str) -> Type[ChessPiece]:
         """
@@ -174,8 +197,29 @@ class Engine:
         """
         return [
             piece for piece in pieces
-            if piece.__class__.__name__.lower() == name.lower()
+            if piece.name.lower() == name.lower()
         ]
+
+    def pawn_rules(self, moves: list):
+        pass
+
+    def rook_rules(self, moves: list):
+        pass
+
+    def knight_rules(self, moves: list):
+        pass
+
+    def bishop_rules(self, moves: list):
+        pass
+
+    def king_rules(self, moves: list):
+        ally_positions = self.get_ally_positions()
+        return [
+            move for move in moves if move not in ally_positions
+        ]
+
+    def queen_rules(self, moves: list):
+        pass
 
     def get_white_pawns(self):
         return self._get_pieces('pawn', self.pieces.get('white', []))
