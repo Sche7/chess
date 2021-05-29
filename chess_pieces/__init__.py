@@ -16,6 +16,8 @@ class ChessPiece(object):
         self.group = group
         self.color = color
         self.status = 1
+        self.name = self.__class__.__name__
+        self.id = id(self)
         self.grid_size = SQUARE_GRID_SIZE
 
     @property
