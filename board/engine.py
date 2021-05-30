@@ -29,9 +29,10 @@ class Engine:
         game_state = np.array(self.start_state).astype(int)
 
         # numpy array indexing works top and down,
-        # therefore it is necessary to flip the table for
-        # correct indexing
-        game_state = np.flip(game_state).copy()
+        # row on y-axis and column on y-axis,
+        # therefore it is necessary to flip and transpose
+        # the table for correct indexing
+        game_state = np.transpose(np.flip(game_state))
 
         # Create pieces in game and save in dictionary
         # for later monitoring of each pieces position
@@ -132,20 +133,21 @@ class Engine:
         ]
 
     def apply_game_rules(self, piece: Type[ChessPiece]) -> list:
-        moves = piece.get_applied_moves()
 
         if piece.name == 'Pawn':
-            moves = self.pawn_rules(moves)
+            moves = self.pawn_rules(piece=piece)
         elif piece.name == 'Rook':
-            moves = self.rook_rules(moves)
+            moves = self.rook_rules(piece=piece)
         elif piece.name == 'Bishop':
-            moves = self.bishop_rules(moves)
+            moves = self.bishop_rules(piece=piece)
         elif piece.name == 'Knight':
-            moves = self.knight_rules(moves)
+            moves = self.knight_rules(piece=piece)
         elif piece.name == 'Queen':
-            moves = self.queen_rules(moves)
+            moves = self.queen_rules(piece=piece)
         elif piece.name == 'King':
-            moves = self.king_rules(moves)
+            moves = self.king_rules(piece=piece)
+        else:
+            raise ValueError(f'Unknown chess piece [{piece.name}] used.')
 
         return moves
 
@@ -200,25 +202,64 @@ class Engine:
             if piece.name.lower() == name.lower()
         ]
 
-    def pawn_rules(self, moves: list):
+    def pawn_rules(self, piece: Type[ChessPiece]):
+        moves = piece.get_applied_moves()
+        position = piece.position
+        start_positions = {
+            'white': [
+                (0, 1), (1, 1), (2, 1),
+                (3, 1), (4, 1), (5, 1),
+                (6, 1), (7, 1)
+            ],
+            'black': [
+                (0, 6), (1, 6), (2, 6),
+                (3, 6), (4, 6), (5, 6),
+                (6, 6), (7, 6)
+            ]
+        }
+        double_jump = {
+            'white': (position[0], position[1] + 2),
+            'black': (position[0], position[1] - 2)
+        }
+
+        color = piece.color.name
+        # If pawn is not in starting position, then remove double jump
+        if position not in start_positions[color]:
+            moves.remove(double_jump[color])
+
+        # Remove moves where allies are standing
+        ally_positions = self.get_ally_positions()
+        for move in moves:
+            if move in ally_positions:
+                moves.remove(move)
+
+        # Diagonal movement only if enemy is there
+        enemy_positions = self.get_enemy_positions()
+        for move in moves:
+            # Diagonal moves
+            if move[0] - position[0] != 0:
+                if move not in enemy_positions:
+                    moves.remove(move)
+
+        return moves
+
+    def rook_rules(self, piece: Type[ChessPiece]):
         pass
 
-    def rook_rules(self, moves: list):
+    def knight_rules(self, piece: Type[ChessPiece]):
         pass
 
-    def knight_rules(self, moves: list):
+    def bishop_rules(self, piece: Type[ChessPiece]):
         pass
 
-    def bishop_rules(self, moves: list):
-        pass
-
-    def king_rules(self, moves: list):
+    def king_rules(self, piece: Type[ChessPiece]):
+        moves = piece.get_applied_moves()
         ally_positions = self.get_ally_positions()
         return [
             move for move in moves if move not in ally_positions
         ]
 
-    def queen_rules(self, moves: list):
+    def queen_rules(self, piece: Type[ChessPiece]):
         pass
 
     def get_white_pawns(self):

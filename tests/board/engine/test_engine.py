@@ -104,3 +104,30 @@ def test_get_possible_actions_invalid_id(config_path):
     with pytest.raises(ValueError) as e:
         engine.get_possible_actions(12345)
         assert 'ID [12345] does not exist' == str(e.value)
+
+
+def test_pawn_positions_game_start(config_path):
+    engine = Engine(config_path)
+    engine.start_game()
+    start_positions = {
+        'white': [
+            (0, 1), (1, 1), (2, 1),
+            (3, 1), (4, 1), (5, 1),
+            (6, 1), (7, 1)
+        ],
+        'black': [
+            (0, 6), (1, 6), (2, 6),
+            (3, 6), (4, 6), (5, 6),
+            (6, 6), (7, 6)
+        ]
+    }
+    white_pawns = engine.get_white_pawns()
+    black_pawns = engine.get_black_pawns()
+
+    for pawn in white_pawns:
+        position = pawn.position
+        assert position in start_positions['white']
+
+    for pawn in black_pawns:
+        position = pawn.position
+        assert position in start_positions['black']
