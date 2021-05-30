@@ -1,7 +1,7 @@
 from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Type
+from typing import Dict, List, Type, Optional
 
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
@@ -43,30 +43,30 @@ class Engine:
         self.game_over = False
         self.player_turn = 'white'
 
-    def create_piece(self, piece: int, position: tuple) -> None:
+    def create_piece(self, piece_nr: int, position: tuple) -> None:
         kwargs = {
             'position': position,
         }
         # TODO: Eventually make it possible to
         # open game with lower/upper options
-        if (piece < 7) and (piece > 0):
+        if (piece_nr < 7) and (piece_nr > 0):
             kwargs['group'] = Group.lower
             kwargs['color'] = Color.white
-        elif (piece >= 7) and (piece <= 12):
+        elif (piece_nr >= 7) and (piece_nr <= 12):
             kwargs['group'] = Group.upper
             kwargs['color'] = Color.black
 
-        if piece in [1, 7]:
+        if piece_nr in [1, 7]:
             return Pawn(**kwargs)
-        elif piece in [2, 8]:
+        elif piece_nr in [2, 8]:
             return Rook(**kwargs)
-        elif piece in [3, 9]:
+        elif piece_nr in [3, 9]:
             return Knight(**kwargs)
-        elif piece in [4, 10]:
+        elif piece_nr in [4, 10]:
             return Bishop(**kwargs)
-        elif piece in [5, 11]:
+        elif piece_nr in [5, 11]:
             return Queen(**kwargs)
-        elif piece in [6, 12]:
+        elif piece_nr in [6, 12]:
             return King(**kwargs)
         else:
             return
@@ -90,7 +90,7 @@ class Engine:
         for i in range(nrows):
             for j in range(ncols):
                 created_piece = self.create_piece(
-                                    piece=board[i, j],
+                                    piece_nr=board[i, j],
                                     position=(i, j)
                                 )
 
@@ -106,6 +106,21 @@ class Engine:
             'white': white_pieces,
             'black': black_pieces
         }
+
+    def spawn_piece(self, piece_nr: int, position: tuple) -> None:
+        created_piece = self.create_piece(piece_nr=piece_nr, position=position)
+
+        if (piece_nr < 7) and (piece_nr > 0):
+            self.pieces['white'].append(created_piece)
+        elif (piece_nr >= 7) and (piece_nr <= 12):
+            self.pieces['black'].append(created_piece)
+        else:
+            raise ValueError('Nothing was added')
+
+        name = created_piece.name
+        color = created_piece.color.name
+        position = created_piece.position
+        print(f'Spawned a {name} for {color} at position {position}')
 
     def check_game_state(self):
         pass
@@ -229,17 +244,18 @@ class Engine:
 
         # Remove moves where allies are standing
         ally_positions = self.get_ally_positions()
-        for move in moves:
-            if move in ally_positions:
-                moves.remove(move)
+        moves = [
+            move for move in moves if move not in ally_positions
+        ]
 
         # Diagonal movement only if enemy is there
         enemy_positions = self.get_enemy_positions()
-        for move in moves:
-            # Diagonal moves
-            if move[0] - position[0] != 0:
-                if move not in enemy_positions:
-                    moves.remove(move)
+        moves = [
+            move for move in moves if not (
+                (move[0] - position[0] != 0)        # is diagonal move
+                and (move not in enemy_positions)   # does not hit enemy
+            )
+        ]
 
         return moves
 
@@ -261,6 +277,28 @@ class Engine:
 
     def queen_rules(self, piece: Type[ChessPiece]):
         pass
+
+    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> None:
+        """
+        Initiates a new game with empty board.
+        Mostly for testing purposes
+        """
+        game_state = np.zeros(shape=(grid_size, grid_size))
+
+        # numpy array indexing works top and down,
+        # row on y-axis and column on y-axis,
+        # therefore it is necessary to flip and transpose
+        # the table for correct indexing
+        game_state = np.transpose(np.flip(game_state))
+
+        # Create pieces in game and save in dictionary
+        # for later monitoring of each pieces position
+        self.pieces = self.initiate_pieces(board=game_state)
+
+        # Starting game
+        self.game_state = game_state
+        self.game_over = False
+        self.player_turn = 'white'
 
     def get_white_pawns(self):
         return self._get_pieces('pawn', self.pieces.get('white', []))

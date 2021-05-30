@@ -63,12 +63,12 @@ def test_create_piece(config_path):
     engine = Engine(config_path)
 
     # Supposedly white pawn created
-    created_piece_1 = engine.create_piece(piece=1, position=(1, 4))
+    created_piece_1 = engine.create_piece(piece_nr=1, position=(1, 4))
     # See that a white Pawn is created
     assert created_piece_1.color.name == 'white'
 
     # Supposedly black pawn created
-    created_piece_7 = engine.create_piece(piece=7, position=(1, 4))
+    created_piece_7 = engine.create_piece(piece_nr=7, position=(1, 4))
     # See that a black Pawn is created
     assert created_piece_7.color.name == 'black'
 
@@ -78,7 +78,7 @@ def test_create_piece_none(config_path):
 
     # Supposedly non-piece number
     # 15 is not a piece in the system
-    created_piece_none = engine.create_piece(piece=15, position=(1, 4))
+    created_piece_none = engine.create_piece(piece_nr=15, position=(1, 4))
     # See that nothing was created
     assert created_piece_none is None
 
