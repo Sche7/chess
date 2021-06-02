@@ -112,7 +112,7 @@ def test_killer_move(config_path):
     assert len(engine.pieces['white']) == 0
     assert len(engine.pieces['black']) == 0
 
-    # Spawn white pawn
+    # Spawn white knight
     engine.spawn_piece(
         piece_nr=3,
         position=(4, 4)
