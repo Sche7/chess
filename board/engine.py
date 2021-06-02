@@ -217,6 +217,16 @@ class Engine:
             if piece.name.lower() == name.lower()
         ]
 
+    def _remove_ally_positions(self, moves: list):
+        """
+        Removes moves where allies are standing
+        """
+        ally_positions = self.get_ally_positions()
+        moves = [
+            move for move in moves if move not in ally_positions
+        ]
+        return moves
+
     def pawn_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
         position = piece.position
@@ -243,10 +253,7 @@ class Engine:
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing
-        ally_positions = self.get_ally_positions()
-        moves = [
-            move for move in moves if move not in ally_positions
-        ]
+        moves = self._remove_ally_positions(moves)
 
         # Diagonal movement only if enemy is there
         enemy_positions = self.get_enemy_positions()
@@ -263,17 +270,15 @@ class Engine:
         pass
 
     def knight_rules(self, piece: Type[ChessPiece]):
-        pass
+        moves = piece.get_applied_moves()
+        return self._remove_ally_positions(moves)
 
     def bishop_rules(self, piece: Type[ChessPiece]):
         pass
 
     def king_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
-        ally_positions = self.get_ally_positions()
-        return [
-            move for move in moves if move not in ally_positions
-        ]
+        return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[ChessPiece]):
         pass

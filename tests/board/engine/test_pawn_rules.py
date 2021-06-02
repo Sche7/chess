@@ -9,7 +9,7 @@ def test_start_game(config_path):
 
     for pawn in white_pawns:
         position = pawn.position
-        print(position)
+
         expected_moves = [
             (position[0], position[1] + 1),
             (position[0], position[1] + 2)
@@ -31,7 +31,7 @@ def test_no_blocking(config_path):
         position=(4, 4)
     )
 
-    # See that two white pawns are spawned
+    # See that one white pawn has spawned
     assert len(engine.pieces['white']) == 1
 
     white_pawn = engine.pieces['white'][0]
