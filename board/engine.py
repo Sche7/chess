@@ -29,7 +29,7 @@ class Engine:
         game_state = np.array(self.start_state).astype(int)
 
         # numpy array indexing works top and down,
-        # row on y-axis and column on y-axis,
+        # row on y-axis and column on x-axis,
         # therefore it is necessary to flip and transpose
         # the table for correct indexing
         game_state = np.transpose(np.flip(game_state))
@@ -291,7 +291,7 @@ class Engine:
         game_state = np.zeros(shape=(grid_size, grid_size))
 
         # numpy array indexing works top and down,
-        # row on y-axis and column on y-axis,
+        # row on y-axis and column on x-axis,
         # therefore it is necessary to flip and transpose
         # the table for correct indexing
         game_state = np.transpose(np.flip(game_state))
