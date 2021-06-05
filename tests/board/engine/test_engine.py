@@ -131,3 +131,51 @@ def test_pawn_positions_game_start(config_path):
     for pawn in black_pawns:
         position = pawn.position
         assert position in start_positions['black']
+
+
+def test_get_horizontal_moves(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=2,     # Rook
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (4, 0), (4, 1), (4, 2), (4, 3),
+        (4, 5), (4, 6), (4, 7),
+    ]
+
+    white_rook = engine.get_white_rooks()[0]
+    result = engine.get_horizontal_moves(
+        position=white_rook.position,
+        moves=white_rook.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_get_vertical_moves(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=2,     # Rook
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (0, 4), (1, 4), (2, 4), (3, 4),
+        (5, 4), (6, 4), (7, 4)
+    ]
+
+    white_rook = engine.get_white_rooks()[0]
+    result = engine.get_vertical_moves(
+        position=white_rook.position,
+        moves=white_rook.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
