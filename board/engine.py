@@ -217,7 +217,7 @@ class Engine:
             if piece.name.lower() == name.lower()
         ]
 
-    def _remove_ally_positions(self, moves: list):
+    def _remove_ally_positions(self, moves: list) -> list:
         """
         Removes moves where allies are standing
         """
@@ -226,6 +226,18 @@ class Engine:
             move for move in moves if move not in ally_positions
         ]
         return moves
+
+    def _handle_blocked_straight_path(self, moves: list) -> list:
+        """
+        Removes moves where allies or enemies are blocking the straight path
+        """
+        pass
+
+    def _handle_blocked_diagonal_path(self, moves: list) -> list:
+        """
+        Removes moves where allies or enemies are blocking the diagonal path
+        """
+        pass
 
     def pawn_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
