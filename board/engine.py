@@ -227,13 +227,105 @@ class Engine:
         ]
         return moves
 
-    def _handle_blocked_straight_path(self, moves: list) -> list:
+    def horizontal_move_is_legal(
+        self,
+        start_position: tuple,
+        move: tuple
+    ) -> bool:
+        x = start_position[0]
+        ally_horizontal = self.get_horizontal_moves(
+            start_position=start_position,
+            moves=self.get_ally_positions()
+        )
+        # Remove the starting position itself
+        ally_horizontal.remove(start_position)
+
+        enemy_horizontal = self.get_horizontal_moves(
+            start_position=start_position,
+            moves=self.get_enemy_positions()
+        )
+        not_walk_through_allies = all([
+            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
+            ((pos[0] < move[0]) and (pos[0] < x))      # Left
+            for pos in ally_horizontal
+        ])
+        not_walk_through_enemies = all([
+            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
+            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
+            for pos in enemy_horizontal
+        ])
+        return not_walk_through_allies and not_walk_through_enemies
+
+    def vertical_move_is_legal(
+        self,
+        start_position: tuple,
+        move: tuple
+    ):
+        y = start_position[1]
+        ally_vertical = self.get_vertical_moves(
+            start_position=start_position,
+            moves=self.get_ally_positions()
+        )
+        # Remove the starting position itself
+        ally_vertical.remove(start_position)
+
+        enemy_vertical = self.get_vertical_moves(
+            start_position=start_position,
+            moves=self.get_enemy_positions()
+        )
+        not_walk_through_allies = all([
+            ((pos[1] > move[1]) and (pos[1] > y)) or   # Up
+            ((pos[1] < move[1]) and (pos[1] < y))      # Down
+            for pos in ally_vertical
+        ])
+        not_walk_through_enemies = all([
+            ((pos[1] >= move[1]) and (pos[1] >= y)) or   # Up
+            ((pos[1] <= move[1]) and (pos[1] <= y))      # Down
+            for pos in enemy_vertical
+        ])
+        return not_walk_through_allies and not_walk_through_enemies
+
+    def handle_blocked_straight_path(
+        self,
+        start_position: tuple,
+        moves: list
+    ) -> list:
         """
         Removes moves where allies or enemies are blocking the straight path
         """
-        pass
+        output = []
 
-    def _handle_blocked_diagonal_path(self, moves: list) -> list:
+        vertical_moves = self.get_vertical_moves(
+            start_position=start_position,
+            moves=moves
+        )
+        horizontal_moves = self.get_horizontal_moves(
+            start_position=start_position,
+            moves=moves
+        )
+
+        # Horizontal
+        for move in horizontal_moves:
+            if self.horizontal_move_is_legal(
+                start_position=start_position,
+                move=move
+            ):
+                output.append(move)
+        # Vertical
+        for move in vertical_moves:
+            if self.vertical_move_is_legal(
+                start_position=start_position,
+                move=move
+            ):
+                output.append(move)
+
+        return output
+
+    def handle_blocked_diagonal_path(
+        self,
+        start_position: tuple,
+        moves: list
+    ) -> list:
         """
         Removes moves where allies or enemies are blocking the diagonal path
         """
@@ -251,9 +343,9 @@ class Engine:
             the list of all moves of chess piece,
             for example, from the method chess_piece.get_applied_moves
         """
-        y_axis = start_position[1]
+        x_axis = start_position[0]
         vertical_moves = [
-            move for move in moves if move[1] == y_axis
+            move for move in moves if move[0] == x_axis
         ]
         return vertical_moves
 
@@ -269,9 +361,9 @@ class Engine:
             the list of all moves of chess piece,
             for example, from the method chess_piece.get_applied_moves
         """
-        x_axis = start_position[0]
+        y_axis = start_position[1]
         horizontal_moves = [
-            move for move in moves if move[0] == x_axis
+            move for move in moves if move[1] == y_axis
         ]
         return horizontal_moves
 

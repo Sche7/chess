@@ -133,7 +133,7 @@ def test_pawn_positions_game_start(config_path):
         assert position in start_positions['black']
 
 
-def test_get_horizontal_moves(config_path):
+def test_get_vertical_moves(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -148,7 +148,7 @@ def test_get_horizontal_moves(config_path):
     ]
 
     white_rook = engine.get_white_rooks()[0]
-    result = engine.get_horizontal_moves(
+    result = engine.get_vertical_moves(
         start_position=white_rook.position,
         moves=white_rook.get_applied_moves()
     )
@@ -157,7 +157,7 @@ def test_get_horizontal_moves(config_path):
         assert move in expected_moves
 
 
-def test_get_vertical_moves(config_path):
+def test_get_horizontal_moves(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -172,7 +172,83 @@ def test_get_vertical_moves(config_path):
     ]
 
     white_rook = engine.get_white_rooks()[0]
-    result = engine.get_vertical_moves(
+    result = engine.get_horizontal_moves(
+        start_position=white_rook.position,
+        moves=white_rook.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_handle_blocked_straight_path_ally(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=2,     # Rook
+        position=(4, 4)
+    )
+
+    # Spawn allies
+    engine.spawn_piece(
+        piece_nr=1,     # Pawn
+        position=(2, 4)
+    )
+    engine.spawn_piece(
+        piece_nr=1,     # Pawn
+        position=(7, 4)
+    )
+
+    expected_moves = [
+        # Horizontal moves
+        (3, 4), (5, 4), (6, 4),
+
+        # Vertical moves
+        (4, 0), (4, 1), (4, 2),
+        (4, 3), (4, 5), (4, 6), (4, 7)
+    ]
+
+    white_rook = engine.get_white_rooks()[0]
+    result = engine.handle_blocked_straight_path(
+        start_position=white_rook.position,
+        moves=white_rook.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_handle_blocked_straight_path_enemies(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=2,     # Rook
+        position=(4, 4)
+    )
+
+    # Spawn allies
+    engine.spawn_piece(
+        piece_nr=7,     # Pawn
+        position=(2, 4)
+    )
+    engine.spawn_piece(
+        piece_nr=7,     # Pawn
+        position=(7, 4)
+    )
+
+    expected_moves = [
+        # Horizontal moves
+        (2, 4), (3, 4), (5, 4), (6, 4), (7, 4),
+
+        # Vertical moves
+        (4, 0), (4, 1), (4, 2),
+        (4, 3), (4, 5), (4, 6), (4, 7)
+    ]
+
+    white_rook = engine.get_white_rooks()[0]
+    result = engine.handle_blocked_straight_path(
         start_position=white_rook.position,
         moves=white_rook.get_applied_moves()
     )
