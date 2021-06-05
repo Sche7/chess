@@ -149,7 +149,7 @@ def test_get_horizontal_moves(config_path):
 
     white_rook = engine.get_white_rooks()[0]
     result = engine.get_horizontal_moves(
-        position=white_rook.position,
+        start_position=white_rook.position,
         moves=white_rook.get_applied_moves()
     )
     assert len(expected_moves) == len(result)
@@ -173,7 +173,7 @@ def test_get_vertical_moves(config_path):
 
     white_rook = engine.get_white_rooks()[0]
     result = engine.get_vertical_moves(
-        position=white_rook.position,
+        start_position=white_rook.position,
         moves=white_rook.get_applied_moves()
     )
     assert len(expected_moves) == len(result)

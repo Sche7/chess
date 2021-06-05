@@ -239,37 +239,37 @@ class Engine:
         """
         pass
 
-    def get_vertical_moves(self, position: tuple, moves: list) -> list:
+    def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
         """
         Get all moves that are part of the vertical path
 
         Parameters
         ----
-        position: tuple
+        start_position: tuple
             the starting position of the chess piece
         moves: list
             the list of all moves of chess piece,
             for example, from the method chess_piece.get_applied_moves
         """
-        y_axis = position[1]
+        y_axis = start_position[1]
         vertical_moves = [
             move for move in moves if move[1] == y_axis
         ]
         return vertical_moves
 
-    def get_horizontal_moves(self, position: tuple, moves: list) -> list:
+    def get_horizontal_moves(self, start_position: tuple, moves: list) -> list:
         """
         Get all moves that are part of the horizontal path
 
         Parameters
         ----
-        position: tuple
+        start_position: tuple
             the starting position of the chess piece
         moves: list
             the list of all moves of chess piece,
             for example, from the method chess_piece.get_applied_moves
         """
-        x_axis = position[0]
+        x_axis = start_position[0]
         horizontal_moves = [
             move for move in moves if move[0] == x_axis
         ]
