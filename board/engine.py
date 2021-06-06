@@ -555,19 +555,33 @@ class Engine:
         ]
         return horizontal_moves
 
-    def is_diagonally_aligned(
-        self, a: Tuple[int, int], b: Tuple[int, int]
-    ) -> bool:
+    def get_diagonal_moves(
+        self,
+        start_position: tuple,
+        moves: list
+    ) -> list:
         """
-        Helper method to check that coordinate a
-        is diagonally aligned with coordinate b.
-        Note: This method only works on 2D
-        Returns
-        ----
-            - True if 'a' and 'b' are diagonally aligned
-            - False otherwise
+        Method to get all moves that are diagonal to the
+        starting position.
         """
-        return abs(a[0] - b[0]) == abs(a[1] - b[1])
+        def is_diagonally_aligned(
+            a: Tuple[int, int], b: Tuple[int, int]
+        ) -> bool:
+            """
+            Helper method to check that coordinate a
+            is diagonally aligned with coordinate b.
+            Note: This method only works on 2D
+            Returns
+            ----
+                - True if 'a' and 'b' are diagonally aligned
+                - False otherwise
+            """
+            return abs(a[0] - b[0]) == abs(a[1] - b[1])
+        return [
+            move for move in moves if is_diagonally_aligned(
+                move, start_position
+            )
+        ]
 
     def get_diagonal_moves_incline(
         self,
@@ -579,11 +593,10 @@ class Engine:
 
         # Filter on incline moves that are diagonally aligned to
         # the starting position
-        incline_moves = [
-            move for move in moves if self.is_diagonally_aligned(
-                move, start_position
-            )
-        ]
+        incline_moves = self.get_diagonal_moves(
+            start_position=start_position,
+            moves=moves
+        )
 
         # Now filter on incline moves
         incline_moves = [
@@ -603,11 +616,10 @@ class Engine:
 
         # Filter on incline moves that are diagonally aligned to
         # the starting position
-        decline_moves = [
-            move for move in moves if self.is_diagonally_aligned(
-                move, start_position
-            )
-        ]
+        decline_moves = self.get_diagonal_moves(
+            start_position=start_position,
+            moves=moves
+        )
 
         # Now filter on decline moves
         decline_moves = [
