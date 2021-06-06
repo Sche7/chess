@@ -331,42 +331,6 @@ class Engine:
         """
         pass
 
-    def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
-        """
-        Get all moves that are part of the vertical path
-
-        Parameters
-        ----
-        start_position: tuple
-            the starting position of the chess piece
-        moves: list
-            the list of all moves of chess piece,
-            for example, from the method chess_piece.get_applied_moves
-        """
-        x_axis = start_position[0]
-        vertical_moves = [
-            move for move in moves if move[0] == x_axis
-        ]
-        return vertical_moves
-
-    def get_horizontal_moves(self, start_position: tuple, moves: list) -> list:
-        """
-        Get all moves that are part of the horizontal path
-
-        Parameters
-        ----
-        start_position: tuple
-            the starting position of the chess piece
-        moves: list
-            the list of all moves of chess piece,
-            for example, from the method chess_piece.get_applied_moves
-        """
-        y_axis = start_position[1]
-        horizontal_moves = [
-            move for move in moves if move[1] == y_axis
-        ]
-        return horizontal_moves
-
     def pawn_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
         position = piece.position
@@ -444,6 +408,73 @@ class Engine:
         self.game_state = game_state
         self.game_over = False
         self.player_turn = 'white'
+
+    def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
+        """
+        Get all moves that are part of the vertical path
+
+        Parameters
+        ----
+        start_position: tuple
+            the starting position of the chess piece
+        moves: list
+            the list of all moves of chess piece,
+            for example, from the method chess_piece.get_applied_moves
+        """
+        # Fixed x-axis
+        x_axis = start_position[0]
+        vertical_moves = [
+            move for move in moves if move[0] == x_axis
+        ]
+        return vertical_moves
+
+    def get_horizontal_moves(self, start_position: tuple, moves: list) -> list:
+        """
+        Get all moves that are part of the horizontal path
+
+        Parameters
+        ----
+        start_position: tuple
+            the starting position of the chess piece
+        moves: list
+            the list of all moves of chess piece,
+            for example, from the method chess_piece.get_applied_moves
+        """
+        # Fixed y-axis
+        y_axis = start_position[1]
+        horizontal_moves = [
+            move for move in moves if move[1] == y_axis
+        ]
+        return horizontal_moves
+
+    def get_diagonal_moves_incline(
+        self,
+        start_position: tuple,
+        moves: list
+    ) -> list:
+        x = start_position[0]
+        y = start_position[1]
+
+        incline_moves = [
+            move for move in moves if
+            ((move[0] > x) and (move[1] > y)) or
+            ((move[0] < x) and (move[1] < y))
+        ]
+        return incline_moves
+
+    def get_diagonal_moves_decline(
+        self,
+        start_position: tuple,
+        moves: list
+    ) -> list:
+        x = start_position[0]
+        y = start_position[1]
+        decline_moves = [
+            move for move in moves if
+            ((move[0] < x) and (move[1] > y)) or
+            ((move[0] > x) and (move[1] < y))
+        ]
+        return decline_moves
 
     def get_white_pawns(self):
         return self._get_pieces('pawn', self.pieces.get('white', []))

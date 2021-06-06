@@ -181,6 +181,54 @@ def test_get_horizontal_moves(config_path):
         assert move in expected_moves
 
 
+def test_get_diagonal_moves_incline(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=4,     # Bishop
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (0, 0), (1, 1), (2, 2), (3, 3),
+        (5, 5), (6, 6), (7, 7)
+    ]
+
+    white_bishop = engine.get_white_bishops()[0]
+    result = engine.get_diagonal_moves_incline(
+        start_position=white_bishop.position,
+        moves=white_bishop.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_get_diagonal_moves_decline(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=4,     # Bishop
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (3, 5), (2, 6), (1, 7),
+        (5, 3), (6, 2), (7, 1)
+    ]
+
+    white_bishop = engine.get_white_bishops()[0]
+    result = engine.get_diagonal_moves_decline(
+        start_position=white_bishop.position,
+        moves=white_bishop.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
 def test_handle_blocked_straight_path_ally(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
