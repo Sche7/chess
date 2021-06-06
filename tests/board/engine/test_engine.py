@@ -205,6 +205,31 @@ def test_get_diagonal_moves_incline(config_path):
         assert move in expected_moves
 
 
+def test_get_diagonal_moves_incline_outside_path(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=4,     # Bishop
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (0, 0), (1, 1), (2, 2), (3, 3),
+        (5, 5), (6, 6), (7, 7)
+    ]
+    white_bishop = engine.get_white_bishops()[0]
+    result = engine.get_diagonal_moves_incline(
+        start_position=white_bishop.position,
+        # Include a random off path coord
+        # this should be filtered away
+        moves=white_bishop.get_applied_moves() + [(5, 6)]
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
 def test_get_diagonal_moves_decline(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
@@ -223,6 +248,31 @@ def test_get_diagonal_moves_decline(config_path):
     result = engine.get_diagonal_moves_decline(
         start_position=white_bishop.position,
         moves=white_bishop.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_get_diagonal_moves_decline_outside_path(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=4,     # Bishop
+        position=(4, 4)
+    )
+
+    expected_moves = [
+        (3, 5), (2, 6), (1, 7),
+        (5, 3), (6, 2), (7, 1)
+    ]
+    white_bishop = engine.get_white_bishops()[0]
+    result = engine.get_diagonal_moves_decline(
+        start_position=white_bishop.position,
+        # Include a random off path coord
+        # this should be filtered away
+        moves=white_bishop.get_applied_moves() + [(3, 6)]
     )
     assert len(expected_moves) == len(result)
     for move in result:
@@ -299,6 +349,51 @@ def test_handle_blocked_straight_path_enemies(config_path):
     result = engine.handle_blocked_straight_path(
         start_position=white_rook.position,
         moves=white_rook.get_applied_moves()
+    )
+    assert len(expected_moves) == len(result)
+    for move in result:
+        assert move in expected_moves
+
+
+def test_handle_blocked_diagonal_path(config_path):
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    engine.spawn_piece(
+        piece_nr=4,     # Bishop
+        position=(4, 4)
+    )
+
+    # Spawn ally
+    engine.spawn_piece(
+        piece_nr=1,     # Pawn
+        position=(5, 5)
+    )
+
+    # Spawn enemy
+    engine.spawn_piece(
+        piece_nr=7,     # Pawn
+        position=(6, 2)
+    )
+
+    # Spawn enemy not blocking path
+    engine.spawn_piece(
+        piece_nr=7,     # Pawn
+        position=(0, 1)
+    )
+
+    expected_moves = [
+        # Incline
+        (0, 0), (1, 1), (2, 2), (3, 3),
+
+        # Decline
+        (1, 7), (2, 6), (3, 5), (5, 3), (6, 2)
+    ]
+
+    white_bishops = engine.get_white_bishops()[0]
+    result = engine.handle_blocked_diagonal_path(
+        start_position=white_bishops.position,
+        moves=white_bishops.get_applied_moves()
     )
     assert len(expected_moves) == len(result)
     for move in result:

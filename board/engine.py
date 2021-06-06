@@ -1,7 +1,7 @@
 from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Type, Optional
+from typing import Dict, List, Type, Optional, Tuple
 
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
@@ -232,13 +232,19 @@ class Engine:
         start_position: tuple,
         move: tuple
     ) -> bool:
+        """
+        Checks whether move is legal based on position
+        of enemy and ally pieces
+        """
         x = start_position[0]
         ally_horizontal = self.get_horizontal_moves(
             start_position=start_position,
             moves=self.get_ally_positions()
         )
         # Remove the starting position itself
-        ally_horizontal.remove(start_position)
+        ally_horizontal = [
+            coord for coord in ally_horizontal if coord != start_position
+        ]
 
         enemy_horizontal = self.get_horizontal_moves(
             start_position=start_position,
@@ -261,13 +267,19 @@ class Engine:
         start_position: tuple,
         move: tuple
     ):
+        """
+        Checks whether move is legal based on position
+        of enemy and ally pieces
+        """
         y = start_position[1]
         ally_vertical = self.get_vertical_moves(
             start_position=start_position,
             moves=self.get_ally_positions()
         )
         # Remove the starting position itself
-        ally_vertical.remove(start_position)
+        ally_vertical = [
+            coord for coord in ally_vertical if coord != start_position
+        ]
 
         enemy_vertical = self.get_vertical_moves(
             start_position=start_position,
@@ -321,6 +333,76 @@ class Engine:
 
         return output
 
+    def diagonal_incline_move_is_legal(
+        self,
+        start_position: tuple,
+        move: tuple
+    ) -> bool:
+        """
+        Checks whether move is legal based on position
+        of enemy and ally pieces
+        """
+        x = start_position[0]
+        ally_incline = self.get_diagonal_moves_incline(
+            start_position=start_position,
+            moves=self.get_ally_positions()
+        )
+        # Remove the starting position itself
+        ally_incline = [
+            coord for coord in ally_incline if coord != start_position
+        ]
+
+        enemy_incline = self.get_diagonal_moves_incline(
+            start_position=start_position,
+            moves=self.get_enemy_positions()
+        )
+        not_walk_through_allies = all([
+            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
+            ((pos[0] < move[0]) and (pos[0] < x))      # Left
+            for pos in ally_incline
+        ])
+        not_walk_through_enemies = all([
+            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
+            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
+            for pos in enemy_incline
+        ])
+        return not_walk_through_allies and not_walk_through_enemies
+
+    def diagonal_decline_move_is_legal(
+        self,
+        start_position: tuple,
+        move: tuple
+    ) -> bool:
+        """
+        Checks whether move is legal based on position
+        of enemy and ally pieces
+        """
+        x = start_position[0]
+        ally_decline = self.get_diagonal_moves_decline(
+            start_position=start_position,
+            moves=self.get_ally_positions()
+        )
+        # Remove the starting position itself
+        ally_decline = [
+            coord for coord in ally_decline if coord != start_position
+        ]
+
+        enemy_decline = self.get_diagonal_moves_decline(
+            start_position=start_position,
+            moves=self.get_enemy_positions()
+        )
+        not_walk_through_allies = all([
+            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
+            ((pos[0] < move[0]) and (pos[0] < x))      # Left
+            for pos in ally_decline
+        ])
+        not_walk_through_enemies = all([
+            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
+            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
+            for pos in enemy_decline
+        ])
+        return not_walk_through_allies and not_walk_through_enemies
+
     def handle_blocked_diagonal_path(
         self,
         start_position: tuple,
@@ -329,7 +411,33 @@ class Engine:
         """
         Removes moves where allies or enemies are blocking the diagonal path
         """
-        pass
+        output = []
+
+        incline_moves = self.get_diagonal_moves_incline(
+            start_position=start_position,
+            moves=moves
+        )
+        decline_moves = self.get_diagonal_moves_decline(
+            start_position=start_position,
+            moves=moves
+        )
+
+        # Incline
+        for move in incline_moves:
+            if self.diagonal_incline_move_is_legal(
+                start_position=start_position,
+                move=move
+            ):
+                output.append(move)
+        # Decline
+        for move in decline_moves:
+            if self.diagonal_decline_move_is_legal(
+                start_position=start_position,
+                move=move
+            ):
+                output.append(move)
+
+        return output
 
     def pawn_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
@@ -447,6 +555,20 @@ class Engine:
         ]
         return horizontal_moves
 
+    def is_diagonally_aligned(
+        self, a: Tuple[int, int], b: Tuple[int, int]
+    ) -> bool:
+        """
+        Helper method to check that coordinate a
+        is diagonally aligned with coordinate b.
+        Note: This method only works on 2D
+        Returns
+        ----
+            - True if 'a' and 'b' are diagonally aligned
+            - False otherwise
+        """
+        return abs(a[0] - b[0]) == abs(a[1] - b[1])
+
     def get_diagonal_moves_incline(
         self,
         start_position: tuple,
@@ -455,8 +577,17 @@ class Engine:
         x = start_position[0]
         y = start_position[1]
 
+        # Filter on incline moves that are diagonally aligned to
+        # the starting position
         incline_moves = [
-            move for move in moves if
+            move for move in moves if self.is_diagonally_aligned(
+                move, start_position
+            )
+        ]
+
+        # Now filter on incline moves
+        incline_moves = [
+            move for move in incline_moves if
             ((move[0] > x) and (move[1] > y)) or
             ((move[0] < x) and (move[1] < y))
         ]
@@ -469,8 +600,18 @@ class Engine:
     ) -> list:
         x = start_position[0]
         y = start_position[1]
+
+        # Filter on incline moves that are diagonally aligned to
+        # the starting position
         decline_moves = [
-            move for move in moves if
+            move for move in moves if self.is_diagonally_aligned(
+                move, start_position
+            )
+        ]
+
+        # Now filter on decline moves
+        decline_moves = [
+            move for move in decline_moves if
             ((move[0] < x) and (move[1] > y)) or
             ((move[0] > x) and (move[1] < y))
         ]
