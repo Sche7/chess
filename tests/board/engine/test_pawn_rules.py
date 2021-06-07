@@ -1,7 +1,7 @@
 from board.engine import Engine
 
 
-def test_start_game(config_path):
+def test_pawn_start_game(config_path):
     engine = Engine(config_path)
     engine.start_game()
 
@@ -17,7 +17,7 @@ def test_start_game(config_path):
         assert set(engine.pawn_rules(piece=pawn)) == set(expected_moves)
 
 
-def test_no_blocking(config_path):
+def test_pawn_no_blocking(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -42,7 +42,7 @@ def test_no_blocking(config_path):
     assert len(moves) == 1
 
 
-def test_ally_blocking(config_path):
+def test_pawn_ally_blocking(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -79,7 +79,7 @@ def test_ally_blocking(config_path):
     assert (4, 6) in moves_4_5
 
 
-def test_killer_move(config_path):
+def test_pawn_killer_move(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 

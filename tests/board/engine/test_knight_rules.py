@@ -1,7 +1,7 @@
 from board.engine import Engine
 
 
-def test_start_game(config_path):
+def test_knight_start_game(config_path):
     engine = Engine(config_path)
     engine.start_game()
 
@@ -19,7 +19,7 @@ def test_start_game(config_path):
         )
 
 
-def test_no_blocking(config_path):
+def test_knight_no_blocking(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -51,7 +51,7 @@ def test_no_blocking(config_path):
     assert len(moves) == 8
 
 
-def test_ally_blocking(config_path):
+def test_knight_ally_blocking(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
@@ -98,7 +98,7 @@ def test_ally_blocking(config_path):
     assert len(moves) == 6
 
 
-def test_killer_move(config_path):
+def test_knight_killer_move(config_path):
     engine = Engine(config_path)
     engine.initiate_empty_board()
 
