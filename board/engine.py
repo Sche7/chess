@@ -475,18 +475,25 @@ class Engine:
                 and (move not in enemy_positions)   # does not hit enemy
             )
         ]
-
         return moves
 
     def rook_rules(self, piece: Type[ChessPiece]):
-        pass
+        moves = self.handle_blocked_straight_path(
+            start_position=piece.position,
+            moves=piece.get_applied_moves()
+        )
+        return moves
 
     def knight_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves)
 
     def bishop_rules(self, piece: Type[ChessPiece]):
-        pass
+        moves = self.handle_blocked_diagonal_path(
+            start_position=piece.position,
+            moves=piece.get_applied_moves()
+        )
+        return moves
 
     def king_rules(self, piece: Type[ChessPiece]):
         moves = piece.get_applied_moves()
