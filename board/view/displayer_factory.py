@@ -1,9 +1,11 @@
-from typing import Type
+from typing import TypeVar, Generic
 
-from board.view import View
 from board.view.terminal_view import TerminalView
 from board.view.pygame_view import PygameView
 from enum import Enum
+
+
+View = TypeVar('View', TerminalView, PygameView)
 
 
 class Displayer(Enum):
@@ -11,7 +13,7 @@ class Displayer(Enum):
     pygame: str = 'pygame'
 
 
-def displayer_factory(displayer: Displayer, config_path: str) -> Type[View]:
+def displayer_factory(displayer: Displayer, config_path: str) -> Generic[View]:
     if displayer.name == 'terminal':
         return TerminalView(config_path)
     elif displayer.name == 'pygame':

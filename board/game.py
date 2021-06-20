@@ -1,5 +1,5 @@
 from board.engine import Engine
-from board.view.displayer_factory import displayer_factory, Displayer
+from board.view.displayer_factory import View
 
 
 class Chess(Engine):
@@ -17,13 +17,10 @@ class Chess(Engine):
         for more info.
     """
 
-    def __init__(self, config_path: str, displayer: Displayer):
+    def __init__(self, config_path: str, displayer: View):
         super().__init__(config_path=config_path)
 
-        self.displayer = displayer_factory(
-            displayer=displayer,
-            config_path=config_path
-        )
+        self.displayer = displayer
 
     def run(self):
         self.start_game()
