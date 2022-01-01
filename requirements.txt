@@ -67,3 +67,4 @@ typed-ast==1.4.3
 typing-extensions==3.10.0.0
 typish==1.9.2
 wcwidth==0.2.5
+simple_term_menu>=1.4
