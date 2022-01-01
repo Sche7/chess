@@ -18,7 +18,6 @@ class Engine:
         self.config = read_yaml(config_path)
         self.representation = self.config['PIECE_REPRESENTATION']
         self.start_state = self.config['GAME_START']
-        self.grid_size = self.config['GRID_SIZE']
         self.pieces = {}
 
     def start_game(self) -> None:
@@ -200,6 +199,31 @@ class Engine:
         piece = self.get_piece_by_id(id=id, player=self.player_turn)
 
         return self.apply_game_rules(piece)
+
+    def get_all_possible_actions(self) -> Dict[str, list]:
+        """
+        Get possible moves for all pieces that current player
+        has on the board.
+
+        Returns
+        ----
+        A dictionary of chess pieces on the board that belong to
+        the active player.
+        For example:
+            {
+                'Rook (0, 0)': [],
+                'Pawn (0, 1)': [(0, 2), (0, 3)],
+                'Knight (1, 0)': [(2, 2), (0, 2)],
+                'King (4, 0)': []
+            }
+
+        """
+        player_pieces = self.pieces.get(self.player_turn)
+        all_piece_actions = dict()
+        for piece in player_pieces:
+            name = f'{piece.name} {piece.position}'
+            all_piece_actions[name] = self.get_possible_actions(id=piece.id)
+        return all_piece_actions
 
     def switch_turn(self) -> None:
         switch = {

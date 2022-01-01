@@ -12,6 +12,10 @@ class View:
         self.representation = self.config['PIECE_REPRESENTATION']
 
     @abstractmethod
+    def initialize(self):
+        raise NotImplementedError('method "initialize" is not implemented')
+
+    @abstractmethod
     def display_board(self, board: NDArray):
         raise NotImplementedError('method "display_board" is not implemented')
 

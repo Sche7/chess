@@ -24,14 +24,14 @@ class Chess(Engine):
 
     def run(self):
         self.start_game()
-
+        self.displayer.initialize()
         while not self.game_over:
             # Display board
             self.displayer.display_board(self.game_state)
             self.displayer.display_player_turn(self.player_turn)
 
             # Compute possible actions
-            actions = self.get_possible_actions()
+            actions = self.get_all_possible_actions()
             player_input = self.displayer.await_input(actions)
 
             # Do action
