@@ -1,3 +1,5 @@
+import pygame
+
 from nptyping import NDArray
 from board.view import View
 
@@ -6,13 +8,18 @@ class PygameView(View):
     def __init__(self, config_path: str):
         super().__init__(config_path=config_path)
 
+    def initialize(self) -> None:
+        pygame.init()
+        pygame.display.set_caption('A bit Racey')
+
     def display_board(self, board: NDArray) -> None:
-        raise NotImplementedError('method "display_board" is not implemented')
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.game_over = True
+        pygame.display.update()
 
     def await_input(self, board: NDArray):
-        raise NotImplementedError('method "await_input" is not implemented')
+        pass
 
     def display_player_turn(self, player: str) -> None:
-        raise NotImplementedError(
-            'method "display_player_turn" is not implemented'
-        )
+        pass

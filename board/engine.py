@@ -1,7 +1,7 @@
 from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Type, Optional, Tuple
+from typing import Dict, List, Type, Optional, Tuple, Union
 
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
@@ -70,7 +70,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: NDArray) -> Dict[list, list]:
+    def initiate_pieces(self, board: NDArray) -> Dict[str, list]:
         """
         Method used to initiate and keep track of position
         of each piece in the game.
@@ -124,11 +124,33 @@ class Engine:
     def check_game_state(self):
         pass
 
-    def update_game_state(self, board: NDArray) -> None:
-        pass
+    def handle_game(self, player_input: Union[dict, None]) -> None:
+        """
+        Method for making updates according to player input.
+        """
 
-    def handle_game(self, player_input) -> None:
-        pass
+        if player_input is None:
+            self.game_over = True
+            return
+
+        piece_id = player_input.get('id')
+        action = player_input.get('action')
+        prev_position = self.get_piece_by_id(
+            id=piece_id,
+            player=self.player_turn
+        ).position
+
+        # Update piece position
+        self.update_piece_by_id(
+            id=piece_id,
+            action=action,
+            player=self.player_turn
+        )
+
+        # Update board
+        piece = self.game_state[prev_position]
+        self.game_state[prev_position] = 0
+        self.game_state[action] = piece
 
     def get_ally_positions(self):
         return [
@@ -187,6 +209,10 @@ class Engine:
 
         return piece[0]
 
+    def update_piece_by_id(self, id, player: str, action: tuple) -> None:
+        piece = self.get_piece_by_id(id, player)
+        piece.update(move=action)
+
     def get_possible_actions(self, id: int) -> List[tuple]:
         """
         Get all possible actions on specific chess piece
@@ -211,10 +237,21 @@ class Engine:
         the active player.
         For example:
             {
-                'Rook (0, 0)': [],
-                'Pawn (0, 1)': [(0, 2), (0, 3)],
-                'Knight (1, 0)': [(2, 2), (0, 2)],
-                'King (4, 0)': []
+                'Rook (0, 0)': {
+                    'actions': [],
+                    'id': 1234
+                }
+                'Pawn (0, 1)': {
+                    'actions': [(0, 2), (0, 3)],
+                    'id': 2345
+                },
+                'Knight (1, 0)': {
+                    'actions': [(2, 2), (0, 2)],
+                    'id': 3456
+                },
+                'King (4, 0)': {
+                    'actions': [],
+                    'id': 4567
             }
 
         """
@@ -222,7 +259,10 @@ class Engine:
         all_piece_actions = dict()
         for piece in player_pieces:
             name = f'{piece.name} {piece.position}'
-            all_piece_actions[name] = self.get_possible_actions(id=piece.id)
+            all_piece_actions[name] = {
+                'actions': self.get_possible_actions(id=piece.id),
+                'id': piece.id
+            }
         return all_piece_actions
 
     def switch_turn(self) -> None:
