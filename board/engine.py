@@ -124,13 +124,14 @@ class Engine:
     def check_game_state(self):
         pass
 
-    def handle_game(self, player_input: Union[dict, None]) -> None:
+    def handle_game(self, player_input: dict) -> None:
         """
         Method for making updates according to player input.
         """
 
-        if player_input is None:
+        if not player_input:
             self.game_over = True
+            print(f'Player {self.player_turn} surrendered. Game over.')
             return
 
         piece_id = player_input.get('id')
@@ -525,7 +526,7 @@ class Engine:
 
         color = piece.color.name
         # If pawn is not in starting position, then remove double jump
-        if position not in start_positions[color]:
+        if position not in start_positions[color] and double_jump[color] in moves:
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing

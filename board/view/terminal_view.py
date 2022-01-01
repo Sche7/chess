@@ -82,10 +82,17 @@ class TerminalView(View):
 
         return choices, TerminalMenu(choices)
 
-    def await_input(self, possible_actions: dict):
+    def await_input(self, possible_actions: dict) -> dict:
         """
         Method for showing console menu that awaits
         user input.
+
+        Returns
+        ----
+            Dictionary containing two keys:
+                id: ID of chess piece
+                action: New position for specififed chess piece
+            returns empty dict if player surrenders.
         """
         choices, terminal_menu = self.menu(possible_actions)
         exit = False
@@ -128,3 +135,5 @@ class TerminalView(View):
                         'id': chess_piece_id,
                         'action': actions[sub_option_index]
                     }
+
+        return {}
