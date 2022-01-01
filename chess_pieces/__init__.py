@@ -2,10 +2,10 @@ from typing import Tuple
 from chess_pieces.schema import Color, Group
 
 
-SQUARE_GRID_SIZE = 8
-
-
 class ChessPiece(object):
+    # Grid size of a chess board
+    grid_size = 8
+
     def __init__(
         self,
         position: Tuple,
@@ -18,7 +18,6 @@ class ChessPiece(object):
         self.status = 1
         self.name = self.__class__.__name__
         self.id = id(self)
-        self.grid_size = SQUARE_GRID_SIZE
 
     @property
     def moves():
