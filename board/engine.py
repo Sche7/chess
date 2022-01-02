@@ -565,7 +565,8 @@ class Engine:
         return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[ChessPiece]):
-        pass
+        moves = piece.get_applied_moves()
+        return self._remove_ally_positions(moves)
 
     def initiate_empty_board(self, grid_size: Optional[int] = 8) -> None:
         """
