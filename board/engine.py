@@ -135,22 +135,19 @@ class Engine:
 
         piece_id = player_input.get('id')
         action = player_input.get('action')
-        prev_position = self.get_piece_by_id(
+        piece = self.get_piece_by_id(
             id=piece_id,
-            player=self.player_turn
-        ).position
-
-        # Update piece position
-        self.update_piece_by_id(
-            id=piece_id,
-            action=action,
             player=self.player_turn
         )
+        old_position = piece.position
+
+        # Update piece position
+        piece.set_position(position=action)
 
         # Update board
-        piece = self.game_state[prev_position]
-        self.game_state[prev_position] = 0
-        self.game_state[action] = piece
+        piece_nr = self.game_state[old_position]
+        self.game_state[old_position] = 0
+        self.game_state[action] = piece_nr
 
     def get_ally_positions(self):
         return [

@@ -44,6 +44,9 @@ class ChessPiece(object):
     def update(self, move: Tuple) -> None:
         self.position = self.apply_move(move)
 
+    def set_position(self, position: tuple) -> None:
+        self.position = position
+
     def set_grid_size(self, size: int):
         self.grid_size = size
 
