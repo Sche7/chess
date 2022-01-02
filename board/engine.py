@@ -1,8 +1,7 @@
 from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Type, Optional, Tuple, Union
-
+from typing import Dict, List, Type, Optional, Tuple
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
 from chess_pieces.bishop import Bishop
