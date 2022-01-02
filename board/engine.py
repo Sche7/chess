@@ -141,14 +141,14 @@ class Engine:
             player=self.player_turn
         )
         old_position = piece.position
+        piece_nr = piece.piece_nr
 
-        # Update piece position
+        # Update piece position in the piece object
         piece.set_position(position=action)
 
         # Update board
-        piece_nr = self.game_state[old_position]
-        self.game_state[old_position] = 0
-        self.game_state[action] = piece_nr
+        self.game_state[old_position] = 0   # empty old position
+        self.game_state[action] = piece_nr  # move chess piece to new position
 
     def get_ally_positions(self):
         return [
