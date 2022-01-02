@@ -522,7 +522,8 @@ class Engine:
 
         color = piece.color.name
         # If pawn is not in starting position, then remove double jump
-        if position not in start_positions[color] and double_jump[color] in moves:
+        if (position not in start_positions[color] and
+                double_jump[color] in moves):
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing
