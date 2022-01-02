@@ -235,32 +235,52 @@ class Engine:
         the active player.
         For example:
             {
-                'Rook (0, 0)': {
+                'Rook': [{
                     'actions': [],
+                    'position': (0, 0),
                     'id': 1234
-                }
-                'Pawn (0, 1)': {
+                }],
+                'Pawn': [{
                     'actions': [(0, 2), (0, 3)],
+                    'position': (0, 1)
                     'id': 2345
-                },
-                'Knight (1, 0)': {
+                }, {
+                    'actions': [(1, 2), (1, 3)],
+                    'position': (1, 1)
+                    'id': 2347
+                }],
+                'Knight': [{
                     'actions': [(2, 2), (0, 2)],
+                    'position': (1, 0)
                     'id': 3456
-                },
-                'King (4, 0)': {
+                }],
+                'King': [{
                     'actions': [],
+                    'position': (4, 0)
                     'id': 4567
+                }]
             }
 
         """
         player_pieces = self.pieces.get(self.player_turn)
         all_piece_actions = dict()
         for piece in player_pieces:
-            name = f'{piece.name} {piece.position}'
-            all_piece_actions[name] = {
-                'actions': self.get_possible_actions(id=piece.id),
-                'id': piece.id
-            }
+
+            # Create information dict
+            name = piece.name
+            piece_info = {
+                    'actions': self.get_possible_actions(id=piece.id),
+                    'id': piece.id,
+                    'position': piece.position
+                }
+
+            # If key is already created, then append to
+            # exitsting list, else create key in dict.
+            if name in all_piece_actions:
+                all_piece_actions[name].append(piece_info)
+            else:
+                all_piece_actions[name] = [piece_info]
+
         return all_piece_actions
 
     def switch_turn(self) -> None:
