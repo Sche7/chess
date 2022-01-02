@@ -538,6 +538,14 @@ class Engine:
                 and (move not in enemy_positions)   # does not hit enemy
             )
         ]
+
+        # Remove movement where enemy is blocking the straight path
+        moves = [
+            move for move in moves if not (
+                (move[1] - position[1] != 0) and (move[0] - position[0] == 0)    # is straight move
+                and (move in enemy_positions)                                    # hits enemy
+            )
+        ]
         return moves
 
     def rook_rules(self, piece: Type[AbstractChessPiece]):

@@ -113,3 +113,47 @@ def test_pawn_killer_move(config_path):
 
     # See that forward move is there
     assert (4, 5) in moves
+
+
+def test_pawn_enemy_blocking(config_path):
+    """
+    Test that pawn is blocked by enemy
+    if enemy unit is on the straight path.
+    """
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    # See that board is empty
+    assert len(engine.pieces['white']) == 0
+    assert len(engine.pieces['black']) == 0
+
+    # Spawn white pawn
+    engine.spawn_piece(
+        piece_nr=1,
+        position=(4, 4)
+    )
+
+    # Spawn black pawn
+    engine.spawn_piece(
+        piece_nr=7,
+        position=(4, 5)
+    )
+
+    # See that one white pawn is spawned
+    assert len(engine.pieces['white']) == 1
+
+    # See that black white pawn is spawned
+    assert len(engine.pieces['black']) == 1
+
+    white_pawn_4_4 = engine.pieces['white'][0]
+    black_pawn_4_5 = engine.pieces['black'][0]
+
+    # See that first white pawn is blocked
+    moves_4_4 = engine.apply_game_rules(white_pawn_4_4)
+    assert white_pawn_4_4.position == (4, 4)
+    assert len(moves_4_4) == 0
+
+    # See that black pawn is also blocked
+    moves_4_5 = engine.apply_game_rules(black_pawn_4_5)
+    assert black_pawn_4_5.position == (4, 5)
+    assert len(moves_4_5) == 0
