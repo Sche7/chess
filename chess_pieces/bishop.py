@@ -1,20 +1,7 @@
-from typing import Tuple
-from chess_pieces import ChessPiece
-from chess_pieces.schema import Color, Group
+from chess_pieces import AbstractChessPiece
 
 
-class Bishop(ChessPiece):
-    def __init__(
-        self,
-        position: Tuple,
-        group: Group,
-        color: Color
-    ):
-        super().__init__(
-            position=position,
-            group=group,
-            color=color
-        )
+class Bishop(AbstractChessPiece):
 
     @property
     def moves(self):

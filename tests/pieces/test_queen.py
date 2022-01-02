@@ -24,6 +24,7 @@ def test_queen_moves_lower_0_0():
 
     queen = Queen(
         position=(0, 0),
+        piece_nr=5,
         group=Group.lower,
         color=Color.white
     )
@@ -61,6 +62,7 @@ def test_queen_moves_lower_4_4():
 
     queen = Queen(
         position=(4, 4),
+        piece_nr=5,
         group=Group.lower,
         color=Color.white
     )
@@ -96,6 +98,7 @@ def test_queen_moves_lower_7_7():
 
     queen = Queen(
         position=(7, 7),
+        piece_nr=5,
         group=Group.lower,
         color=Color.white
     )

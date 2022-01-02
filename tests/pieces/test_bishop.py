@@ -12,6 +12,7 @@ def test_pawn_bishop_lower_0_0():
 
     bishop = Bishop(
         position=(0, 0),
+        piece_nr=4,
         group=Group.lower,
         color=Color.white
     )
@@ -36,6 +37,7 @@ def test_pawn_bishop_lower_4_4():
     ]
     bishop = Bishop(
         position=(4, 4),
+        piece_nr=4,
         group=Group.lower,
         color=Color.white
     )
@@ -59,6 +61,7 @@ def test_pawn_bishop_lower_7_7():
 
     bishop = Bishop(
         position=(7, 7),
+        piece_nr=4,
         group=Group.lower,
         color=Color.white
     )

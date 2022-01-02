@@ -1,4 +1,4 @@
-from chess_pieces import ChessPiece
+from chess_pieces import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
 from typing import Dict, List, Type, Optional, Tuple
@@ -44,6 +44,7 @@ class Engine:
     def create_piece(self, piece_nr: int, position: tuple) -> None:
         kwargs = {
             'position': position,
+            'piece_nr': piece_nr
         }
         # TODO: Eventually make it possible to
         # open game with lower/upper options
@@ -165,7 +166,7 @@ class Engine:
             self.pieces.get(switch[self.player_turn])
         ]
 
-    def apply_game_rules(self, piece: Type[ChessPiece]) -> list:
+    def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
 
         if piece.name == 'Pawn':
             moves = self.pawn_rules(piece=piece)
@@ -184,7 +185,7 @@ class Engine:
 
         return moves
 
-    def get_piece_by_id(self, id: int, player: str) -> Type[ChessPiece]:
+    def get_piece_by_id(self, id: int, player: str) -> Type[AbstractChessPiece]:
         """
         Get piece in game by instance ID.
 
@@ -500,7 +501,7 @@ class Engine:
 
         return output
 
-    def pawn_rules(self, piece: Type[ChessPiece]):
+    def pawn_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
         position = piece.position
         start_positions = {
@@ -539,29 +540,29 @@ class Engine:
         ]
         return moves
 
-    def rook_rules(self, piece: Type[ChessPiece]):
+    def rook_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_straight_path(
             start_position=piece.position,
             moves=piece.get_applied_moves()
         )
         return moves
 
-    def knight_rules(self, piece: Type[ChessPiece]):
+    def knight_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves)
 
-    def bishop_rules(self, piece: Type[ChessPiece]):
+    def bishop_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_diagonal_path(
             start_position=piece.position,
             moves=piece.get_applied_moves()
         )
         return moves
 
-    def king_rules(self, piece: Type[ChessPiece]):
+    def king_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves)
 
-    def queen_rules(self, piece: Type[ChessPiece]):
+    def queen_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves)
 

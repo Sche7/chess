@@ -12,8 +12,9 @@ def test_king_moves_lower_1_1():
     ]
     king = King(
         position=(1, 1),
+        piece_nr=6,
         group=Group.lower,
-        color=Color.white
+        color=Color.white,
     )
 
     # Make sure grid size is 8 when testing
@@ -30,6 +31,7 @@ def test_king_moves_lower_0_0():
     expected_applied_moves = [(0, 1), (1, 0), (1, 1)]
     king = King(
         position=(0, 0),
+        piece_nr=6,
         group=Group.lower,
         color=Color.white
     )
@@ -48,6 +50,7 @@ def test_king_moves_lower_7_7():
     expected_applied_moves = [(7, 6), (6, 7), (6, 6)]
     king = King(
         position=(7, 7),
+        piece_nr=6,
         group=Group.lower,
         color=Color.white
     )

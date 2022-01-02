@@ -14,6 +14,7 @@ def test_pawn_rook_lower_0_0():
 
     rook = Rook(
         position=(0, 0),
+        piece_nr=2,
         group=Group.lower,
         color=Color.white
     )
@@ -38,6 +39,7 @@ def test_pawn_rook_lower_4_4():
     ]
     rook = Rook(
         position=(4, 4),
+        piece_nr=2,
         group=Group.lower,
         color=Color.white
     )
@@ -62,6 +64,7 @@ def test_pawn_rook_lower_7_7():
     ]
     rook = Rook(
         position=(7, 7),
+        piece_nr=2,
         group=Group.lower,
         color=Color.white
     )

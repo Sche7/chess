@@ -11,6 +11,7 @@ def test_pawn_moves_lower_1_1():
     ]
     pawn = Pawn(
         position=(1, 1),
+        piece_nr=1,
         group=Group.lower,
         color=Color.white
     )
@@ -31,6 +32,7 @@ def test_pawn_moves_lower_4_5():
     ]
     pawn = Pawn(
         position=(4, 5),
+        piece_nr=1,
         group=Group.lower,
         color=Color.white
     )
@@ -48,6 +50,7 @@ def test_pawn_moves_lower_4_5():
 def test_pawn_moves_lower_7_7():
     pawn = Pawn(
         position=(7, 7),
+        piece_nr=1,
         group=Group.lower,
         color=Color.white
     )
@@ -66,6 +69,7 @@ def test_pawn_moves_upper_1_1():
     ]
     pawn = Pawn(
         position=(1, 1),
+        piece_nr=7,
         group=Group.upper,
         color=Color.black
     )
@@ -86,6 +90,7 @@ def test_pawn_moves_upper_4_5():
     ]
     pawn = Pawn(
         position=(4, 5),
+        piece_nr=7,
         group=Group.upper,
         color=Color.black
     )
@@ -106,6 +111,7 @@ def test_pawn_moves_upper_7_7():
     ]
     pawn = Pawn(
         position=(7, 7),
+        piece_nr=7,
         group=Group.upper,
         color=Color.black
     )
@@ -122,6 +128,7 @@ def test_pawn_moves_upper_7_7():
 def test_pawn_moves_exception():
     pawn = Pawn(
         position=(8, 8),
+        piece_nr=7,
         group='not working',
         color=Color.black
     )

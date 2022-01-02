@@ -1,27 +1,34 @@
+from abc import abstractmethod, ABC
 from typing import Tuple
 from chess_pieces.schema import Color, Group
 
 
-class ChessPiece(object):
-    # Grid size of a chess board
-    grid_size = 8
+class AbstractChessPiece(ABC):
+    """
+    Abstract class for chess pieces
+    """
+
+    grid_size = 8  # Grid size of a chess board
+    status = 1  # Status of chess piece: Alive [1] or dead [0]
 
     def __init__(
         self,
         position: Tuple,
+        piece_nr: int,
         group: Group,
         color: Color
     ):
         self.position = position
+        self.piece_nr = piece_nr
         self.group = group
         self.color = color
-        self.status = 1
         self.name = self.__class__.__name__
         self.id = id(self)
 
     @property
-    def moves():
-        pass
+    @abstractmethod
+    def moves(self):
+        raise NotImplementedError("'moves' method not implemented")
 
     def is_inside_grid(self, position: Tuple):
         return (
