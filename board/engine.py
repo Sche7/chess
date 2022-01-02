@@ -2,7 +2,6 @@ from chess_pieces import ChessPiece
 import numpy as np
 from nptyping import NDArray
 from typing import Dict, List, Type, Optional, Tuple
-
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
 from chess_pieces.bishop import Bishop
@@ -70,7 +69,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: NDArray) -> Dict[list, list]:
+    def initiate_pieces(self, board: NDArray) -> Dict[str, list]:
         """
         Method used to initiate and keep track of position
         of each piece in the game.
@@ -124,11 +123,31 @@ class Engine:
     def check_game_state(self):
         pass
 
-    def update_game_state(self, board: NDArray) -> None:
-        pass
+    def handle_game(self, player_input: dict) -> None:
+        """
+        Method for making updates according to player input.
+        """
 
-    def handle_game(self, player_input) -> None:
-        pass
+        if not player_input:
+            self.game_over = True
+            print(f'Player {self.player_turn} surrendered. Game over.')
+            return
+
+        piece_id = player_input.get('id')
+        action = player_input.get('action')
+        piece = self.get_piece_by_id(
+            id=piece_id,
+            player=self.player_turn
+        )
+        old_position = piece.position
+
+        # Update piece position
+        piece.set_position(position=action)
+
+        # Update board
+        piece_nr = self.game_state[old_position]
+        self.game_state[old_position] = 0
+        self.game_state[action] = piece_nr
 
     def get_ally_positions(self):
         return [
@@ -187,6 +206,10 @@ class Engine:
 
         return piece[0]
 
+    def update_piece_by_id(self, id, player: str, action: tuple) -> None:
+        piece = self.get_piece_by_id(id, player)
+        piece.update(move=action)
+
     def get_possible_actions(self, id: int) -> List[tuple]:
         """
         Get all possible actions on specific chess piece
@@ -211,10 +234,21 @@ class Engine:
         the active player.
         For example:
             {
-                'Rook (0, 0)': [],
-                'Pawn (0, 1)': [(0, 2), (0, 3)],
-                'Knight (1, 0)': [(2, 2), (0, 2)],
-                'King (4, 0)': []
+                'Rook (0, 0)': {
+                    'actions': [],
+                    'id': 1234
+                }
+                'Pawn (0, 1)': {
+                    'actions': [(0, 2), (0, 3)],
+                    'id': 2345
+                },
+                'Knight (1, 0)': {
+                    'actions': [(2, 2), (0, 2)],
+                    'id': 3456
+                },
+                'King (4, 0)': {
+                    'actions': [],
+                    'id': 4567
             }
 
         """
@@ -222,7 +256,10 @@ class Engine:
         all_piece_actions = dict()
         for piece in player_pieces:
             name = f'{piece.name} {piece.position}'
-            all_piece_actions[name] = self.get_possible_actions(id=piece.id)
+            all_piece_actions[name] = {
+                'actions': self.get_possible_actions(id=piece.id),
+                'id': piece.id
+            }
         return all_piece_actions
 
     def switch_turn(self) -> None:
@@ -485,7 +522,8 @@ class Engine:
 
         color = piece.color.name
         # If pawn is not in starting position, then remove double jump
-        if position not in start_positions[color]:
+        if (position not in start_positions[color] and
+                double_jump[color] in moves):
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing
@@ -524,7 +562,8 @@ class Engine:
         return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[ChessPiece]):
-        pass
+        moves = piece.get_applied_moves()
+        return self._remove_ally_positions(moves)
 
     def initiate_empty_board(self, grid_size: Optional[int] = 8) -> None:
         """
