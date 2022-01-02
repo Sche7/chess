@@ -94,43 +94,50 @@ class TerminalView(View):
                 action: New position for specififed chess piece
             returns empty dict if player surrenders.
         """
-        choices, terminal_menu = self.menu(possible_actions)
+        choices, main_menu = self.menu(possible_actions)
         exit = False
 
         while not exit:
-            # Display menu
-            option_index = terminal_menu.show()
+            # Display main menu
+            main_option_index = main_menu.show()
 
             # Get chosen option
-            option_choice = choices[option_index]
+            main_option_selected = choices[main_option_index]
 
-            # Handle chose of option.
-            if (option_choice == '[g] Give up'):
+            # Handle choice of option.
+            if (main_option_selected == '[g] Give up'):
+                # if player gives up, then exit while-loop
                 exit = True
             else:
-                # Retrieve chess piece information
-                actions = possible_actions[option_choice].get('actions')
-                chess_piece_id = possible_actions[option_choice].get('id')
+                # Retrieve information from player input
+                actions = possible_actions[main_option_selected].get('actions')
+                chess_piece_id = possible_actions[main_option_selected].get('id')
 
-                # Prepare options for submenu
-                sub_options = [
-                    str(opt) for opt in
-                    actions
-                ]
+                # Prepare options for submenu.
+                # This submenu will show possible actions for the selected
+                # chess piece.
+                # Make sure options are of type string, otherwise TerminalMenu
+                # will complain.
+                sub_options = [str(opt) for opt in actions]
+
+                # Append option to go back to main menu where user can reselect
+                # chess piece.
                 sub_options.append('[b] Go Back')
 
                 # Initiate sub menu that displays possible actions
                 # for a chess piece.
                 sub_menu = TerminalMenu(
                     sub_options,
-                    title=f'Where would you like to move {option_choice}?'
+                    title=f'Where would you like to move {main_option_selected}?'
                 )
                 sub_option_index = sub_menu.show()
 
                 # Get chosen option for chess piece
-                sub_option_choice = sub_options[sub_option_index]
+                sub_option_selected = sub_options[sub_option_index]
 
-                if (sub_option_choice != '[b] Go Back'):
+                # NOTE: No action for sub option '[b] Go Back'.
+                # by default this works like a 'step back' to main menu.
+                if (sub_option_selected != '[b] Go Back'):
                     return {
                         'id': chess_piece_id,
                         'action': actions[sub_option_index]
