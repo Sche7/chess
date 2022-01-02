@@ -105,10 +105,11 @@ class TerminalView(View):
         for piece_type, pieces in possible_actions.items():
             for piece in pieces:
                 position = piece.get('position')
+                representation = self.representation.get(piece.get('piece_nr'))
                 if convert_indices:
                     position = self._convert_cell_index(position)
 
-                name = f'{piece_type} {position}'
+                name = f'{representation} {piece_type} {position}'
                 output[name] = piece
         return output
 

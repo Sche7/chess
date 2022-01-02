@@ -207,10 +207,6 @@ class Engine:
 
         return piece[0]
 
-    def update_piece_by_id(self, id, player: str, action: tuple) -> None:
-        piece = self.get_piece_by_id(id, player)
-        piece.update(move=action)
-
     def get_possible_actions(self, id: int) -> List[tuple]:
         """
         Get all possible actions on specific chess piece
@@ -238,26 +234,31 @@ class Engine:
                 'Rook': [{
                     'actions': [],
                     'position': (0, 0),
-                    'id': 1234
+                    'id': 1234,
+                    'piece_type': 2
                 }],
                 'Pawn': [{
                     'actions': [(0, 2), (0, 3)],
                     'position': (0, 1)
                     'id': 2345
+                    'piece_nr': 1
                 }, {
                     'actions': [(1, 2), (1, 3)],
                     'position': (1, 1)
-                    'id': 2347
+                    'id': 2347,
+                    'piece_nr': 1
                 }],
                 'Knight': [{
                     'actions': [(2, 2), (0, 2)],
                     'position': (1, 0)
-                    'id': 3456
+                    'id': 3456,
+                    'piece_nr': 3
                 }],
                 'King': [{
                     'actions': [],
                     'position': (4, 0)
-                    'id': 4567
+                    'id': 4567,
+                    'piece_nr': 6
                 }]
             }
 
@@ -271,7 +272,8 @@ class Engine:
             piece_info = {
                     'actions': self.get_possible_actions(id=piece.id),
                     'id': piece.id,
-                    'position': piece.position
+                    'position': piece.position,
+                    'piece_nr': piece.piece_nr
                 }
 
             # If key is already created, then append to

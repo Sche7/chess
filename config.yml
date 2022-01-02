@@ -24,16 +24,16 @@ GAME_START:
 
 PIECE_REPRESENTATION:
   0: ' '   # Empty tiles 
-  1: 'P'   # White Pawn
-  2: 'R'   # White Rook
-  3: 'N'   # White Knight
-  4: 'B'   # White Bishop
-  5: 'Q'   # White Queen
-  6: 'K'   # White King
-  7: 'p'   # Black Pawn
-  8: 'r'   # Black Rook
-  9: 'n'   # Black Knight
-  10: 'b'  # Black Bishop
-  11: 'q'  # Black Queen
-  12: 'k'  # Black King
+  1: '♟'   # White Pawn
+  2: '♜'   # White Rook
+  3: '♞'   # White Knight
+  4: '♝'   # White Bishop
+  5: '♛'   # White Queen
+  6: '♚'   # White King
+  7: '♙'   # Black Pawn
+  8: '♖'   # Black Rook
+  9: '♘'   # Black Knight
+  10: '♗'  # Black Bishop
+  11: '♕'  # Black Queen
+  12: '♔'  # Black King
   13: '+'  # Possible moves
