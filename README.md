@@ -6,4 +6,4 @@ The game is still under development. Current progress:
 
 Here is a sneak peak to how the game will work in the CLI (January 2, 2022):
 
-![image](https://user-images.githubusercontent.com/51048135/147889529-6924955e-770e-4c89-b9ca-44fa452a6ecb.png)
+![AnimationSkak](https://user-images.githubusercontent.com/51048135/147890366-43fe6e1e-4e33-449d-b684-5ab605037458.gif)
