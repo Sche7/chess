@@ -20,6 +20,9 @@ White                        Black
 
 from nptyping import NDArray
 from typing import Tuple
+from string import ascii_lowercase
+import numpy as np
+
 from board.view import View
 from simple_term_menu import TerminalMenu
 
@@ -36,6 +39,10 @@ class TerminalView(View):
 
     def generate_view(self, board: NDArray) -> str:
         grid_size = len(board)
+        copied_board = board.copy()
+
+        # Rotate board to create better view
+        copied_board = np.rot90(copied_board, k=5)
 
         line = f'{(grid_size*4+5)*"-"}\n'
 
@@ -47,16 +54,16 @@ class TerminalView(View):
             output.append(line)
 
         # First row
-        for j in range(grid_size):
+        for j in [ascii_lowercase[i] for i in range(grid_size)]:
             output.append(f"| {j} ")
         divider()
 
         # Other rows
-        for i in range(grid_size-1, -1, -1):
-            output.append(f"{i} ")
+        for i in range(0, grid_size, 1):
+            output.append(f"{grid_size - i} ")
             for j in range(grid_size):
                 output.append(
-                    f"| {self.representation.get(board[i, j])} "
+                    f"| {self.representation.get(copied_board[i, j])} "
                 )
             divider()
         return "".join(output)
@@ -70,6 +77,40 @@ class TerminalView(View):
 
     def display_player_turn(self, player: str) -> None:
         print(f'It is {player}´s turn to make a move')
+
+    def _convert_cell_index(self, index_tuple: Tuple[int, int]) -> Tuple[int, str]:
+        """
+        Converts numpy cell indices to their respective
+        readable representation.
+        For example:
+            (0, 1) -> (a, 2)
+            (2, 4) -> (c, 5)
+
+        """
+        x = ascii_lowercase[index_tuple[0]]
+        y = index_tuple[1] + 1
+        return (x, y)
+
+    def unwrap_possible_actions(
+        self,
+        possible_actions,
+        convert_indices=False
+    ) -> dict:
+        """
+        Convenience method for unwrapping possible actions output
+        from engine.
+        """
+        output = {}
+        # Unwrap information
+        for piece_type, pieces in possible_actions.items():
+            for piece in pieces:
+                position = piece.get('position')
+                if convert_indices:
+                    position = self._convert_cell_index(position)
+
+                name = f'{piece_type} {position}'
+                output[name] = piece
+        return output
 
     def menu(self, possible_actions) -> Tuple[list, TerminalMenu]:
         """
@@ -94,7 +135,13 @@ class TerminalView(View):
                 action: New position for specififed chess piece
             returns empty dict if player surrenders.
         """
-        choices, main_menu = self.menu(possible_actions)
+        # Unwrap information
+        unwrapped_actions = self.unwrap_possible_actions(
+            possible_actions=possible_actions,
+            convert_indices=True
+        )
+
+        choices, main_menu = self.menu(unwrapped_actions)
         exit = False
 
         while not exit:
@@ -110,15 +157,16 @@ class TerminalView(View):
                 exit = True
             else:
                 # Retrieve information from player input
-                actions = possible_actions[main_option_selected].get('actions')
-                chess_piece_id = possible_actions[main_option_selected].get('id')
+                actions = unwrapped_actions[main_option_selected].get('actions')
+                chess_piece_id = unwrapped_actions[main_option_selected].get('id')
 
                 # Prepare options for submenu.
                 # This submenu will show possible actions for the selected
                 # chess piece.
-                # Make sure options are of type string, otherwise TerminalMenu
-                # will complain.
-                sub_options = [str(opt) for opt in actions]
+                # Make sure options are converted to the right indices
+                sub_options = [
+                    str(self._convert_cell_index(opt)) for opt in actions
+                ]
 
                 # Append option to go back to main menu where user can reselect
                 # chess piece.
