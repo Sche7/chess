@@ -108,8 +108,9 @@ class TerminalView(View):
                 representation = self.representation.get(piece.get('piece_nr'))
                 if convert_indices:
                     position = self._convert_cell_index(position)
+                    position_str = f'({position[0]}, {position[1]})'
 
-                name = f'{representation} {piece_type} {position}'
+                name = f'{representation} {piece_type} {position_str}'
                 output[name] = piece
         return output
 
