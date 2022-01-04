@@ -125,6 +125,16 @@ class TerminalView(View):
 
         return choices, TerminalMenu(choices)
 
+    def initialize_dialog(self, title: str, options: list) -> Tuple[str, int]:
+        menu = TerminalMenu(
+                options,
+                title=title
+            )
+        option_index = menu.show()
+        option_selected = options[option_index]
+
+        return option_selected, option_index
+
     def await_input(self, possible_actions: dict) -> dict:
         """
         Method for showing console menu that awaits
@@ -155,8 +165,15 @@ class TerminalView(View):
 
             # Handle choice of option.
             if (main_option_selected == '[g] Give up'):
-                # if player gives up, then exit while-loop
-                exit = True
+
+                # Extra safeguard from accidentally giving up
+                surrender_option_selected, _ = self.initialize_dialog(
+                    title='Are you sure you want to surrender?',
+                    options=['No', 'Yes']
+                )
+                if surrender_option_selected == 'Yes':
+                    # if player gives up, then exit while-loop
+                    exit = True
             else:
                 # Retrieve information from player input
                 actions = unwrapped_actions[main_option_selected].get('actions')
@@ -176,14 +193,10 @@ class TerminalView(View):
 
                 # Initiate sub menu that displays possible actions
                 # for a chess piece.
-                sub_menu = TerminalMenu(
-                    sub_options,
+                sub_option_selected, sub_option_index = self.initialize_dialog(
+                    options=sub_options,
                     title=f'Where would you like to move {main_option_selected}?'
                 )
-                sub_option_index = sub_menu.show()
-
-                # Get chosen option for chess piece
-                sub_option_selected = sub_options[sub_option_index]
 
                 # NOTE: No action for sub option '[b] Go Back'.
                 # by default this works like a 'step back' to main menu.
