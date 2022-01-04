@@ -593,8 +593,17 @@ class Engine:
         return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
-        moves = piece.get_applied_moves()
-        return self._remove_ally_positions(moves)
+        straight_moves = self.handle_blocked_straight_path(
+            start_position=piece.position,
+            moves=piece.get_applied_moves()
+        )
+
+        vertical_moves = self.handle_blocked_diagonal_path(
+            start_position=piece.position,
+            moves=piece.get_applied_moves()
+        )
+
+        return straight_moves + vertical_moves
 
     def initiate_empty_board(self, grid_size: Optional[int] = 8) -> None:
         """
