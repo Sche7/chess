@@ -194,8 +194,8 @@ class TerminalView(View):
                 # Initiate sub menu that displays possible actions
                 # for a chess piece.
                 sub_option_selected, sub_option_index = self.initialize_dialog(
-                    options=sub_options,
-                    title=f'Where would you like to move {main_option_selected}?'
+                    title=f'Where would you like to move {main_option_selected}?',
+                    options=sub_options
                 )
 
                 # NOTE: No action for sub option '[b] Go Back'.
