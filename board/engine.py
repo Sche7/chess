@@ -151,19 +151,25 @@ class Engine:
         self.game_state[action] = piece_nr  # move chess piece to new position
 
     def get_ally_positions(self):
+        """
+        Collect positions of alive ally pieces
+        """
         return [
             piece.position for piece in
-            self.pieces.get(self.player_turn)
+            self.pieces.get(self.player_turn) if piece.status
         ]
 
     def get_enemy_positions(self):
+        """
+        Collect positions of alive enemy pieces
+        """
         switch = {
             'white': 'black',
             'black': 'white'
         }
         return [
             piece.position for piece in
-            self.pieces.get(switch[self.player_turn])
+            self.pieces.get(switch[self.player_turn]) if piece.status
         ]
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
