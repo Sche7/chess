@@ -13,6 +13,12 @@ from chess_pieces.schema import Color, Group
 
 
 class Engine:
+
+    switch = {
+        'white': 'black',
+        'black': 'white'
+    }
+
     def __init__(self, config_path: str):
         self.config = read_yaml(config_path)
         self.representation = self.config['PIECE_REPRESENTATION']
@@ -150,6 +156,31 @@ class Engine:
         self.game_state[old_position] = 0   # empty old position
         self.game_state[action] = piece_nr  # move chess piece to new position
 
+        # Kill enemy piece if new position hits an enemy
+        enemy_pieces = self.get_enemy_pieces()
+        for enemy_piece in enemy_pieces:
+            if enemy_piece.position == action:
+                # if true then kill enemy and update board
+                enemy_piece.kill()
+
+    def get_enemy_pieces(self):
+        """
+        Collect alive enemy pieces
+        """
+        return [
+            piece for piece in
+            self.pieces.get(self.switch[self.player_turn]) if piece.status
+        ]
+
+    def get_ally_pieces(self):
+        """
+        Collect alive ally pieces
+        """
+        return [
+            piece for piece in
+            self.pieces.get(self.player_turn) if piece.status
+        ]
+
     def get_ally_positions(self):
         """
         Collect positions of alive ally pieces
@@ -163,13 +194,10 @@ class Engine:
         """
         Collect positions of alive enemy pieces
         """
-        switch = {
-            'white': 'black',
-            'black': 'white'
-        }
+
         return [
             piece.position for piece in
-            self.pieces.get(switch[self.player_turn]) if piece.status
+            self.pieces.get(self.switch[self.player_turn]) if piece.status
         ]
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
@@ -269,7 +297,7 @@ class Engine:
             }
 
         """
-        player_pieces = self.pieces.get(self.player_turn)
+        player_pieces = self.get_ally_pieces()
         all_piece_actions = dict()
         for piece in player_pieces:
 
@@ -292,11 +320,7 @@ class Engine:
         return all_piece_actions
 
     def switch_turn(self) -> None:
-        switch = {
-            'white': 'black',
-            'black': 'white'
-        }
-        self.player_turn = switch[self.player_turn]
+        self.player_turn = self.switch[self.player_turn]
 
     def _get_pieces(self, name: str, pieces: list):
         """
