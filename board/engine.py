@@ -620,6 +620,17 @@ class Engine:
 
     def king_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
+
+        enemy_pieces = self.get_enemy_pieces()
+
+        enemy_moves = []
+        for enemy_piece in enemy_pieces:
+            enemy_moves.extend(enemy_piece.get_applied_moves())
+
+        moves = [
+            move for move in moves if move not in enemy_moves
+        ]
+
         return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
