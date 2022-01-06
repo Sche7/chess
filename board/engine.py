@@ -623,11 +623,13 @@ class Engine:
         return self._remove_ally_positions(moves)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
+        # Get the straight pathing that is legally allowed
         straight_moves = self.handle_blocked_straight_path(
             start_position=piece.position,
             moves=piece.get_applied_moves()
         )
 
+        # Get the diagonal pathing that is legally allowed
         vertical_moves = self.handle_blocked_diagonal_path(
             start_position=piece.position,
             moves=piece.get_applied_moves()
