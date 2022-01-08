@@ -181,17 +181,17 @@ class Engine:
             self.pieces.get(self.player_turn) if piece.status
         ]
 
-    def get_ally_positions(self, piece: Type[AbstractChessPiece]):
+    def get_ally_positions(self, color: Color):
         """
         Collect positions of alive ally pieces relative to
         the input piece.
         """
         return [
             piece.position for piece in
-            self.pieces.get(piece.color.name) if piece.status
+            self.pieces.get(color.name) if piece.status
         ]
 
-    def get_enemy_positions(self, piece: Type[AbstractChessPiece]):
+    def get_enemy_positions(self, color: Color):
         """
         Collect positions of alive enemy pieces relative to
         the input piece.
@@ -199,7 +199,7 @@ class Engine:
 
         return [
             piece.position for piece in
-            self.pieces.get(self.switch[piece.color.name]) if piece.status
+            self.pieces.get(self.switch[color.name]) if piece.status
         ]
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
@@ -333,11 +333,11 @@ class Engine:
             if piece.name.lower() == name.lower()
         ]
 
-    def _remove_ally_positions(self, moves: list, piece: Type[AbstractChessPiece]) -> list:
+    def _remove_ally_positions(self, moves: list, color: Color) -> list:
         """
         Removes moves where allies are standing relative to input piece
         """
-        ally_positions = self.get_ally_positions(piece=piece)
+        ally_positions = self.get_ally_positions(color=color)
         moves = [
             move for move in moves if move not in ally_positions
         ]
@@ -347,7 +347,7 @@ class Engine:
         self,
         start_position: tuple,
         move: tuple,
-        piece: Type[AbstractChessPiece]
+        color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -356,7 +356,7 @@ class Engine:
         x = start_position[0]
         ally_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_ally_positions(piece=piece)
+            moves=self.get_ally_positions(color=color)
         )
         # Remove the starting position itself
         ally_horizontal = [
@@ -365,7 +365,7 @@ class Engine:
 
         enemy_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions(piece=piece)
+            moves=self.get_enemy_positions(color=color)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -383,7 +383,7 @@ class Engine:
         self,
         start_position: tuple,
         move: tuple,
-        piece: Type[AbstractChessPiece]
+        color: Color
     ):
         """
         Checks whether move is legal based on position
@@ -392,7 +392,7 @@ class Engine:
         y = start_position[1]
         ally_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_ally_positions(piece=piece)
+            moves=self.get_ally_positions(color=color)
         )
         # Remove the starting position itself
         ally_vertical = [
@@ -401,7 +401,7 @@ class Engine:
 
         enemy_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions(piece=piece)
+            moves=self.get_enemy_positions(color=color)
         )
         not_walk_through_allies = all([
             ((pos[1] > move[1]) and (pos[1] > y)) or   # Up
@@ -440,7 +440,7 @@ class Engine:
             if self.horizontal_move_is_legal(
                 start_position=start_position,
                 move=move,
-                piece=piece
+                color=piece.color
             ):
                 output.append(move)
         # Vertical
@@ -448,7 +448,7 @@ class Engine:
             if self.vertical_move_is_legal(
                 start_position=start_position,
                 move=move,
-                piece=piece
+                color=piece.color
             ):
                 output.append(move)
 
@@ -467,7 +467,7 @@ class Engine:
         x = start_position[0]
         ally_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_ally_positions(piece=piece)
+            moves=self.get_ally_positions(color=piece.color)
         )
         # Remove the starting position itself
         ally_incline = [
@@ -476,7 +476,7 @@ class Engine:
 
         enemy_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_enemy_positions(piece=piece)
+            moves=self.get_enemy_positions(color=piece.color)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -503,7 +503,7 @@ class Engine:
         x = start_position[0]
         ally_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_ally_positions(piece=piece)
+            moves=self.get_ally_positions(color=piece.color)
         )
         # Remove the starting position itself
         ally_decline = [
@@ -512,7 +512,7 @@ class Engine:
 
         enemy_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_enemy_positions(piece=piece)
+            moves=self.get_enemy_positions(color=piece.color)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -592,10 +592,10 @@ class Engine:
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing
-        moves = self._remove_ally_positions(moves, piece=piece)
+        moves = self._remove_ally_positions(moves, color=piece.color)
 
         # Diagonal movement only if enemy is there
-        enemy_positions = self.get_enemy_positions(piece=piece)
+        enemy_positions = self.get_enemy_positions(color=piece.color)
         moves = [
             move for move in moves if not (
                 (move[0] - position[0] != 0)        # is diagonal move
@@ -621,7 +621,7 @@ class Engine:
 
     def knight_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
-        return self._remove_ally_positions(moves, piece=piece)
+        return self._remove_ally_positions(moves, color=piece.color)
 
     def bishop_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_diagonal_path(
@@ -651,7 +651,7 @@ class Engine:
             move for move in moves if move not in enemy_moves
         ]
 
-        return self._remove_ally_positions(moves, piece=piece)
+        return self._remove_ally_positions(moves, color=piece.color)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
         # Get the straight pathing that is legally allowed
