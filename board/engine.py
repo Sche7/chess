@@ -640,7 +640,8 @@ class Engine:
             # Pawn: Has a kill-move only if an enemy is diagonal to it.
             #       The kill-move will not be apparent if we apply game rules.
             # King: Not neccesary to apply game rules on enemy king piece.
-            #       This is also impossible because of infinite nesting funcitons.
+            #       king_rules, will also become an infinite nested function
+            #       if we apply game rules to the kings.
             if enemy_piece.name not in ['King', 'Pawn']:
                 enemy_moves.extend(self.apply_game_rules(piece=enemy_piece))
             else:
