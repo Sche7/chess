@@ -181,23 +181,25 @@ class Engine:
             self.pieces.get(self.player_turn) if piece.status
         ]
 
-    def get_ally_positions(self):
+    def get_ally_positions(self, piece: Type[AbstractChessPiece]):
         """
-        Collect positions of alive ally pieces
+        Collect positions of alive ally pieces relative to
+        the input piece.
         """
         return [
             piece.position for piece in
-            self.pieces.get(self.player_turn) if piece.status
+            self.pieces.get(piece.color.name) if piece.status
         ]
 
-    def get_enemy_positions(self):
+    def get_enemy_positions(self, piece: Type[AbstractChessPiece]):
         """
-        Collect positions of alive enemy pieces
+        Collect positions of alive enemy pieces relative to
+        the input piece.
         """
 
         return [
             piece.position for piece in
-            self.pieces.get(self.switch[self.player_turn]) if piece.status
+            self.pieces.get(self.switch[piece.color.name]) if piece.status
         ]
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
@@ -331,11 +333,11 @@ class Engine:
             if piece.name.lower() == name.lower()
         ]
 
-    def _remove_ally_positions(self, moves: list) -> list:
+    def _remove_ally_positions(self, moves: list, piece: Type[AbstractChessPiece]) -> list:
         """
-        Removes moves where allies are standing
+        Removes moves where allies are standing relative to input piece
         """
-        ally_positions = self.get_ally_positions()
+        ally_positions = self.get_ally_positions(piece=piece)
         moves = [
             move for move in moves if move not in ally_positions
         ]
@@ -344,7 +346,8 @@ class Engine:
     def horizontal_move_is_legal(
         self,
         start_position: tuple,
-        move: tuple
+        move: tuple,
+        piece: Type[AbstractChessPiece]
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -353,7 +356,7 @@ class Engine:
         x = start_position[0]
         ally_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_ally_positions()
+            moves=self.get_ally_positions(piece=piece)
         )
         # Remove the starting position itself
         ally_horizontal = [
@@ -362,7 +365,7 @@ class Engine:
 
         enemy_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions()
+            moves=self.get_enemy_positions(piece=piece)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -379,7 +382,8 @@ class Engine:
     def vertical_move_is_legal(
         self,
         start_position: tuple,
-        move: tuple
+        move: tuple,
+        piece: Type[AbstractChessPiece]
     ):
         """
         Checks whether move is legal based on position
@@ -388,7 +392,7 @@ class Engine:
         y = start_position[1]
         ally_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_ally_positions()
+            moves=self.get_ally_positions(piece=piece)
         )
         # Remove the starting position itself
         ally_vertical = [
@@ -397,7 +401,7 @@ class Engine:
 
         enemy_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions()
+            moves=self.get_enemy_positions(piece=piece)
         )
         not_walk_through_allies = all([
             ((pos[1] > move[1]) and (pos[1] > y)) or   # Up
@@ -414,11 +418,12 @@ class Engine:
     def handle_blocked_straight_path(
         self,
         start_position: tuple,
-        moves: list
+        piece: Type[AbstractChessPiece]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the straight path
         """
+        moves = piece.get_applied_moves()
         output = []
 
         vertical_moves = self.get_vertical_moves(
@@ -434,14 +439,16 @@ class Engine:
         for move in horizontal_moves:
             if self.horizontal_move_is_legal(
                 start_position=start_position,
-                move=move
+                move=move,
+                piece=piece
             ):
                 output.append(move)
         # Vertical
         for move in vertical_moves:
             if self.vertical_move_is_legal(
                 start_position=start_position,
-                move=move
+                move=move,
+                piece=piece
             ):
                 output.append(move)
 
@@ -450,7 +457,8 @@ class Engine:
     def diagonal_incline_move_is_legal(
         self,
         start_position: tuple,
-        move: tuple
+        move: tuple,
+        piece: Type[AbstractChessPiece]
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -459,7 +467,7 @@ class Engine:
         x = start_position[0]
         ally_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_ally_positions()
+            moves=self.get_ally_positions(piece=piece)
         )
         # Remove the starting position itself
         ally_incline = [
@@ -468,7 +476,7 @@ class Engine:
 
         enemy_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_enemy_positions()
+            moves=self.get_enemy_positions(piece=piece)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -485,7 +493,8 @@ class Engine:
     def diagonal_decline_move_is_legal(
         self,
         start_position: tuple,
-        move: tuple
+        move: tuple,
+        piece: Type[AbstractChessPiece]
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -494,7 +503,7 @@ class Engine:
         x = start_position[0]
         ally_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_ally_positions()
+            moves=self.get_ally_positions(piece=piece)
         )
         # Remove the starting position itself
         ally_decline = [
@@ -503,7 +512,7 @@ class Engine:
 
         enemy_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_enemy_positions()
+            moves=self.get_enemy_positions(piece=piece)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -520,11 +529,12 @@ class Engine:
     def handle_blocked_diagonal_path(
         self,
         start_position: tuple,
-        moves: list
+        piece: Type[AbstractChessPiece]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the diagonal path
         """
+        moves = piece.get_applied_moves()
         output = []
 
         incline_moves = self.get_diagonal_moves_incline(
@@ -540,14 +550,16 @@ class Engine:
         for move in incline_moves:
             if self.diagonal_incline_move_is_legal(
                 start_position=start_position,
-                move=move
+                move=move,
+                piece=piece
             ):
                 output.append(move)
         # Decline
         for move in decline_moves:
             if self.diagonal_decline_move_is_legal(
                 start_position=start_position,
-                move=move
+                move=move,
+                piece=piece
             ):
                 output.append(move)
 
@@ -580,10 +592,10 @@ class Engine:
             moves.remove(double_jump[color])
 
         # Remove moves where allies are standing
-        moves = self._remove_ally_positions(moves)
+        moves = self._remove_ally_positions(moves, piece=piece)
 
         # Diagonal movement only if enemy is there
-        enemy_positions = self.get_enemy_positions()
+        enemy_positions = self.get_enemy_positions(piece=piece)
         moves = [
             move for move in moves if not (
                 (move[0] - position[0] != 0)        # is diagonal move
@@ -603,47 +615,54 @@ class Engine:
     def rook_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_straight_path(
             start_position=piece.position,
-            moves=piece.get_applied_moves()
+            piece=piece
         )
         return moves
 
     def knight_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
-        return self._remove_ally_positions(moves)
+        return self._remove_ally_positions(moves, piece=piece)
 
     def bishop_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_diagonal_path(
             start_position=piece.position,
-            moves=piece.get_applied_moves()
+            piece=piece
         )
         return moves
 
     def king_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
-
         enemy_pieces = self.get_enemy_pieces()
 
         enemy_moves = []
         for enemy_piece in enemy_pieces:
-            enemy_moves.extend(enemy_piece.get_applied_moves())
+            # Pawn and king are treated specially.
+            # Pawn: Has a kill-move only if an enemy is diagonal to it.
+            #       The kill-move will not be apparent if we apply game rules.
+            # King: Not neccesary to apply game rules on enemy king piece.
+            #       This is also impossible because of infinite nesting funcitons.
+            if enemy_piece.name not in ['King', 'Pawn']:
+                enemy_moves.extend(self.apply_game_rules(piece=enemy_piece))
+            else:
+                enemy_moves.extend(enemy_piece.get_applied_moves())
 
         moves = [
             move for move in moves if move not in enemy_moves
         ]
 
-        return self._remove_ally_positions(moves)
+        return self._remove_ally_positions(moves, piece=piece)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
         # Get the straight pathing that is legally allowed
         straight_moves = self.handle_blocked_straight_path(
             start_position=piece.position,
-            moves=piece.get_applied_moves()
+            piece=piece
         )
 
         # Get the diagonal pathing that is legally allowed
         vertical_moves = self.handle_blocked_diagonal_path(
             start_position=piece.position,
-            moves=piece.get_applied_moves()
+            piece=piece
         )
 
         return straight_moves + vertical_moves

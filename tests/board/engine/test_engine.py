@@ -310,7 +310,7 @@ def test_handle_blocked_straight_path_ally(config_path):
     white_rook = engine.get_white_rooks()[0]
     result = engine.handle_blocked_straight_path(
         start_position=white_rook.position,
-        moves=white_rook.get_applied_moves()
+        piece=white_rook
     )
     assert len(expected_moves) == len(result)
     for move in result:
@@ -348,7 +348,7 @@ def test_handle_blocked_straight_path_enemies(config_path):
     white_rook = engine.get_white_rooks()[0]
     result = engine.handle_blocked_straight_path(
         start_position=white_rook.position,
-        moves=white_rook.get_applied_moves()
+        piece=white_rook
     )
     assert len(expected_moves) == len(result)
     for move in result:
@@ -393,7 +393,7 @@ def test_handle_blocked_diagonal_path(config_path):
     white_bishops = engine.get_white_bishops()[0]
     result = engine.handle_blocked_diagonal_path(
         start_position=white_bishops.position,
-        moves=white_bishops.get_applied_moves()
+        piece=white_bishops
     )
     assert len(expected_moves) == len(result)
     for move in result:
