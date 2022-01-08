@@ -183,8 +183,12 @@ class TerminalView(View):
                 # This submenu will show possible actions for the selected
                 # chess piece.
                 # Make sure options are converted to the right indices
+                def _convert_index_to_string(option):
+                    str_option = self._convert_cell_index(option)
+                    return f'({str_option[0]}, {str_option[1]})'
+
                 sub_options = [
-                    str(self._convert_cell_index(opt)) for opt in actions
+                    _convert_index_to_string(opt) for opt in actions
                 ]
 
                 # Append option to go back to main menu where user can reselect

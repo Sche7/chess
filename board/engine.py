@@ -458,7 +458,7 @@ class Engine:
         self,
         start_position: tuple,
         move: tuple,
-        piece: Type[AbstractChessPiece]
+        color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -467,7 +467,7 @@ class Engine:
         x = start_position[0]
         ally_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_ally_positions(color=piece.color)
+            moves=self.get_ally_positions(color=color)
         )
         # Remove the starting position itself
         ally_incline = [
@@ -476,7 +476,7 @@ class Engine:
 
         enemy_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=piece.color)
+            moves=self.get_enemy_positions(color=color)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -494,7 +494,7 @@ class Engine:
         self,
         start_position: tuple,
         move: tuple,
-        piece: Type[AbstractChessPiece]
+        color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -503,7 +503,7 @@ class Engine:
         x = start_position[0]
         ally_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_ally_positions(color=piece.color)
+            moves=self.get_ally_positions(color=color)
         )
         # Remove the starting position itself
         ally_decline = [
@@ -512,7 +512,7 @@ class Engine:
 
         enemy_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=piece.color)
+            moves=self.get_enemy_positions(color=color)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -551,7 +551,7 @@ class Engine:
             if self.diagonal_incline_move_is_legal(
                 start_position=start_position,
                 move=move,
-                piece=piece
+                color=piece.color
             ):
                 output.append(move)
         # Decline
@@ -559,7 +559,7 @@ class Engine:
             if self.diagonal_decline_move_is_legal(
                 start_position=start_position,
                 move=move,
-                piece=piece
+                color=piece.color
             ):
                 output.append(move)
 
