@@ -143,3 +143,49 @@ def test_king_suicidal_moves_check(config_path):
     # pawn is 'protecting' the path
     assert (1, 1) in king_moves
     assert (1, 0) in king_moves
+
+
+def test_king_and_pawn_interaction(config_path):
+    """
+    Test that interaction between king and pawn
+    work as expected.
+    This test was created as part of a bug-fix.
+    """
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    # See that board is empty
+    assert len(engine.pieces['white']) == 0
+    assert len(engine.pieces['black']) == 0
+
+    # Spawn white king
+    engine.spawn_piece(
+        piece_nr=6,
+        position=(3, 2)
+    )
+
+    # Spawn enemy pawn
+    engine.spawn_piece(
+        piece_nr=7,
+        position=(4, 4)
+    )
+
+    # See that one white piece has spawned
+    assert len(engine.pieces['white']) == 1
+
+    # See that one black piece has spawned
+    assert len(engine.pieces['black']) == 1
+
+    white_king = engine.get_white_king()[-1]
+
+    # See that white king cannot move to (1, 1)
+    king_moves = engine.apply_game_rules(white_king)
+
+    # See that correct pieces are spawned
+    assert white_king.name == 'King'
+
+    # See that positions are correct
+    assert white_king.position == (3, 2)
+
+    # See that king can move behind pawn
+    assert (4, 2) in king_moves
