@@ -48,6 +48,30 @@ class Engine:
         self.player_turn = 'white'
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
+        """
+        Method for creating a chess piece.
+
+        Parameters
+        ---
+        piece_nr: int
+            Piece number that determines which kind of chess piece to create.
+            The options are:
+                1: White Pawn
+                2: White Rook
+                3: White Knight
+                4: White Bishop
+                5: White Queen
+                6: White King
+                7: Black Pawn
+                8: Black Rook
+                9: Black Knight
+                10: Black Bishop
+                11: Black Queen
+                12: Black King
+
+        position: tuple
+            A tuple where the chess piece is desired to be spawned.
+        """
         kwargs = {
             'position': position,
             'piece_nr': piece_nr
@@ -134,7 +158,6 @@ class Engine:
         """
         Method for making updates according to player input.
         """
-
         if not player_input:
             self.game_over = True
             print(f'Player {self.player_turn} surrendered. Game over.')
@@ -170,6 +193,12 @@ class Engine:
     def _get_all_pieces_by_color(self, color: Literal['white', 'black']):
         """
         Collect all alive pieces by color
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
+
         """
         return [
             piece for piece in
@@ -178,19 +207,39 @@ class Engine:
 
     def get_enemy_pieces(self, color: Literal['white', 'black']):
         """
-        Collect alive enemy pieces
+        Collect alive chess pieces belonging to the opponent
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
+
         """
         return self._get_all_pieces_by_color(color=self.switch[color])
 
     def get_ally_pieces(self, color: Literal['white', 'black']):
         """
-        Collect alive ally pieces
+        Collect alive ally chess pieces belonging to the current player turn
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
+
         """
         return self._get_all_pieces_by_color(color=color)
 
-    def _get_positions_by_color(self, color: Literal['white', 'black']):
+    def _get_positions_by_color(self, color: Literal['white', 'black']) -> List[tuple]:
         """
-        Collect all positions by color
+        Collect all positions of chess pieces by color.
+        This method is different from '_get_all_pieces_by_color' as
+        it only returns a list of positions.
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
+
         """
         return [
             piece.position for piece in
@@ -199,19 +248,32 @@ class Engine:
 
     def get_ally_positions(self, color: Literal['white', 'black']):
         """
-        Collect positions of alive ally pieces relative to
-        the input piece.
+        Collect positions of alive ally chess pieces belonging
+        to the current player turn.
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
+
         """
         return self._get_positions_by_color(color=color)
 
     def get_enemy_positions(self, color: Literal['white', 'black']):
         """
-        Collect positions of alive enemy pieces relative to
-        the input piece.
+        Collect positions of alive chess pieces belonging to the opponent.
+
+        Parameters:
+        ---
+        color: Literal['white', 'black']
+            The color of the chess pieces to retrieve
         """
         return self._get_positions_by_color(color=self.switch[color])
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
+        """
+        Method for applying game rules based on piece type.
+        """
 
         if piece.name == 'Pawn':
             moves = self.pawn_rules(piece=piece)
