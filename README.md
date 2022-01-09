@@ -1,6 +1,6 @@
 # Chess game
 
-The game is still under development. Current progress:
+The game is still under development.
 - You are now able to interact with chess board through the CLI
 - Most of the basic legal-move-checks has been implemented
 
