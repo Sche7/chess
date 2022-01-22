@@ -8,9 +8,8 @@ class Chess:
 
     Parameters
     ----
-    config_path: str
-        Folder path to game configuration file.
-        Has to be a yaml-file.
+    engine: Engine
+        An instance of the Engine class.
     displayer: Displayer
         The desired displayer for playing chess.
         See: chess/board/view/displayer_factory.py
