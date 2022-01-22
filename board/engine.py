@@ -205,7 +205,7 @@ class Engine:
             self.pieces.get(color) if piece.status
         ]
 
-    def get_enemy_pieces(self, color: Literal['white', 'black']):
+    def _get_enemy_pieces(self, color: Literal['white', 'black']):
         """
         Collect alive chess pieces belonging to the opponent
 
@@ -217,7 +217,7 @@ class Engine:
         """
         return self._get_all_pieces_by_color(color=self.switch[color])
 
-    def get_ally_pieces(self, color: Literal['white', 'black']):
+    def _get_ally_pieces(self, color: Literal['white', 'black']):
         """
         Collect alive ally chess pieces belonging to the current player turn
 
@@ -246,7 +246,7 @@ class Engine:
             self.pieces.get(color) if piece.status
         ]
 
-    def get_ally_positions(self, color: Literal['white', 'black']):
+    def _get_ally_positions(self, color: Literal['white', 'black']):
         """
         Collect positions of alive ally chess pieces belonging
         to the current player turn.
@@ -259,7 +259,7 @@ class Engine:
         """
         return self._get_positions_by_color(color=color)
 
-    def get_enemy_positions(self, color: Literal['white', 'black']):
+    def _get_enemy_positions(self, color: Literal['white', 'black']):
         """
         Collect positions of alive chess pieces belonging to the opponent.
 
@@ -370,7 +370,7 @@ class Engine:
             }
 
         """
-        player_pieces = self.get_ally_pieces(color=self.player_turn)
+        player_pieces = self._get_ally_pieces(color=self.player_turn)
         all_piece_actions = dict()
         for piece in player_pieces:
 
@@ -408,7 +408,7 @@ class Engine:
         """
         Removes moves where allies are standing relative to input piece
         """
-        ally_positions = self.get_ally_positions(color=color.name)
+        ally_positions = self._get_ally_positions(color=color.name)
         moves = [
             move for move in moves if move not in ally_positions
         ]
@@ -427,7 +427,7 @@ class Engine:
         x = start_position[0]
         ally_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name)
         )
         # Remove the starting position itself
         ally_horizontal = [
@@ -436,7 +436,7 @@ class Engine:
 
         enemy_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -463,7 +463,7 @@ class Engine:
         y = start_position[1]
         ally_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name)
         )
         # Remove the starting position itself
         ally_vertical = [
@@ -472,7 +472,7 @@ class Engine:
 
         enemy_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name)
         )
         not_walk_through_allies = all([
             ((pos[1] > move[1]) and (pos[1] > y)) or   # Up
@@ -538,7 +538,7 @@ class Engine:
         x = start_position[0]
         ally_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name)
         )
         # Remove the starting position itself
         ally_incline = [
@@ -547,7 +547,7 @@ class Engine:
 
         enemy_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -574,7 +574,7 @@ class Engine:
         x = start_position[0]
         ally_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name)
         )
         # Remove the starting position itself
         ally_decline = [
@@ -583,7 +583,7 @@ class Engine:
 
         enemy_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self.get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name)
         )
         not_walk_through_allies = all([
             ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
@@ -685,7 +685,7 @@ class Engine:
         Otherwise, the move is removed from the allowed movement list.
         """
         # Diagonal movement only if enemy is there
-        enemy_positions = self.get_enemy_positions(color=color)
+        enemy_positions = self._get_enemy_positions(color=color)
         moves = [
             move for move in moves if not (
                 (move[0] - position[0] != 0)        # is diagonal move
@@ -701,7 +701,7 @@ class Engine:
         position: tuple,
         color: Literal['white', 'black']
     ):
-        enemy_positions = self.get_enemy_positions(color=color)
+        enemy_positions = self._get_enemy_positions(color=color)
         moves = [
             move for move in moves if not (
                 (move[1] - position[1] != 0) and (move[0] - position[0] == 0)    # is straight move
@@ -759,7 +759,7 @@ class Engine:
 
     def king_rules(self, piece: Type[AbstractChessPiece]):
         moves = piece.get_applied_moves()
-        enemy_pieces = self.get_enemy_pieces(color=piece.color.name)
+        enemy_pieces = self._get_enemy_pieces(color=piece.color.name)
 
         enemy_moves = []
         for enemy_piece in enemy_pieces:
