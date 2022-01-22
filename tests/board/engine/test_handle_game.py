@@ -8,7 +8,7 @@ def test_kills(config_path):
     '''
 
     engine = Engine(config_path)
-    engine.initiate_empty_board()
+    game_state = engine.initiate_empty_board()
 
     # See that board is empty
     assert len(engine.pieces['white']) == 0
@@ -39,7 +39,11 @@ def test_kills(config_path):
     }
 
     # Handle game
-    engine.handle_game(player='white', player_input=player_input)
+    engine.handle_game(
+        player='white',
+        player_input=player_input,
+        game_state=game_state
+    )
 
     # See that black pawn is killed
     assert black_pawn.status == 0

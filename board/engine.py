@@ -25,7 +25,7 @@ class Engine:
         self.start_state = self.config['GAME_START']
         self.pieces = {}
 
-    def start_game(self) -> None:
+    def start_game(self) -> NDArray:
         """
         Initiates a new game.
         Starting game state depends on config.GAME_START input.
@@ -43,7 +43,7 @@ class Engine:
         self.pieces = self.initiate_pieces(board=game_state)
 
         # Starting game
-        self.game_state = game_state
+        return game_state
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
         """
@@ -188,8 +188,9 @@ class Engine:
     def handle_game(
         self,
         player: Literal['white', 'black'],
-        player_input: dict
-    ) -> None:
+        player_input: dict,
+        game_state: NDArray
+    ) -> NDArray:
         """
         Method for making updates according to player input.
         """
@@ -206,8 +207,8 @@ class Engine:
         piece.set_position(position=action)
 
         # Update board
-        self.game_state[old_position] = 0   # empty old position
-        self.game_state[action] = piece_nr  # move chess piece to new position
+        game_state[old_position] = 0   # empty old position
+        game_state[action] = piece_nr  # move chess piece to new position
 
         # Kill enemy piece if new position hits an enemy
         enemy_pieces = [
@@ -219,6 +220,8 @@ class Engine:
             if enemy_piece.position == action:
                 # if true then kill enemy and update board
                 enemy_piece.kill()
+
+        return game_state
 
     def _get_all_pieces_by_color(self, color: Literal['white', 'black']):
         """
@@ -862,7 +865,7 @@ class Engine:
 
         return straight_moves + vertical_moves
 
-    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> None:
+    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> NDArray:
         """
         Initiates a new game with empty board.
         Mostly for testing purposes
@@ -880,7 +883,7 @@ class Engine:
         self.pieces = self.initiate_pieces(board=game_state)
 
         # Starting game
-        self.game_state = game_state
+        return game_state
 
     def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
         """

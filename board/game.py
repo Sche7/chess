@@ -30,16 +30,17 @@ class Chess:
         self.displayer = displayer
         self.game_over = False
         self.player_turn = 'white'
+        self.game_state = None
 
     def switch_turn(self) -> None:
         self.player_turn = self.switch[self.player_turn]
 
     def run(self):
-        self.engine.start_game()
+        self.game_state = self.engine.start_game()
         self.displayer.initialize()
         while not self.game_over:
             # Display board
-            self.displayer.display_board(self.engine.game_state)
+            self.displayer.display_board(self.game_state)
             self.displayer.display_player_turn(self.player_turn)
 
             # Compute possible actions
@@ -54,7 +55,11 @@ class Chess:
                 print(f'Player {self.player_turn} surrendered. Game over.')
                 continue
 
-            self.engine.handle_game(player=self.player_turn, player_input=player_input)
+            self.game_state = self.engine.handle_game(
+                player=self.player_turn,
+                player_input=player_input,
+                game_state=self.game_state
+            )
 
             # Before player turn is over
             self.engine.check_game_state()
