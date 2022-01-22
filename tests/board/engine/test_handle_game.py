@@ -39,7 +39,7 @@ def test_kills(config_path):
     }
 
     # Handle game
-    engine.handle_game(player_input=player_input)
+    engine.handle_game(player='white', player_input=player_input)
 
     # See that black pawn is killed
     assert black_pawn.status == 0

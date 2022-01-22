@@ -44,18 +44,6 @@ def test_start_game(config_path):
         assert len(king) == 1, f'1 king piece were not created for {color}'
 
 
-def test_switch_turn(config_path):
-    engine = Engine(config_path)
-    engine.start_game()
-
-    # See that white starts
-    assert engine.player_turn == 'white'
-    engine.switch_turn()
-
-    # See that now its blacks turn
-    assert engine.player_turn == 'black'
-
-
 def test_create_piece(config_path):
     engine = Engine(config_path)
 

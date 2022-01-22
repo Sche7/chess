@@ -44,7 +44,6 @@ class Engine:
 
         # Starting game
         self.game_state = game_state
-        self.player_turn = 'white'
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
         """
@@ -186,7 +185,11 @@ class Engine:
         # --- Check ---
         pass
 
-    def handle_game(self, player_input: dict) -> None:
+    def handle_game(
+        self,
+        player: Literal['white', 'black'],
+        player_input: dict
+    ) -> None:
         """
         Method for making updates according to player input.
         """
@@ -194,7 +197,7 @@ class Engine:
         action = player_input.get('action')
         piece = self.get_piece_by_id(
             id=piece_id,
-            player=self.player_turn
+            player=player
         )
         old_position = piece.position
         piece_nr = piece.piece_nr
@@ -209,7 +212,7 @@ class Engine:
         # Kill enemy piece if new position hits an enemy
         enemy_pieces = [
             piece for piece in
-            self.pieces.get(self.switch[self.player_turn]) if piece.status
+            self.pieces.get(self.switch[player]) if piece.status
         ]
 
         for enemy_piece in enemy_pieces:
@@ -361,7 +364,7 @@ class Engine:
 
     def get_all_possible_actions(
         self,
-        player: Optional[Literal['white', 'black']] = None,
+        player: Literal['white', 'black'],
     ) -> Dict[str, list]:
         """
         Get possible actions for all pieces that belong to the desired
@@ -371,8 +374,6 @@ class Engine:
         ----
         player, optional 'white' or 'black'
             Determines which player to get all possible actions.
-            If this is not specified, it will return the actions for
-            the player who currently has the turn.
 
         Returns
         ----
@@ -412,7 +413,6 @@ class Engine:
             }
 
         """
-        player = player or self.player_turn
         player_pieces = self._get_ally_pieces(color=player)
         all_piece_actions = dict()
         for piece in player_pieces:
@@ -436,9 +436,6 @@ class Engine:
                 all_piece_actions[name] = [piece_info]
 
         return all_piece_actions
-
-    def switch_turn(self) -> None:
-        self.player_turn = self.switch[self.player_turn]
 
     def _get_pieces(self, name: str, pieces: list):
         """
@@ -884,7 +881,6 @@ class Engine:
 
         # Starting game
         self.game_state = game_state
-        self.player_turn = 'white'
 
     def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
         """
