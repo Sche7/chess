@@ -2,7 +2,7 @@ from board.engine import Engine
 from board.view.displayer_factory import View
 
 
-class Chess(Engine):
+class Chess:
     """
     This is the main chess game class.
 
@@ -17,26 +17,36 @@ class Chess(Engine):
         for more info.
     """
 
-    def __init__(self, config_path: str, displayer: View):
-        super().__init__(config_path=config_path)
-
+    def __init__(
+        self,
+        engine: Engine,
+        displayer: View
+    ):
+        self.engine = engine
         self.displayer = displayer
+        self.game_over = False
 
     def run(self):
-        self.start_game()
+        self.engine.start_game()
         self.displayer.initialize()
         while not self.game_over:
             # Display board
-            self.displayer.display_board(self.game_state)
-            self.displayer.display_player_turn(self.player_turn)
+            self.displayer.display_board(self.engine.game_state)
+            self.displayer.display_player_turn(self.engine.player_turn)
 
             # Compute possible actions
-            actions = self.get_all_possible_actions()
+            actions = self.engine.get_all_possible_actions()
             player_input = self.displayer.await_input(actions)
 
-            # Do action
-            self.handle_game(player_input)
+            # If player surrendered, end game
+            # else do action
+            if not player_input:
+                self.game_over = True
+                print(f'Player {self.engine.player_turn} surrendered. Game over.')
+                continue
+
+            self.engine.handle_game(player_input)
 
             # Before player turn is over
-            self.check_game_state()
-            self.switch_turn()
+            self.engine.check_game_state()
+            self.engine.switch_turn()

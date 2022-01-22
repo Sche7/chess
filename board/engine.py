@@ -44,7 +44,6 @@ class Engine:
 
         # Starting game
         self.game_state = game_state
-        self.game_over = False
         self.player_turn = 'white'
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
@@ -191,11 +190,6 @@ class Engine:
         """
         Method for making updates according to player input.
         """
-        if not player_input:
-            self.game_over = True
-            print(f'Player {self.player_turn} surrendered. Game over.')
-            return
-
         piece_id = player_input.get('id')
         action = player_input.get('action')
         piece = self.get_piece_by_id(
@@ -890,7 +884,6 @@ class Engine:
 
         # Starting game
         self.game_state = game_state
-        self.game_over = False
         self.player_turn = 'white'
 
     def get_vertical_moves(self, start_position: tuple, moves: list) -> list:
