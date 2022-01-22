@@ -10,7 +10,7 @@ class Chess:
     ----
     engine: Engine
         An instance of the Engine class.
-    displayer: Displayer
+    displayer: View
         The desired displayer for playing chess.
         See: chess/board/view/displayer_factory.py
         for more info.
