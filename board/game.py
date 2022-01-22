@@ -26,6 +26,9 @@ class Chess:
         self.displayer = displayer
         self.game_over = False
 
+        # TODO: Have player_turn variable in this class instead of in the engine
+        # It should be the Game class dictating the player turn and not the engine.
+
     def run(self):
         self.engine.start_game()
         self.displayer.initialize()
@@ -38,10 +41,11 @@ class Chess:
             actions = self.engine.get_all_possible_actions()
             player_input = self.displayer.await_input(actions)
 
-            # If player surrendered, end game
+            # If player surrendered, then end the game
             # else do action
             if not player_input:
                 self.game_over = True
+                # TODO: Log this instead of printing
                 print(f'Player {self.engine.player_turn} surrendered. Game over.')
                 continue
 
