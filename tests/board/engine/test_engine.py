@@ -89,7 +89,7 @@ def test_get_possible_actions(config_path):
 
     king = engine.get_white_king()[0]
 
-    possibe_actions = engine.get_possible_actions(king.id)
+    possibe_actions = engine.get_possible_actions(king.id, king.color.name)
 
     # King should not have any possible moves
     # at start of the game
@@ -102,7 +102,7 @@ def test_get_possible_actions_invalid_id(config_path):
 
     # Apply method with invalid id
     with pytest.raises(ValueError) as e:
-        engine.get_possible_actions(12345)
+        engine.get_possible_actions(12345, color='white')
         assert 'ID [12345] does not exist' == str(e.value)
 
 

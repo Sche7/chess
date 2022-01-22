@@ -151,7 +151,40 @@ class Engine:
         position = created_piece.position
         print(f'Spawned a {name} for {color} at position {position}')
 
+    def player_is_in_check(self, player: Literal['white', 'black']) -> bool:
+        """
+        Method for evaluating whether player is in check.
+
+        Returns
+        ----
+        bool,
+            True, if player has checked opponent.
+            False, otherwise
+        """
+        # Get enemy king position
+        if player == 'black':
+            king = self.get_black_king()[-1]
+        elif player == 'white':
+            king = self.get_white_king()[-1]
+        else:
+            raise ValueError(f'Unknown player [{player}]')
+        king_position = king.position
+
+        # Get all possible moves for opponent player
+        opponent_actions = self.get_all_possible_actions(self.switch[player])
+
+        # If moves overlap with enemy king position,
+        # then there is a check
+        for _, pieces in opponent_actions.items():
+            for piece in pieces:
+                if king_position in piece.get('actions'):
+                    return True
+        return False
+
     def check_game_state(self):
+        # --- Checkmate ---
+
+        # --- Check ---
         pass
 
     def handle_game(self, player_input: dict) -> None:
@@ -292,7 +325,11 @@ class Engine:
 
         return moves
 
-    def get_piece_by_id(self, id: int, player: str) -> Type[AbstractChessPiece]:
+    def get_piece_by_id(
+        self,
+        id: int,
+        player: Literal['white', 'black']
+    ) -> Type[AbstractChessPiece]:
         """
         Get piece in game by instance ID.
 
@@ -304,6 +341,7 @@ class Engine:
             possible values are 'white' or 'black'
         """
         player_pieces = self.pieces.get(player)
+
         piece = [piece for piece in player_pieces if piece.id == id]
 
         if len(piece) == 0:
@@ -314,23 +352,33 @@ class Engine:
 
         return piece[0]
 
-    def get_possible_actions(self, id: int) -> List[tuple]:
+    def get_possible_actions(self, id: int, color: Literal['white', 'black']) -> List[tuple]:
         """
         Get all possible actions on specific chess piece
-        on players turn.
+        on desired player color.
 
         Parameters
         ----
         id: int, the instance id of chess piece
         """
-        piece = self.get_piece_by_id(id=id, player=self.player_turn)
+        piece = self.get_piece_by_id(id=id, player=color)
 
         return self.apply_game_rules(piece)
 
-    def get_all_possible_actions(self) -> Dict[str, list]:
+    def get_all_possible_actions(
+        self,
+        player: Optional[Literal['white', 'black']] = None,
+    ) -> Dict[str, list]:
         """
-        Get possible moves for all pieces that current player
-        has on the board.
+        Get possible actions for all pieces that belong to the desired
+        player.
+
+        Parameters
+        ----
+        player, optional 'white' or 'black'
+            Determines which player to get all possible actions.
+            If this is not specified, it will return the actions for
+            the player who currently has the turn.
 
         Returns
         ----
@@ -370,21 +418,24 @@ class Engine:
             }
 
         """
-        player_pieces = self._get_ally_pieces(color=self.player_turn)
+        player = player or self.player_turn
+        player_pieces = self._get_ally_pieces(color=player)
         all_piece_actions = dict()
         for piece in player_pieces:
 
             # Create information dict
             name = piece.name
+            color = piece.color.name
+            piece_id = piece.id
             piece_info = {
-                    'actions': self.get_possible_actions(id=piece.id),
-                    'id': piece.id,
+                    'actions': self.get_possible_actions(id=piece_id, color=color),
+                    'id': piece_id,
                     'position': piece.position,
                     'piece_nr': piece.piece_nr
                 }
 
             # If key is already created, then append to
-            # exitsting list, else create key in dict.
+            # existing list, else create key in dict.
             if name in all_piece_actions:
                 all_piece_actions[name].append(piece_info)
             else:
