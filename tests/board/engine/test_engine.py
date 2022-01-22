@@ -43,9 +43,6 @@ def test_start_game(config_path):
         king = engine._get_pieces(name='king', pieces=pieces)
         assert len(king) == 1, f'1 king piece were not created for {color}'
 
-    # See that game is not over
-    assert engine.game_over is False
-
 
 def test_switch_turn(config_path):
     engine = Engine(config_path)
