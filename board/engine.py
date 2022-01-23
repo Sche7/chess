@@ -12,6 +12,10 @@ from chess_pieces.king import King
 from chess_pieces.schema import Color, Group
 
 
+class GameError(Exception):
+    pass
+
+
 class Engine:
 
     switch = {
@@ -149,41 +153,120 @@ class Engine:
         position = created_piece.position
         print(f'Spawned a {name} for {color} at position {position}')
 
-    def player_is_in_check(self, player: Literal['white', 'black']) -> bool:
+    def _threats_to_the_king(self, player: Literal['white', 'black']) -> List[AbstractChessPiece]:
+        """
+        Method for retrieving all pieces that are a threat to
+        the king, e.g., enemy units that in one turn can kill the king.
+        NOTE: In chess there is only 1 threat to the king at a time.
+
+        Returns a list of chess pieces that are threats.
+        """
+        threats_id = []
+        opponent = self.switch[player]
+
+        # Get king position
+        if player == 'black':
+            king = self.get_black_king()[-1]
+        elif player == 'white':
+            king = self.get_white_king()[-1]
+
+        king_position = king.position
+
+        # Get all possible moves for opponent player
+        opponent_actions = self.get_all_possible_actions(opponent)
+
+        # If opponent moves overlap with king position,
+        # then there is a check
+        for _, pieces in opponent_actions.items():
+            for piece in pieces:
+                if king_position in piece.get('actions'):
+                    threats_id.append(piece.get('id'))
+
+        # Get chess pieces from their IDs
+        threats_piece = []
+        for threat in threats_id:
+            threats_piece.append(self.get_piece_by_id(id=threat, player=opponent))
+
+        return threats_piece
+
+    def _player_is_in_check(self, player: Literal['white', 'black']) -> bool:
         """
         Method for evaluating whether player is in check.
 
         Returns
         ----
-        bool,
-            True, if player has checked opponent.
-            False, otherwise
+            True, if player is in check.
+            False, otherwise.
         """
-        # Get enemy king position
+        threats = self._threats_to_the_king(player)
+        return len(threats) > 0
+
+    def _king_cannot_move(self, player: Literal['white', 'black']) -> bool:
+        """
+        Method for checking whether king can move.
+
+        Returns
+        ----
+            True,  if king cannot move.
+            False, if king can move.
+        """
+        # Get king position
         if player == 'black':
             king = self.get_black_king()[-1]
         elif player == 'white':
             king = self.get_white_king()[-1]
-        else:
-            raise ValueError(f'Unknown player [{player}]')
-        king_position = king.position
 
-        # Get all possible moves for opponent player
-        opponent_actions = self.get_all_possible_actions(self.switch[player])
+        moves = self.get_possible_actions(id=king.id, color=player)
 
-        # If moves overlap with enemy king position,
-        # then there is a check
-        for _, pieces in opponent_actions.items():
+        return len(moves) == 0
+
+    def _cannot_protect_king(self, player: Literal['white', 'black']) -> bool:
+        """
+        Method for checking whether other units can protect the king.
+        For example, by killing the threat or by blocking the hit.
+
+        Returns
+        ----
+            True, if king cannot be protected.
+            False, if king can be protected.
+        """
+        threats = self._threats_to_the_king(player)
+
+        # If no threats, there is no need to protect
+        # hence we return False
+        if len(threats) == 0:
+            return False
+
+        # The assumption is that there can be only 1 threat
+        # at a time in chess.
+        if len(threats) > 1:
+            # TODO: Logging of errors
+            raise GameError(
+                'Unknown game state. More than one attacking king at the same time.'
+            )
+
+        # Retrieve information about the threat
+        threat = threats[-1]
+        threat_actions = self.get_possible_actions(id=threat.id, color=threat.color.name)
+        threat_position = threat.position
+
+        ally_actions = self.get_all_possible_actions(player=player)
+        for _, pieces in ally_actions.items():
             for piece in pieces:
-                if king_position in piece.get('actions'):
-                    return True
-        return False
 
-    def check_game_state(self):
-        # --- Checkmate ---
+                # See whether an ally unit can kill the threat.
+                if threat_position in piece.get('actions'):
+                    return False
 
-        # --- Check ---
-        pass
+                # See whether ally unit can block the attack.
+                # TODO: implement this
+
+    def is_checkmate(self, player: Literal['white', 'black']):
+        """
+        Method for evaluating game for checkmate.
+        """
+        is_in_check = self._player_is_in_check(player)
+        return is_in_check
 
     def handle_game(
         self,

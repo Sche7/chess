@@ -39,6 +39,9 @@ class Chess:
         self.game_state = self.engine.start_game()
         self.displayer.initialize()
         while not self.game_over:
+            # Evaluate game state for player
+            self.engine.is_checkmate(player=self.player_turn)
+
             # Display board
             self.displayer.display_board(self.game_state)
             self.displayer.display_player_turn(self.player_turn)
@@ -48,19 +51,17 @@ class Chess:
             player_input = self.displayer.await_input(actions)
 
             # If player surrendered, then end the game
-            # else do action
             if not player_input:
                 self.game_over = True
-                # TODO: Log this instead of printing
-                print(f'Player {self.player_turn} surrendered. Game over.')
+                self.displayer.surrender_message(player=self.player_turn)
                 continue
 
+            # Handle game with player input
+            # Set new game state
             self.game_state = self.engine.handle_game(
                 player=self.player_turn,
                 player_input=player_input,
                 game_state=self.game_state
             )
 
-            # Before player turn is over
-            self.engine.check_game_state()
             self.switch_turn()
