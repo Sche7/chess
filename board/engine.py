@@ -1,7 +1,7 @@
 from chess_pieces import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Literal, Type, Optional, Tuple
+from typing import Dict, List, Literal, Type, Optional, Tuple, Union
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
 from chess_pieces.bishop import Bishop
@@ -47,6 +47,26 @@ class Engine:
         self.pieces = self.initiate_pieces(board=game_state)
 
         # Starting game
+        return game_state
+
+    def initiate_board_from_array(
+        self,
+        game_state: Union[NDArray, list]
+    ):
+        """
+        Method for initiating chess board based on array input, 'game_state'.
+        Current only supports array with dimension 8x8.
+        """
+        if isinstance(game_state, list):
+            game_state = np.array(game_state)
+
+        # Make sure that elements are integers.
+        game_state = game_state.astype(int)
+
+        assert game_state.shape[0] == 8, 'Board has to have 8 rows'
+        assert game_state.shape[1] == 8, 'Board has to have 8 columns'
+        self.pieces = self.initiate_pieces(board=game_state)
+
         return game_state
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
@@ -260,6 +280,8 @@ class Engine:
 
                 # See whether ally unit can block the attack.
                 # TODO: implement this
+
+        return True
 
     def is_checkmate(self, player: Literal['white', 'black']):
         """
