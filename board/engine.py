@@ -173,6 +173,64 @@ class Engine:
         position = created_piece.position
         print(f'Spawned a {name} for {color} at position {position}')
 
+    def attack_trajectory(
+        self,
+        attacker: AbstractChessPiece,
+        target: AbstractChessPiece
+    ) -> List[tuple]:
+        """
+        Method that returns the path trajectory of an attack (excluding
+        positions of the target and the attacker).
+
+        Returns
+        ----
+        List of positions of the trajectory path. If no trajectory exists,
+        then an empty list is returned.
+        Note that Pawn, Knight, and King in theory do not have an attack trajectory.
+        """
+        def _trajectory_type(attacker, target):
+            """Evaluate attack trajectory type (diagonal, vertical, or horizontal)"""
+            if abs(attacker[0] - target[0]) == abs(attacker[1] - target[1]):
+                return 'diagonal'
+            elif (attacker[0] - target[0] == 0) and (attacker[1] - target[1] != 0):
+                return 'vertical'
+            elif (attacker[0] - target[0] != 0) and (attacker[1] - target[1] == 0):
+                return 'horizontal'
+
+        trajectory_type = _trajectory_type(attacker=attacker.position, target=target.position)
+        if trajectory_type is None:
+            raise ValueError('Trajectory type is unknown')
+
+        piece_with_trajectory = [
+            2, 8,    # Rook
+            4, 10,   # Bishop
+            5, 11,   # Queen
+        ]
+        if attacker.piece_nr in piece_with_trajectory:
+            deltax = target.position[0] - attacker.position[0]
+            deltay = target.position[1] - attacker.position[1]
+
+            xsign = int(abs(deltax)/deltax) if deltax != 0 else 1
+            ysign = int(abs(deltay)/deltay) if deltay != 0 else 1
+
+            x_axis = (
+                range(attacker.position[0], target.position[0], xsign) or
+                [attacker.position[0]]
+            )
+
+            y_axis = (
+                range(attacker.position[1], target.position[1], ysign) or
+                [attacker.position[1]]
+            )
+            if trajectory_type == 'horizontal':
+                trajectory = [(x, attacker.position[1]) for x in x_axis]
+            elif trajectory_type == 'vertical':
+                trajectory = [(attacker.position[0], y) for y in y_axis]
+            else:
+                trajectory = [(x, y) for x, y in zip(x_axis, y_axis)]
+            return [p for p in trajectory if p != attacker.position]
+        return []
+
     def _threats_to_the_king(self, player: Literal['white', 'black']) -> List[AbstractChessPiece]:
         """
         Method for retrieving all pieces that are a threat to
@@ -288,6 +346,9 @@ class Engine:
         Method for evaluating game for checkmate.
         """
         is_in_check = self._player_is_in_check(player)
+
+        # TODO: Add methods for evaluating whether checked player
+        #       can escape check.
         return is_in_check
 
     def handle_game(

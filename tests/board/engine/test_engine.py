@@ -383,3 +383,71 @@ def test_handle_blocked_diagonal_path(config_path):
     assert len(expected_moves) == len(result)
     for move in result:
         assert move in expected_moves
+
+
+@pytest.mark.parametrize('trajectory_type', ['diagonal', 'horizontal', 'vertical'])
+def test_attack_trajectory(config_path, trajectory_type):
+    engine = Engine(config_path)
+    if trajectory_type == 'diagonal':
+        # Set game state where trajectory is diagonal
+        game_state = [
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  7,  0,  0],
+            [7, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  5,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [7, 0,  0,  0,  7,  0,  0,  0]
+        ]
+        expected_trajectories = [
+            {(4, 3), (3, 4)},
+            {(4, 1)},
+            {(6, 1)},
+            {(6, 3)},
+        ]
+    elif trajectory_type == 'horizontal':
+        # Set game state where trajectory is horizontal
+        game_state = [
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [7, 0,  5,  0,  0,  0,  0,  7],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0]
+        ]
+        expected_trajectories = [
+            {(5, 1)},
+            {(5, 3), (5, 4), (5, 5), (5, 6)},
+        ]
+        # TODO: Fix horizontal/vertical
+    else:
+        # Set game state where trajectory is vertical
+        game_state = [
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  7,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  5,  0,  0,  0,  0,  0],
+            [0, 0,  0,  0,  0,  0,  0,  0],
+            [0, 0,  7,  0,  0,  0,  0,  0]
+        ]
+        expected_trajectories = [
+            {(4, 2), (3, 2), (2, 2), (1, 2)},
+            {(6, 2)}
+        ]
+
+    _ = engine.initiate_board_from_array(game_state=game_state)
+
+    white_queen = engine.get_white_queen()[-1]
+    black_pawns = engine.get_black_pawns()
+
+    for i, pawn in enumerate(black_pawns):
+        trajectory = set(engine.attack_trajectory(attacker=white_queen, target=pawn))
+        diff = trajectory - expected_trajectories[i]
+        assert len(diff) == 0, (
+            f"Trajectory result is {trajectory}, but expected {expected_trajectories[i]}"
+        )
