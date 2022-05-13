@@ -422,7 +422,6 @@ def test_attack_trajectory(config_path, trajectory_type):
             {(5, 1)},
             {(5, 3), (5, 4), (5, 5), (5, 6)},
         ]
-        # TODO: Fix horizontal/vertical
     else:
         # Set game state where trajectory is vertical
         game_state = [

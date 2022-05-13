@@ -325,20 +325,28 @@ class Engine:
 
         # Retrieve information about the threat
         threat = threats[-1]
-        threat_actions = self.get_possible_actions(id=threat.id, color=threat.color.name)
         threat_position = threat.position
 
         ally_actions = self.get_all_possible_actions(player=player)
+        if player == 'white':
+            king = self.get_white_king()[0]
+        else:
+            king = self.get_black_king()[0]
+
+        attack_trajectory = set(self.attack_trajectory(
+            attacker=threat,
+            target=king
+        ))
         for _, pieces in ally_actions.items():
             for piece in pieces:
-
+                ally_piece_actions = set(piece.get('actions'))
                 # See whether an ally unit can kill the threat.
-                if threat_position in piece.get('actions'):
+                if threat_position in ally_piece_actions:
                     return False
 
                 # See whether ally unit can block the attack.
-                # TODO: implement this
-
+                if len(attack_trajectory.intersection(ally_piece_actions)) > 0:
+                    return False
         return True
 
     def is_checkmate(self, player: Literal['white', 'black']):
@@ -346,10 +354,9 @@ class Engine:
         Method for evaluating game for checkmate.
         """
         is_in_check = self._player_is_in_check(player)
-
-        # TODO: Add methods for evaluating whether checked player
-        #       can escape check.
-        return is_in_check
+        king_cannot_move = self._king_cannot_move(player)
+        cannot_protect_king = self._cannot_protect_king(player)
+        return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
         self,
