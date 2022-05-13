@@ -95,10 +95,14 @@ def test_checkmate_intercept_attack(config_path, expect_protectable):
 
     if expect_protectable:
         # See that rook can protect king by killing the threat
-        assert not engine._cannot_protect_king(player='black')
+        assert not engine._cannot_protect_king(player='black'), (
+            "Expected king to be protectable"
+        )
     else:
         # See that king cannot be protected
-        assert engine._cannot_protect_king(player='black')
+        assert engine._cannot_protect_king(player='black'), (
+            "Expected king to be unprotectable"
+        )
 
 
 @pytest.mark.parametrize('expect_checkmate', [True, False])
@@ -139,6 +143,10 @@ def test_checkmate(config_path, expect_checkmate):
     assert len(threats) > 0
 
     if expect_checkmate:
-        assert engine.is_checkmate(player='black')
+        assert engine.is_checkmate(player='black'), (
+            "Expected checkmate game state"
+        )
     else:
-        assert not engine.is_checkmate(player='black')
+        assert not engine.is_checkmate(player='black'),(
+            "Expected no checkmate game state"
+        )
