@@ -1,4 +1,5 @@
 from board.players import Player, ChessPlayers
+from chess_pieces import Color
 
 
 def test_player_to_player_comparison():
@@ -6,9 +7,9 @@ def test_player_to_player_comparison():
     Test that Player instance can
     be compared with another Player instance
     """
-    player_1 = Player('white')
-    player_2 = Player('black')
-    player_3 = Player('white')
+    player_1 = Player(Color.white)
+    player_2 = Player(Color.black)
+    player_3 = Player(Color.white)
     assert player_1 == player_3
     assert player_1 != player_2
 
@@ -18,7 +19,7 @@ def test_player_to_string_comparison():
     Test that Player instances can
     be compared with string
     """
-    player = Player('white')
+    player = Player(Color.white)
     assert player == 'white'
     assert player != 'black'
 
