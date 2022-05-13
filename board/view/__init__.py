@@ -28,3 +28,6 @@ class View:
         raise NotImplementedError(
             'method "display_player_turn" is not implemented'
         )
+
+    def surrender_message(self, player: str):
+        raise NotImplementedError('method "surrender_message" is not implemented')

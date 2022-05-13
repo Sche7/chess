@@ -86,7 +86,7 @@ def test_player_is_in_check(config_path, player):
             position=(4, 6)
         )
 
-    assert engine.player_is_in_check(player=player)
+    assert engine._player_is_in_check(player=player)
 
 
 @pytest.mark.parametrize('player', ['white', 'black'])
@@ -140,4 +140,4 @@ def test_player_is_not_in_check(config_path, player):
             position=(4, 6)
         )
 
-    assert not engine.player_is_in_check(player=player)
+    assert not engine._player_is_in_check(player=player)

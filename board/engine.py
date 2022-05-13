@@ -1,7 +1,7 @@
 from chess_pieces import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Literal, Type, Optional, Tuple
+from typing import Dict, List, Literal, Type, Optional, Tuple, Union
 from board.files import read_yaml
 from chess_pieces.pawn import Pawn
 from chess_pieces.bishop import Bishop
@@ -10,6 +10,10 @@ from chess_pieces.rook import Rook
 from chess_pieces.queen import Queen
 from chess_pieces.king import King
 from chess_pieces.schema import Color, Group
+
+
+class GameError(Exception):
+    pass
 
 
 class Engine:
@@ -43,6 +47,26 @@ class Engine:
         self.pieces = self.initiate_pieces(board=game_state)
 
         # Starting game
+        return game_state
+
+    def initiate_board_from_array(
+        self,
+        game_state: Union[NDArray, list]
+    ):
+        """
+        Method for initiating chess board based on array input, 'game_state'.
+        Current only supports array with dimension 8x8.
+        """
+        if isinstance(game_state, list):
+            game_state = np.array(game_state)
+
+        # Make sure that elements are integers.
+        game_state = game_state.astype(int)
+
+        assert game_state.shape[0] == 8, 'Board has to have 8 rows'
+        assert game_state.shape[1] == 8, 'Board has to have 8 columns'
+        self.pieces = self.initiate_pieces(board=game_state)
+
         return game_state
 
     def create_piece(self, piece_nr: int, position: tuple) -> None:
@@ -149,41 +173,190 @@ class Engine:
         position = created_piece.position
         print(f'Spawned a {name} for {color} at position {position}')
 
-    def player_is_in_check(self, player: Literal['white', 'black']) -> bool:
+    def attack_trajectory(
+        self,
+        attacker: AbstractChessPiece,
+        target: AbstractChessPiece
+    ) -> List[tuple]:
+        """
+        Method that returns the path trajectory of an attack (excluding
+        positions of the target and the attacker).
+
+        Returns
+        ----
+        List of positions of the trajectory path. If no trajectory exists,
+        then an empty list is returned.
+        Note that Pawn, Knight, and King in theory do not have an attack trajectory.
+        """
+        def _trajectory_type(attacker, target):
+            """Evaluate attack trajectory type (diagonal, vertical, or horizontal)"""
+            if abs(attacker[0] - target[0]) == abs(attacker[1] - target[1]):
+                return 'diagonal'
+            elif (attacker[0] - target[0] == 0) and (attacker[1] - target[1] != 0):
+                return 'vertical'
+            elif (attacker[0] - target[0] != 0) and (attacker[1] - target[1] == 0):
+                return 'horizontal'
+
+        trajectory_type = _trajectory_type(attacker=attacker.position, target=target.position)
+        if trajectory_type is None:
+            raise ValueError('Trajectory type is unknown')
+
+        piece_with_trajectory = [
+            2, 8,    # Rook
+            4, 10,   # Bishop
+            5, 11,   # Queen
+        ]
+        if attacker.piece_nr in piece_with_trajectory:
+            deltax = target.position[0] - attacker.position[0]
+            deltay = target.position[1] - attacker.position[1]
+
+            xsign = int(abs(deltax)/deltax) if deltax != 0 else 1
+            ysign = int(abs(deltay)/deltay) if deltay != 0 else 1
+
+            x_axis = (
+                range(attacker.position[0], target.position[0], xsign) or
+                [attacker.position[0]]
+            )
+
+            y_axis = (
+                range(attacker.position[1], target.position[1], ysign) or
+                [attacker.position[1]]
+            )
+            if trajectory_type == 'horizontal':
+                trajectory = [(x, attacker.position[1]) for x in x_axis]
+            elif trajectory_type == 'vertical':
+                trajectory = [(attacker.position[0], y) for y in y_axis]
+            else:
+                trajectory = [(x, y) for x, y in zip(x_axis, y_axis)]
+            return [p for p in trajectory if p != attacker.position]
+        return []
+
+    def _threats_to_the_king(self, player: Literal['white', 'black']) -> List[AbstractChessPiece]:
+        """
+        Method for retrieving all pieces that are a threat to
+        the king, e.g., enemy units that in one turn can kill the king.
+        NOTE: In chess there is only 1 threat to the king at a time.
+
+        Returns a list of chess pieces that are threats.
+        """
+        threats_id = []
+        opponent = self.switch[player]
+
+        # Get king position
+        if player == 'black':
+            king = self.get_black_king()[-1]
+        elif player == 'white':
+            king = self.get_white_king()[-1]
+
+        king_position = king.position
+
+        # Get all possible moves for opponent player
+        opponent_actions = self.get_all_possible_actions(opponent)
+
+        # If opponent moves overlap with king position,
+        # then there is a check
+        for _, pieces in opponent_actions.items():
+            for piece in pieces:
+                if king_position in piece.get('actions'):
+                    threats_id.append(piece.get('id'))
+
+        # Get chess pieces from their IDs
+        threats_piece = []
+        for threat in threats_id:
+            threats_piece.append(self.get_piece_by_id(id=threat, player=opponent))
+
+        return threats_piece
+
+    def _player_is_in_check(self, player: Literal['white', 'black']) -> bool:
         """
         Method for evaluating whether player is in check.
 
         Returns
         ----
-        bool,
-            True, if player has checked opponent.
-            False, otherwise
+            True, if player is in check.
+            False, otherwise.
         """
-        # Get enemy king position
+        threats = self._threats_to_the_king(player)
+        return len(threats) > 0
+
+    def _king_cannot_move(self, player: Literal['white', 'black']) -> bool:
+        """
+        Method for checking whether king can move.
+
+        Returns
+        ----
+            True,  if king cannot move.
+            False, if king can move.
+        """
+        # Get king position
         if player == 'black':
             king = self.get_black_king()[-1]
         elif player == 'white':
             king = self.get_white_king()[-1]
+
+        moves = self.get_possible_actions(id=king.id, color=player)
+
+        return len(moves) == 0
+
+    def _cannot_protect_king(self, player: Literal['white', 'black']) -> bool:
+        """
+        Method for checking whether other units can protect the king.
+        For example, by killing the threat or by blocking the hit.
+
+        Returns
+        ----
+            True, if king cannot be protected.
+            False, if king can be protected.
+        """
+        threats = self._threats_to_the_king(player)
+
+        # If no threats, there is no need to protect
+        # hence we return False
+        if len(threats) == 0:
+            return False
+
+        # The assumption is that there can be only 1 threat
+        # at a time in chess.
+        if len(threats) > 1:
+            # TODO: Logging of errors
+            raise GameError(
+                'Unknown game state. More than one attacking king at the same time.'
+            )
+
+        # Retrieve information about the threat
+        threat = threats[-1]
+        threat_position = threat.position
+
+        ally_actions = self.get_all_possible_actions(player=player)
+        if player == 'white':
+            king = self.get_white_king()[0]
         else:
-            raise ValueError(f'Unknown player [{player}]')
-        king_position = king.position
+            king = self.get_black_king()[0]
 
-        # Get all possible moves for opponent player
-        opponent_actions = self.get_all_possible_actions(self.switch[player])
-
-        # If moves overlap with enemy king position,
-        # then there is a check
-        for _, pieces in opponent_actions.items():
+        attack_trajectory = set(self.attack_trajectory(
+            attacker=threat,
+            target=king
+        ))
+        for _, pieces in ally_actions.items():
             for piece in pieces:
-                if king_position in piece.get('actions'):
-                    return True
-        return False
+                ally_piece_actions = set(piece.get('actions'))
+                # See whether an ally unit can kill the threat.
+                if threat_position in ally_piece_actions:
+                    return False
 
-    def check_game_state(self):
-        # --- Checkmate ---
+                # See whether ally unit can block the attack.
+                if len(attack_trajectory.intersection(ally_piece_actions)) > 0:
+                    return False
+        return True
 
-        # --- Check ---
-        pass
+    def is_checkmate(self, player: Literal['white', 'black']):
+        """
+        Method for evaluating game for checkmate.
+        """
+        is_in_check = self._player_is_in_check(player)
+        king_cannot_move = self._king_cannot_move(player)
+        cannot_protect_king = self._cannot_protect_king(player)
+        return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
         self,

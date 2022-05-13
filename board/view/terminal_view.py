@@ -135,6 +135,9 @@ class TerminalView(View):
 
         return option_selected, option_index
 
+    def surrender_message(self, player: str) -> None:
+        print(f'Player {player} surrendered. Game over.')
+
     def await_input(self, possible_actions: dict) -> dict:
         """
         Method for showing console menu that awaits
