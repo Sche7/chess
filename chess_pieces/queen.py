@@ -1,5 +1,6 @@
 from chess_pieces.abstract import AbstractChessPiece
 
+
 class Queen(AbstractChessPiece):
 
     @property
