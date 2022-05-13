@@ -1,4 +1,4 @@
-from chess_pieces import AbstractChessPiece
+from chess_pieces.abstract import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
 from typing import Dict, List, Literal, Type, Optional, Tuple, Union

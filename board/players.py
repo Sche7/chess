@@ -1,12 +1,14 @@
 from typing import Union
+from collections import defaultdict
 from chess_pieces import Color
-from chess_pieces import AbstractChessPiece
+from chess_pieces.abstract import AbstractChessPiece
+from chess_pieces.pawn import Pawn
 
 
 class Player:
     def __init__(self, color: Color):
         self.color = color
-        self.pieces = {}
+        self.chess_pieces = defaultdict(dict)
 
     def __eq__(self, other: Union[str, object]) -> bool:
         if isinstance(other, str):
@@ -15,10 +17,14 @@ class Player:
 
     def add_chess_piece(self, chess_piece: AbstractChessPiece) -> None:
         id = chess_piece.id
-        self.pieces[id] = chess_piece
+        name = chess_piece.name
+        self.chess_pieces[name][id] = chess_piece
 
     def remove_chess_piece(self, chess_piece_id: int) -> None:
         self.pieces.pop(chess_piece_id)
+
+    def get_pawns(self):
+        return self.chess_pieces[Pawn.__name__]
 
 
 class ChessPlayers:
