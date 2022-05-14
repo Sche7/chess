@@ -135,6 +135,9 @@ class TerminalView(View):
 
         return option_selected, option_index
 
+    def game_over_message(self, player: str):
+        print(f'Player {player} won. Game over.')
+
     def surrender_message(self, player: str) -> None:
         print(f'Player {player} surrendered. Game over.')
 
