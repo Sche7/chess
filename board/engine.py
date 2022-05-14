@@ -1,15 +1,13 @@
-from chess_pieces import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
 from typing import Dict, List, Literal, Type, Optional, Tuple, Union
+
 from board.files import read_yaml
-from chess_pieces.pawn import Pawn
-from chess_pieces.bishop import Bishop
-from chess_pieces.knight import Knight
-from chess_pieces.rook import Rook
-from chess_pieces.queen import Queen
-from chess_pieces.king import King
-from chess_pieces.schema import Color, Group
+from chess_pieces.abstract import AbstractChessPiece
+from chess_pieces import (
+    Pawn, Bishop, Knight, Rook, Queen, King,
+    Color, Group
+)
 
 
 class GameError(Exception):
@@ -18,7 +16,7 @@ class GameError(Exception):
 
 class Engine:
 
-    switch = {
+    opponent_of = {
         'white': 'black',
         'black': 'white'
     }
@@ -240,7 +238,7 @@ class Engine:
         Returns a list of chess pieces that are threats.
         """
         threats_id = []
-        opponent = self.switch[player]
+        opponent = self.opponent_of[player]
 
         # Get king position
         if player == 'black':
@@ -386,7 +384,7 @@ class Engine:
         # Kill enemy piece if new position hits an enemy
         enemy_pieces = [
             piece for piece in
-            self.pieces.get(self.switch[player]) if piece.status
+            self.pieces.get(self.opponent_of[player]) if piece.status
         ]
 
         for enemy_piece in enemy_pieces:
@@ -421,7 +419,7 @@ class Engine:
             The color of the chess pieces to retrieve
 
         """
-        return self._get_all_pieces_by_color(color=self.switch[color])
+        return self._get_all_pieces_by_color(color=self.opponent_of[color])
 
     def _get_ally_pieces(self, color: Literal['white', 'black']):
         """
@@ -474,7 +472,7 @@ class Engine:
         color: Literal['white', 'black']
             The color of the chess pieces to retrieve
         """
-        return self._get_positions_by_color(color=self.switch[color])
+        return self._get_positions_by_color(color=self.opponent_of[color])
 
     def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
         """
@@ -955,6 +953,14 @@ class Engine:
             color=color
         )
 
+        # Check for legal horizontal_moves moves
+        moves = [
+            move for move in moves if self.vertical_move_is_legal(
+                start_position=position,
+                move=move,
+                color=piece.color
+            )
+        ]
         return moves
 
     def rook_rules(self, piece: Type[AbstractChessPiece]):
