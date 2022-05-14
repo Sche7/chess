@@ -1,3 +1,4 @@
+import pytest
 from board.engine import Engine
 
 
@@ -157,3 +158,52 @@ def test_pawn_enemy_blocking(config_path):
     moves_4_5 = engine.apply_game_rules(black_pawn_4_5)
     assert black_pawn_4_5.position == (4, 5)
     assert len(moves_4_5) == 0
+
+
+@pytest.mark.parametrize('blocker', ['enemy', 'ally'])
+def test_pawn_double_jump_blocked(config_path, blocker):
+    """
+    Test that pawn cannot double jump
+    if an enemy or ally i blocking the path
+    in start position.
+    """
+    engine = Engine(config_path)
+    engine.initiate_empty_board()
+
+    # See that board is empty
+    assert len(engine.pieces['white']) == 0
+    assert len(engine.pieces['black']) == 0
+
+    # Spawn white pawn
+    engine.spawn_piece(
+        piece_nr=1,
+        position=(1, 1)
+    )
+
+    if blocker == 'ally':
+        # Spawn white rook
+        engine.spawn_piece(
+            piece_nr=2,
+            position=(1, 2)
+        )
+        # See that two white chess pieces is spawned
+        assert len(engine.pieces['white']) == 2
+    else:
+        # Spawn black pawn
+        engine.spawn_piece(
+            piece_nr=7,
+            position=(1, 2)
+        )
+        # See that one white pawn is spawned
+        assert len(engine.pieces['white']) == 1
+
+        # See that black white pawn is spawned
+        assert len(engine.pieces['black']) == 1
+
+    white_pawn_1_1 = engine.get_white_pawns()[0]
+
+    # See that first white pawn is blocked
+    moves_1_1 = engine.apply_game_rules(white_pawn_1_1)
+
+    assert white_pawn_1_1.position == (1, 1)
+    assert len(moves_1_1) == 0
