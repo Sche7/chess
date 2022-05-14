@@ -39,9 +39,6 @@ class Chess:
         self.game_state = self.engine.start_game()
         self.displayer.initialize()
         while not self.game_over:
-            # Evaluate game state for player
-            self.engine.is_checkmate(player=self.player_turn)
-
             # Display board
             self.displayer.display_board(self.game_state)
             self.displayer.display_player_turn(self.player_turn)
@@ -63,5 +60,12 @@ class Chess:
                 player_input=player_input,
                 game_state=self.game_state
             )
+
+            # Evaluate game state for player
+            if self.engine.is_checkmate(player=self.switch[self.player_turn]):
+                self.game_over = True
+                self.displayer.game_over_message(
+                    player=self.player_turn
+                )
 
             self.switch_turn()
