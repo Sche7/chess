@@ -1,15 +1,13 @@
-from chess_pieces.abstract import AbstractChessPiece
 import numpy as np
 from nptyping import NDArray
 from typing import Dict, List, Literal, Type, Optional, Tuple, Union
+
 from board.files import read_yaml
-from chess_pieces.pawn import Pawn
-from chess_pieces.bishop import Bishop
-from chess_pieces.knight import Knight
-from chess_pieces.rook import Rook
-from chess_pieces.queen import Queen
-from chess_pieces.king import King
-from chess_pieces.schema import Color, Group
+from chess_pieces.abstract import AbstractChessPiece
+from chess_pieces import (
+    Pawn, Bishop, Knight, Rook, Queen, King,
+    Color, Group
+)
 
 
 class GameError(Exception):
