@@ -25,7 +25,7 @@ def test_player_to_string_comparison():
     assert player != 'black'
 
 
-def test_player_add_chess_piece():
+def test_add_remove_chess_piece():
     """
     Test that a chess piece can be added
     to Player instance.
@@ -37,8 +37,40 @@ def test_player_add_chess_piece():
         group=Group.lower,
         color=Color.white
     )
+
+    # See that chess pieces can be added
     player_1.add_chess_piece(pawn)
     assert len(player_1.chess_pieces['Pawn']) == 1
+
+    # See that chess pieces can be removed
+    player_1.remove_chess_piece(pawn.name, pawn.id)
+    assert len(player_1.chess_pieces['Pawn']) == 0
+
+
+def test_kill_chess_piece():
+    """
+    Test that Player.kill kills chess piece as expected
+    """
+    player_1 = Player(Color.white)
+    pawn = Pawn(
+        position=(0, 0),
+        piece_nr=1,
+        group=Group.lower,
+        color=Color.white
+    )
+
+    # See that pawn was added
+    player_1.add_chess_piece(pawn)
+    assert len(player_1.chess_pieces['Pawn']) == 1, (
+        "Expected 1 pawn"
+    )
+
+    # See that chess piece is killed as expected
+    player_1.kill(
+        chess_piece_name=pawn.name,
+        chess_piece_id=pawn.id
+    )
+    assert player_1.chess_pieces[pawn.name][pawn.id].status == 0
 
 
 def test_chess_players():
@@ -48,9 +80,12 @@ def test_chess_players():
     """
     chess_players = ChessPlayers()
 
+    # See that white starts as active player
+    # and black starts as inactive player
     assert chess_players.active_player == 'white'
     assert chess_players.inactive_player == 'black'
 
+    # See switch turn works
     chess_players.switch_turn()
     assert chess_players.active_player == 'black'
     assert chess_players.inactive_player == 'white'
