@@ -21,12 +21,15 @@ This section describes and overview of the development progress and what is in t
     - Bishop
 - Kill events, when a piece attacks opponent piece
 - Chess board is viewable in the terminal
+- Special game rules:
+    - Checkmate
 
 ## Missing implementation that is planned:
 - Special game rules, for example:
     - Promotion
     - En Passant
     - Castling 
-    - Check, Checkmate, and stalemate
+    - Check
+    - stalemate
 - Logging of actions taken by players
 - Other chess board UI using for example Pygame (future ideas)
