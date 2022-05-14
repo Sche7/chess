@@ -103,6 +103,11 @@ class Player:
 
 
 class ChessPlayers:
+    """
+    Class that contains two players, white and black,
+    for chess game. It keeps track on which player
+    is active and inactive during game play.
+    """
     def __init__(self):
         self.white = Player(color=Color.white)
         self.black = Player(color=Color.black)
