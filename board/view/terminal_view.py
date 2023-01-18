@@ -24,12 +24,14 @@ from string import ascii_lowercase
 import numpy as np
 
 from board.view import View
+from board.files import read_yaml
 from simple_term_menu import TerminalMenu
 
 
 class TerminalView(View):
     def __init__(self, config_path: str):
-        super().__init__(config_path=config_path)
+        self.config = read_yaml(config_path)
+        self.representation = self.config['PIECE_REPRESENTATION']
 
     def initialize(self):
         """

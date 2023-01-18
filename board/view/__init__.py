@@ -1,5 +1,4 @@
 from nptyping import NDArray
-from board.files import read_yaml
 from abc import abstractmethod
 
 
@@ -7,10 +6,6 @@ class View:
     """
     Interface for chess viewer
     """
-    def __init__(self, config_path: str):
-        self.config = read_yaml(config_path)
-        self.representation = self.config['PIECE_REPRESENTATION']
-
     @abstractmethod
     def initialize(self):
         raise NotImplementedError('method "initialize" is not implemented')
