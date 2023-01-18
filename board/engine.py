@@ -4,10 +4,7 @@ from typing import Dict, List, Literal, Type, Optional, Tuple, Union
 
 from board.files import read_yaml
 from chess_pieces.abstract import AbstractChessPiece
-from chess_pieces import (
-    Pawn, Bishop, Knight, Rook, Queen, King,
-    Color, Group
-)
+from chess_pieces import Pawn, Bishop, Knight, Rook, Queen, King, Color, Group
 
 
 class GameError(Exception):
@@ -16,15 +13,12 @@ class GameError(Exception):
 
 class Engine:
 
-    opponent_of = {
-        'white': 'black',
-        'black': 'white'
-    }
+    opponent_of = {"white": "black", "black": "white"}
 
     def __init__(self, config_path: str):
         self.config = read_yaml(config_path)
-        self.representation = self.config['PIECE_REPRESENTATION']
-        self.start_state = self.config['GAME_START']
+        self.representation = self.config["PIECE_REPRESENTATION"]
+        self.start_state = self.config["GAME_START"]
         self.pieces = {}
 
     def start_game(self) -> NDArray:
@@ -47,10 +41,7 @@ class Engine:
         # Starting game
         return game_state
 
-    def initiate_board_from_array(
-        self,
-        game_state: Union[NDArray, list]
-    ):
+    def initiate_board_from_array(self, game_state: Union[NDArray, list]):
         """
         Method for initiating chess board based on array input, 'game_state'.
         Current only supports array with dimension 8x8.
@@ -61,8 +52,8 @@ class Engine:
         # Make sure that elements are integers.
         game_state = game_state.astype(int)
 
-        assert game_state.shape[0] == 8, 'Board has to have 8 rows'
-        assert game_state.shape[1] == 8, 'Board has to have 8 columns'
+        assert game_state.shape[0] == 8, "Board has to have 8 rows"
+        assert game_state.shape[1] == 8, "Board has to have 8 columns"
         self.pieces = self.initiate_pieces(board=game_state)
 
         return game_state
@@ -92,18 +83,15 @@ class Engine:
         position: tuple
             A tuple where the chess piece is desired to be spawned.
         """
-        kwargs = {
-            'position': position,
-            'piece_nr': piece_nr
-        }
+        kwargs = {"position": position, "piece_nr": piece_nr}
         # TODO: Eventually make it possible to
         # open game with lower/upper options
         if (piece_nr < 7) and (piece_nr > 0):
-            kwargs['group'] = Group.lower
-            kwargs['color'] = Color.white
+            kwargs["group"] = Group.lower
+            kwargs["color"] = Color.white
         elif (piece_nr >= 7) and (piece_nr <= 12):
-            kwargs['group'] = Group.upper
-            kwargs['color'] = Color.black
+            kwargs["group"] = Group.upper
+            kwargs["color"] = Color.black
 
         if piece_nr in [1, 7]:
             return Pawn(**kwargs)
@@ -138,43 +126,35 @@ class Engine:
         # Loop through all entries in array to create pieces
         for i in range(nrows):
             for j in range(ncols):
-                created_piece = self.create_piece(
-                                    piece_nr=board[i, j],
-                                    position=(i, j)
-                                )
+                created_piece = self.create_piece(piece_nr=board[i, j], position=(i, j))
 
                 # If piece is created, distribute piece
                 # to respective color group
                 if created_piece:
-                    if created_piece.color.name == 'white':
+                    if created_piece.color.name == "white":
                         white_pieces.append(created_piece)
-                    elif created_piece.color.name == 'black':
+                    elif created_piece.color.name == "black":
                         black_pieces.append(created_piece)
 
-        return {
-            'white': white_pieces,
-            'black': black_pieces
-        }
+        return {"white": white_pieces, "black": black_pieces}
 
     def spawn_piece(self, piece_nr: int, position: tuple) -> None:
         created_piece = self.create_piece(piece_nr=piece_nr, position=position)
 
         if (piece_nr < 7) and (piece_nr > 0):
-            self.pieces['white'].append(created_piece)
+            self.pieces["white"].append(created_piece)
         elif (piece_nr >= 7) and (piece_nr <= 12):
-            self.pieces['black'].append(created_piece)
+            self.pieces["black"].append(created_piece)
         else:
-            raise ValueError('Nothing was added')
+            raise ValueError("Nothing was added")
 
         name = created_piece.name
         color = created_piece.color.name
         position = created_piece.position
-        print(f'Spawned a {name} for {color} at position {position}')
+        print(f"Spawned a {name} for {color} at position {position}")
 
     def attack_trajectory(
-        self,
-        attacker: AbstractChessPiece,
-        target: AbstractChessPiece
+        self, attacker: AbstractChessPiece, target: AbstractChessPiece
     ) -> List[tuple]:
         """
         Method that returns the path trajectory of an attack (excluding
@@ -186,50 +166,56 @@ class Engine:
         then an empty list is returned.
         Note that Pawn, Knight, and King in theory do not have an attack trajectory.
         """
+
         def _trajectory_type(attacker, target):
             """Evaluate attack trajectory type (diagonal, vertical, or horizontal)"""
             if abs(attacker[0] - target[0]) == abs(attacker[1] - target[1]):
-                return 'diagonal'
+                return "diagonal"
             elif (attacker[0] - target[0] == 0) and (attacker[1] - target[1] != 0):
-                return 'vertical'
+                return "vertical"
             elif (attacker[0] - target[0] != 0) and (attacker[1] - target[1] == 0):
-                return 'horizontal'
+                return "horizontal"
 
-        trajectory_type = _trajectory_type(attacker=attacker.position, target=target.position)
+        trajectory_type = _trajectory_type(
+            attacker=attacker.position, target=target.position
+        )
         if trajectory_type is None:
-            raise ValueError('Trajectory type is unknown')
+            raise ValueError("Trajectory type is unknown")
 
         piece_with_trajectory = [
-            2, 8,    # Rook
-            4, 10,   # Bishop
-            5, 11,   # Queen
+            2,
+            8,  # Rook
+            4,
+            10,  # Bishop
+            5,
+            11,  # Queen
         ]
         if attacker.piece_nr in piece_with_trajectory:
             deltax = target.position[0] - attacker.position[0]
             deltay = target.position[1] - attacker.position[1]
 
-            xsign = int(abs(deltax)/deltax) if deltax != 0 else 1
-            ysign = int(abs(deltay)/deltay) if deltay != 0 else 1
+            xsign = int(abs(deltax) / deltax) if deltax != 0 else 1
+            ysign = int(abs(deltay) / deltay) if deltay != 0 else 1
 
-            x_axis = (
-                range(attacker.position[0], target.position[0], xsign) or
-                [attacker.position[0]]
-            )
+            x_axis = range(attacker.position[0], target.position[0], xsign) or [
+                attacker.position[0]
+            ]
 
-            y_axis = (
-                range(attacker.position[1], target.position[1], ysign) or
-                [attacker.position[1]]
-            )
-            if trajectory_type == 'horizontal':
+            y_axis = range(attacker.position[1], target.position[1], ysign) or [
+                attacker.position[1]
+            ]
+            if trajectory_type == "horizontal":
                 trajectory = [(x, attacker.position[1]) for x in x_axis]
-            elif trajectory_type == 'vertical':
+            elif trajectory_type == "vertical":
                 trajectory = [(attacker.position[0], y) for y in y_axis]
             else:
                 trajectory = [(x, y) for x, y in zip(x_axis, y_axis)]
             return [p for p in trajectory if p != attacker.position]
         return []
 
-    def _threats_to_the_king(self, player: Literal['white', 'black']) -> List[AbstractChessPiece]:
+    def _threats_to_the_king(
+        self, player: Literal["white", "black"]
+    ) -> List[AbstractChessPiece]:
         """
         Method for retrieving all pieces that are a threat to
         the king, e.g., enemy units that in one turn can kill the king.
@@ -241,9 +227,9 @@ class Engine:
         opponent = self.opponent_of[player]
 
         # Get king position
-        if player == 'black':
+        if player == "black":
             king = self.get_black_king()[-1]
-        elif player == 'white':
+        elif player == "white":
             king = self.get_white_king()[-1]
 
         king_position = king.position
@@ -255,8 +241,8 @@ class Engine:
         # then there is a check
         for _, pieces in opponent_actions.items():
             for piece in pieces:
-                if king_position in piece.get('actions'):
-                    threats_id.append(piece.get('id'))
+                if king_position in piece.get("actions"):
+                    threats_id.append(piece.get("id"))
 
         # Get chess pieces from their IDs
         threats_piece = []
@@ -265,7 +251,7 @@ class Engine:
 
         return threats_piece
 
-    def _player_is_in_check(self, player: Literal['white', 'black']) -> bool:
+    def _player_is_in_check(self, player: Literal["white", "black"]) -> bool:
         """
         Method for evaluating whether player is in check.
 
@@ -277,7 +263,7 @@ class Engine:
         threats = self._threats_to_the_king(player)
         return len(threats) > 0
 
-    def _king_cannot_move(self, player: Literal['white', 'black']) -> bool:
+    def _king_cannot_move(self, player: Literal["white", "black"]) -> bool:
         """
         Method for checking whether king can move.
 
@@ -287,16 +273,16 @@ class Engine:
             False, if king can move.
         """
         # Get king position
-        if player == 'black':
+        if player == "black":
             king = self.get_black_king()[-1]
-        elif player == 'white':
+        elif player == "white":
             king = self.get_white_king()[-1]
 
         moves = self.get_possible_actions(id=king.id, color=player)
 
         return len(moves) == 0
 
-    def _cannot_protect_king(self, player: Literal['white', 'black']) -> bool:
+    def _cannot_protect_king(self, player: Literal["white", "black"]) -> bool:
         """
         Method for checking whether other units can protect the king.
         For example, by killing the threat or by blocking the hit.
@@ -318,7 +304,7 @@ class Engine:
         if len(threats) > 1:
             # TODO: Logging of errors
             raise GameError(
-                'Unknown game state. More than one attacking king at the same time.'
+                "Unknown game state. More than one attacking king at the same time."
             )
 
         # Retrieve information about the threat
@@ -326,18 +312,15 @@ class Engine:
         threat_position = threat.position
 
         ally_actions = self.get_all_possible_actions(player=player)
-        if player == 'white':
+        if player == "white":
             king = self.get_white_king()[0]
         else:
             king = self.get_black_king()[0]
 
-        attack_trajectory = set(self.attack_trajectory(
-            attacker=threat,
-            target=king
-        ))
+        attack_trajectory = set(self.attack_trajectory(attacker=threat, target=king))
         for _, pieces in ally_actions.items():
             for piece in pieces:
-                ally_piece_actions = set(piece.get('actions'))
+                ally_piece_actions = set(piece.get("actions"))
                 # See whether an ally unit can kill the threat.
                 if threat_position in ally_piece_actions:
                     return False
@@ -347,7 +330,7 @@ class Engine:
                     return False
         return True
 
-    def is_checkmate(self, player: Literal['white', 'black']):
+    def is_checkmate(self, player: Literal["white", "black"]):
         """
         Method for evaluating game for checkmate.
         """
@@ -357,20 +340,14 @@ class Engine:
         return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
-        self,
-        player: Literal['white', 'black'],
-        player_input: dict,
-        game_state: NDArray
+        self, player: Literal["white", "black"], player_input: dict, game_state: NDArray
     ) -> NDArray:
         """
         Method for making updates according to player input.
         """
-        piece_id = player_input.get('id')
-        action = player_input.get('action')
-        piece = self.get_piece_by_id(
-            id=piece_id,
-            player=player
-        )
+        piece_id = player_input.get("id")
+        action = player_input.get("action")
+        piece = self.get_piece_by_id(id=piece_id, player=player)
         old_position = piece.position
         piece_nr = piece.piece_nr
 
@@ -378,13 +355,12 @@ class Engine:
         piece.set_position(position=action)
 
         # Update board
-        game_state[old_position] = 0   # empty old position
+        game_state[old_position] = 0  # empty old position
         game_state[action] = piece_nr  # move chess piece to new position
 
         # Kill enemy piece if new position hits an enemy
         enemy_pieces = [
-            piece for piece in
-            self.pieces.get(self.opponent_of[player]) if piece.status
+            piece for piece in self.pieces.get(self.opponent_of[player]) if piece.status
         ]
 
         for enemy_piece in enemy_pieces:
@@ -394,7 +370,7 @@ class Engine:
 
         return game_state
 
-    def _get_all_pieces_by_color(self, color: Literal['white', 'black']):
+    def _get_all_pieces_by_color(self, color: Literal["white", "black"]):
         """
         Collect all alive pieces by color
 
@@ -404,12 +380,9 @@ class Engine:
             The color of the chess pieces to retrieve
 
         """
-        return [
-            piece for piece in
-            self.pieces.get(color) if piece.status
-        ]
+        return [piece for piece in self.pieces.get(color) if piece.status]
 
-    def _get_enemy_pieces(self, color: Literal['white', 'black']):
+    def _get_enemy_pieces(self, color: Literal["white", "black"]):
         """
         Collect alive chess pieces belonging to the opponent
 
@@ -421,7 +394,7 @@ class Engine:
         """
         return self._get_all_pieces_by_color(color=self.opponent_of[color])
 
-    def _get_ally_pieces(self, color: Literal['white', 'black']):
+    def _get_ally_pieces(self, color: Literal["white", "black"]):
         """
         Collect alive ally chess pieces belonging to the current player turn
 
@@ -433,7 +406,7 @@ class Engine:
         """
         return self._get_all_pieces_by_color(color=color)
 
-    def _get_positions_by_color(self, color: Literal['white', 'black']) -> List[tuple]:
+    def _get_positions_by_color(self, color: Literal["white", "black"]) -> List[tuple]:
         """
         Collect all positions of chess pieces by color.
         This method is different from '_get_all_pieces_by_color' as
@@ -445,12 +418,9 @@ class Engine:
             The color of the chess pieces to retrieve
 
         """
-        return [
-            piece.position for piece in
-            self.pieces.get(color) if piece.status
-        ]
+        return [piece.position for piece in self.pieces.get(color) if piece.status]
 
-    def _get_ally_positions(self, color: Literal['white', 'black']):
+    def _get_ally_positions(self, color: Literal["white", "black"]):
         """
         Collect positions of alive ally chess pieces belonging
         to the current player turn.
@@ -463,7 +433,7 @@ class Engine:
         """
         return self._get_positions_by_color(color=color)
 
-    def _get_enemy_positions(self, color: Literal['white', 'black']):
+    def _get_enemy_positions(self, color: Literal["white", "black"]):
         """
         Collect positions of alive chess pieces belonging to the opponent.
 
@@ -479,27 +449,25 @@ class Engine:
         Method for applying game rules based on piece type.
         """
 
-        if piece.name == 'Pawn':
+        if piece.name == "Pawn":
             moves = self.pawn_rules(piece=piece)
-        elif piece.name == 'Rook':
+        elif piece.name == "Rook":
             moves = self.rook_rules(piece=piece)
-        elif piece.name == 'Bishop':
+        elif piece.name == "Bishop":
             moves = self.bishop_rules(piece=piece)
-        elif piece.name == 'Knight':
+        elif piece.name == "Knight":
             moves = self.knight_rules(piece=piece)
-        elif piece.name == 'Queen':
+        elif piece.name == "Queen":
             moves = self.queen_rules(piece=piece)
-        elif piece.name == 'King':
+        elif piece.name == "King":
             moves = self.king_rules(piece=piece)
         else:
-            raise ValueError(f'Unknown chess piece [{piece.name}] used.')
+            raise ValueError(f"Unknown chess piece [{piece.name}] used.")
 
         return moves
 
     def get_piece_by_id(
-        self,
-        id: int,
-        player: Literal['white', 'black']
+        self, id: int, player: Literal["white", "black"]
     ) -> Type[AbstractChessPiece]:
         """
         Get piece in game by instance ID.
@@ -516,14 +484,16 @@ class Engine:
         piece = [piece for piece in player_pieces if piece.id == id]
 
         if len(piece) == 0:
-            raise ValueError(f'ID [{id}] does not exist')
+            raise ValueError(f"ID [{id}] does not exist")
 
         if len(piece) > 1:
-            raise ValueError(f'Two or more instances has same id [{id}]')
+            raise ValueError(f"Two or more instances has same id [{id}]")
 
         return piece[0]
 
-    def get_possible_actions(self, id: int, color: Literal['white', 'black']) -> List[tuple]:
+    def get_possible_actions(
+        self, id: int, color: Literal["white", "black"]
+    ) -> List[tuple]:
         """
         Get all possible actions on specific chess piece
         on desired player color.
@@ -538,7 +508,7 @@ class Engine:
 
     def get_all_possible_actions(
         self,
-        player: Literal['white', 'black'],
+        player: Literal["white", "black"],
     ) -> Dict[str, list]:
         """
         Get possible actions for all pieces that belong to the desired
@@ -596,11 +566,11 @@ class Engine:
             color = piece.color.name
             piece_id = piece.id
             piece_info = {
-                    'actions': self.get_possible_actions(id=piece_id, color=color),
-                    'id': piece_id,
-                    'position': piece.position,
-                    'piece_nr': piece.piece_nr
-                }
+                "actions": self.get_possible_actions(id=piece_id, color=color),
+                "id": piece_id,
+                "position": piece.position,
+                "piece_nr": piece.piece_nr,
+            }
 
             # If key is already created, then append to
             # existing list, else create key in dict.
@@ -615,26 +585,18 @@ class Engine:
         """
         Method to filter on list of pieces
         """
-        return [
-            piece for piece in pieces
-            if piece.name.lower() == name.lower()
-        ]
+        return [piece for piece in pieces if piece.name.lower() == name.lower()]
 
     def _remove_ally_positions(self, moves: list, color: Color) -> list:
         """
         Removes moves where allies are standing relative to input piece
         """
         ally_positions = self._get_ally_positions(color=color.name)
-        moves = [
-            move for move in moves if move not in ally_positions
-        ]
+        moves = [move for move in moves if move not in ally_positions]
         return moves
 
     def horizontal_move_is_legal(
-        self,
-        start_position: tuple,
-        move: tuple,
-        color: Color
+        self, start_position: tuple, move: tuple, color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -643,7 +605,7 @@ class Engine:
         x = start_position[0]
         ally_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self._get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name),
         )
         # Remove the starting position itself
         ally_horizontal = [
@@ -652,26 +614,25 @@ class Engine:
 
         enemy_horizontal = self.get_horizontal_moves(
             start_position=start_position,
-            moves=self._get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name),
         )
-        not_walk_through_allies = all([
-            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
-            ((pos[0] < move[0]) and (pos[0] < x))      # Left
-            for pos in ally_horizontal
-        ])
-        not_walk_through_enemies = all([
-            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
-            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
-            for pos in enemy_horizontal
-        ])
+        not_walk_through_allies = all(
+            [
+                ((pos[0] > move[0]) and (pos[0] > x))
+                or ((pos[0] < move[0]) and (pos[0] < x))  # Right  # Left
+                for pos in ally_horizontal
+            ]
+        )
+        not_walk_through_enemies = all(
+            [
+                ((pos[0] >= move[0]) and (pos[0] >= x))
+                or ((pos[0] <= move[0]) and (pos[0] <= x))  # Right  # Left
+                for pos in enemy_horizontal
+            ]
+        )
         return not_walk_through_allies and not_walk_through_enemies
 
-    def vertical_move_is_legal(
-        self,
-        start_position: tuple,
-        move: tuple,
-        color: Color
-    ):
+    def vertical_move_is_legal(self, start_position: tuple, move: tuple, color: Color):
         """
         Checks whether move is legal based on position
         of enemy and ally pieces
@@ -679,33 +640,33 @@ class Engine:
         y = start_position[1]
         ally_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self._get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name),
         )
         # Remove the starting position itself
-        ally_vertical = [
-            coord for coord in ally_vertical if coord != start_position
-        ]
+        ally_vertical = [coord for coord in ally_vertical if coord != start_position]
 
         enemy_vertical = self.get_vertical_moves(
             start_position=start_position,
-            moves=self._get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name),
         )
-        not_walk_through_allies = all([
-            ((pos[1] > move[1]) and (pos[1] > y)) or   # Up
-            ((pos[1] < move[1]) and (pos[1] < y))      # Down
-            for pos in ally_vertical
-        ])
-        not_walk_through_enemies = all([
-            ((pos[1] >= move[1]) and (pos[1] >= y)) or   # Up
-            ((pos[1] <= move[1]) and (pos[1] <= y))      # Down
-            for pos in enemy_vertical
-        ])
+        not_walk_through_allies = all(
+            [
+                ((pos[1] > move[1]) and (pos[1] > y))
+                or ((pos[1] < move[1]) and (pos[1] < y))  # Up  # Down
+                for pos in ally_vertical
+            ]
+        )
+        not_walk_through_enemies = all(
+            [
+                ((pos[1] >= move[1]) and (pos[1] >= y))
+                or ((pos[1] <= move[1]) and (pos[1] <= y))  # Up  # Down
+                for pos in enemy_vertical
+            ]
+        )
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_straight_path(
-        self,
-        start_position: tuple,
-        piece: Type[AbstractChessPiece]
+        self, start_position: tuple, piece: Type[AbstractChessPiece]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the straight path
@@ -714,38 +675,29 @@ class Engine:
         output = []
 
         vertical_moves = self.get_vertical_moves(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
         horizontal_moves = self.get_horizontal_moves(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
 
         # Horizontal
         for move in horizontal_moves:
             if self.horizontal_move_is_legal(
-                start_position=start_position,
-                move=move,
-                color=piece.color
+                start_position=start_position, move=move, color=piece.color
             ):
                 output.append(move)
         # Vertical
         for move in vertical_moves:
             if self.vertical_move_is_legal(
-                start_position=start_position,
-                move=move,
-                color=piece.color
+                start_position=start_position, move=move, color=piece.color
             ):
                 output.append(move)
 
         return output
 
     def diagonal_incline_move_is_legal(
-        self,
-        start_position: tuple,
-        move: tuple,
-        color: Color
+        self, start_position: tuple, move: tuple, color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -754,34 +706,33 @@ class Engine:
         x = start_position[0]
         ally_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self._get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name),
         )
         # Remove the starting position itself
-        ally_incline = [
-            coord for coord in ally_incline if coord != start_position
-        ]
+        ally_incline = [coord for coord in ally_incline if coord != start_position]
 
         enemy_incline = self.get_diagonal_moves_incline(
             start_position=start_position,
-            moves=self._get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name),
         )
-        not_walk_through_allies = all([
-            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
-            ((pos[0] < move[0]) and (pos[0] < x))      # Left
-            for pos in ally_incline
-        ])
-        not_walk_through_enemies = all([
-            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
-            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
-            for pos in enemy_incline
-        ])
+        not_walk_through_allies = all(
+            [
+                ((pos[0] > move[0]) and (pos[0] > x))
+                or ((pos[0] < move[0]) and (pos[0] < x))  # Right  # Left
+                for pos in ally_incline
+            ]
+        )
+        not_walk_through_enemies = all(
+            [
+                ((pos[0] >= move[0]) and (pos[0] >= x))
+                or ((pos[0] <= move[0]) and (pos[0] <= x))  # Right  # Left
+                for pos in enemy_incline
+            ]
+        )
         return not_walk_through_allies and not_walk_through_enemies
 
     def diagonal_decline_move_is_legal(
-        self,
-        start_position: tuple,
-        move: tuple,
-        color: Color
+        self, start_position: tuple, move: tuple, color: Color
     ) -> bool:
         """
         Checks whether move is legal based on position
@@ -790,33 +741,33 @@ class Engine:
         x = start_position[0]
         ally_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self._get_ally_positions(color=color.name)
+            moves=self._get_ally_positions(color=color.name),
         )
         # Remove the starting position itself
-        ally_decline = [
-            coord for coord in ally_decline if coord != start_position
-        ]
+        ally_decline = [coord for coord in ally_decline if coord != start_position]
 
         enemy_decline = self.get_diagonal_moves_decline(
             start_position=start_position,
-            moves=self._get_enemy_positions(color=color.name)
+            moves=self._get_enemy_positions(color=color.name),
         )
-        not_walk_through_allies = all([
-            ((pos[0] > move[0]) and (pos[0] > x)) or   # Right
-            ((pos[0] < move[0]) and (pos[0] < x))      # Left
-            for pos in ally_decline
-        ])
-        not_walk_through_enemies = all([
-            ((pos[0] >= move[0]) and (pos[0] >= x)) or   # Right
-            ((pos[0] <= move[0]) and (pos[0] <= x))      # Left
-            for pos in enemy_decline
-        ])
+        not_walk_through_allies = all(
+            [
+                ((pos[0] > move[0]) and (pos[0] > x))
+                or ((pos[0] < move[0]) and (pos[0] < x))  # Right  # Left
+                for pos in ally_decline
+            ]
+        )
+        not_walk_through_enemies = all(
+            [
+                ((pos[0] >= move[0]) and (pos[0] >= x))
+                or ((pos[0] <= move[0]) and (pos[0] <= x))  # Right  # Left
+                for pos in enemy_decline
+            ]
+        )
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_diagonal_path(
-        self,
-        start_position: tuple,
-        piece: Type[AbstractChessPiece]
+        self, start_position: tuple, piece: Type[AbstractChessPiece]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the diagonal path
@@ -825,38 +776,29 @@ class Engine:
         output = []
 
         incline_moves = self.get_diagonal_moves_incline(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
         decline_moves = self.get_diagonal_moves_decline(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
 
         # Incline
         for move in incline_moves:
             if self.diagonal_incline_move_is_legal(
-                start_position=start_position,
-                move=move,
-                color=piece.color
+                start_position=start_position, move=move, color=piece.color
             ):
                 output.append(move)
         # Decline
         for move in decline_moves:
             if self.diagonal_decline_move_is_legal(
-                start_position=start_position,
-                move=move,
-                color=piece.color
+                start_position=start_position, move=move, color=piece.color
             ):
                 output.append(move)
 
         return output
 
     def _pawn_rule_handle_double_jump(
-        self,
-        moves: list,
-        position: tuple,
-        color: Literal['white', 'black']
+        self, moves: list, position: tuple, color: Literal["white", "black"]
     ) -> list:
         """
         Private method meant for simplifying pawn rules.
@@ -865,34 +807,22 @@ class Engine:
         Otherwise, the double jump is removed from the allowed movement list.
         """
         start_positions = {
-                    'white': [
-                        (0, 1), (1, 1), (2, 1),
-                        (3, 1), (4, 1), (5, 1),
-                        (6, 1), (7, 1)
-                    ],
-                    'black': [
-                        (0, 6), (1, 6), (2, 6),
-                        (3, 6), (4, 6), (5, 6),
-                        (6, 6), (7, 6)
-                    ]
-                }
+            "white": [(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1)],
+            "black": [(0, 6), (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6)],
+        }
         double_jump = {
-            'white': (position[0], position[1] + 2),
-            'black': (position[0], position[1] - 2)
+            "white": (position[0], position[1] + 2),
+            "black": (position[0], position[1] - 2),
         }
 
         # If pawn is not in starting position, then remove double jump
-        if (position not in start_positions[color] and
-                double_jump[color] in moves):
+        if position not in start_positions[color] and double_jump[color] in moves:
             moves.remove(double_jump[color])
 
         return moves
 
     def _pawn_rule_handle_diagonal_movement(
-        self,
-        moves: list,
-        position: tuple,
-        color: Literal['white', 'black']
+        self, moves: list, position: tuple, color: Literal["white", "black"]
     ):
         """
         Private method meant for simplifying pawn rules.
@@ -903,25 +833,27 @@ class Engine:
         # Diagonal movement only if enemy is there
         enemy_positions = self._get_enemy_positions(color=color)
         moves = [
-            move for move in moves if not (
-                (move[0] - position[0] != 0)        # is diagonal move
-                and (move not in enemy_positions)   # does not hit enemy
+            move
+            for move in moves
+            if not (
+                (move[0] - position[0] != 0)  # is diagonal move
+                and (move not in enemy_positions)  # does not hit enemy
             )
         ]
 
         return moves
 
     def _pawn_rule_enemy_blocking(
-        self,
-        moves: list,
-        position: tuple,
-        color: Literal['white', 'black']
+        self, moves: list, position: tuple, color: Literal["white", "black"]
     ):
         enemy_positions = self._get_enemy_positions(color=color)
         moves = [
-            move for move in moves if not (
-                (move[1] - position[1] != 0) and (move[0] - position[0] == 0)    # is straight move
-                and (move in enemy_positions)                                    # hits enemy
+            move
+            for move in moves
+            if not (
+                (move[1] - position[1] != 0)
+                and (move[0] - position[0] == 0)  # is straight move
+                and (move in enemy_positions)  # hits enemy
             )
         ]
         return moves
@@ -931,9 +863,7 @@ class Engine:
         position = piece.position
         color = piece.color.name
         moves = self._pawn_rule_handle_double_jump(
-            moves=moves,
-            position=position,
-            color=color
+            moves=moves, position=position, color=color
         )
 
         # Remove moves where allies are standing
@@ -941,32 +871,27 @@ class Engine:
 
         # Diagonal movement only if enemy is there
         moves = self._pawn_rule_handle_diagonal_movement(
-            moves=moves,
-            position=position,
-            color=color
+            moves=moves, position=position, color=color
         )
 
         # Remove movement where enemy is blocking the straight path
         moves = self._pawn_rule_enemy_blocking(
-            moves=moves,
-            position=position,
-            color=color
+            moves=moves, position=position, color=color
         )
 
         # Check for legal horizontal_moves moves
         moves = [
-            move for move in moves if self.vertical_move_is_legal(
-                start_position=position,
-                move=move,
-                color=piece.color
+            move
+            for move in moves
+            if self.vertical_move_is_legal(
+                start_position=position, move=move, color=piece.color
             )
         ]
         return moves
 
     def rook_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_straight_path(
-            start_position=piece.position,
-            piece=piece
+            start_position=piece.position, piece=piece
         )
         return moves
 
@@ -976,8 +901,7 @@ class Engine:
 
     def bishop_rules(self, piece: Type[AbstractChessPiece]):
         moves = self.handle_blocked_diagonal_path(
-            start_position=piece.position,
-            piece=piece
+            start_position=piece.position, piece=piece
         )
         return moves
 
@@ -993,7 +917,7 @@ class Engine:
             # King: Not neccesary to apply game rules on enemy king piece.
             #       king_rules, will also become an infinite nested function
             #       if we apply game rules to the kings.
-            if enemy_piece.name == 'Pawn':
+            if enemy_piece.name == "Pawn":
                 # Handle enemy pawns specifically
                 # Do not handle diagonal movement,
                 # because this is needed for the king to
@@ -1006,40 +930,34 @@ class Engine:
                 pawn_moves = self._pawn_rule_handle_double_jump(
                     moves=enemy_piece.get_applied_moves(),
                     position=enemy_position,
-                    color=enemy_color
+                    color=enemy_color,
                 )
 
                 # Handle blocking enemies
                 pawn_moves = self._pawn_rule_enemy_blocking(
-                    moves=pawn_moves,
-                    position=enemy_position,
-                    color=enemy_color
+                    moves=pawn_moves, position=enemy_position, color=enemy_color
                 )
                 enemy_moves.extend(pawn_moves)
 
-            elif enemy_piece.name == 'King':
+            elif enemy_piece.name == "King":
                 enemy_moves.extend(enemy_piece.get_applied_moves())
 
             else:
                 enemy_moves.extend(self.apply_game_rules(piece=enemy_piece))
 
-        moves = [
-            move for move in moves if move not in enemy_moves
-        ]
+        moves = [move for move in moves if move not in enemy_moves]
 
         return self._remove_ally_positions(moves, color=piece.color)
 
     def queen_rules(self, piece: Type[AbstractChessPiece]):
         # Get the straight pathing that is legally allowed
         straight_moves = self.handle_blocked_straight_path(
-            start_position=piece.position,
-            piece=piece
+            start_position=piece.position, piece=piece
         )
 
         # Get the diagonal pathing that is legally allowed
         vertical_moves = self.handle_blocked_diagonal_path(
-            start_position=piece.position,
-            piece=piece
+            start_position=piece.position, piece=piece
         )
 
         return straight_moves + vertical_moves
@@ -1078,9 +996,7 @@ class Engine:
         """
         # Fixed x-axis
         x_axis = start_position[0]
-        vertical_moves = [
-            move for move in moves if move[0] == x_axis
-        ]
+        vertical_moves = [move for move in moves if move[0] == x_axis]
         return vertical_moves
 
     def get_horizontal_moves(self, start_position: tuple, moves: list) -> list:
@@ -1097,23 +1013,16 @@ class Engine:
         """
         # Fixed y-axis
         y_axis = start_position[1]
-        horizontal_moves = [
-            move for move in moves if move[1] == y_axis
-        ]
+        horizontal_moves = [move for move in moves if move[1] == y_axis]
         return horizontal_moves
 
-    def get_diagonal_moves(
-        self,
-        start_position: tuple,
-        moves: list
-    ) -> list:
+    def get_diagonal_moves(self, start_position: tuple, moves: list) -> list:
         """
         Method to get all moves that are diagonal to the
         starting position.
         """
-        def is_diagonally_aligned(
-            a: Tuple[int, int], b: Tuple[int, int]
-        ) -> bool:
+
+        def is_diagonally_aligned(a: Tuple[int, int], b: Tuple[int, int]) -> bool:
             """
             Helper method to check that coordinate a
             is diagonally aligned with coordinate b.
@@ -1124,90 +1033,77 @@ class Engine:
                 - False otherwise
             """
             return abs(a[0] - b[0]) == abs(a[1] - b[1])
-        return [
-            move for move in moves if is_diagonally_aligned(
-                move, start_position
-            )
-        ]
 
-    def get_diagonal_moves_incline(
-        self,
-        start_position: tuple,
-        moves: list
-    ) -> list:
+        return [move for move in moves if is_diagonally_aligned(move, start_position)]
+
+    def get_diagonal_moves_incline(self, start_position: tuple, moves: list) -> list:
         x = start_position[0]
         y = start_position[1]
 
         # Filter on incline moves that are diagonally aligned to
         # the starting position
         incline_moves = self.get_diagonal_moves(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
 
         # Now filter on incline moves
         incline_moves = [
-            move for move in incline_moves if
-            ((move[0] > x) and (move[1] > y)) or
-            ((move[0] < x) and (move[1] < y))
+            move
+            for move in incline_moves
+            if ((move[0] > x) and (move[1] > y)) or ((move[0] < x) and (move[1] < y))
         ]
         return incline_moves
 
-    def get_diagonal_moves_decline(
-        self,
-        start_position: tuple,
-        moves: list
-    ) -> list:
+    def get_diagonal_moves_decline(self, start_position: tuple, moves: list) -> list:
         x = start_position[0]
         y = start_position[1]
 
         # Filter on incline moves that are diagonally aligned to
         # the starting position
         decline_moves = self.get_diagonal_moves(
-            start_position=start_position,
-            moves=moves
+            start_position=start_position, moves=moves
         )
 
         # Now filter on decline moves
         decline_moves = [
-            move for move in decline_moves if
-            ((move[0] < x) and (move[1] > y)) or
-            ((move[0] > x) and (move[1] < y))
+            move
+            for move in decline_moves
+            if ((move[0] < x) and (move[1] > y)) or ((move[0] > x) and (move[1] < y))
         ]
         return decline_moves
 
     def get_white_pawns(self):
-        return self._get_pieces('pawn', self.pieces.get('white', []))
+        return self._get_pieces("pawn", self.pieces.get("white", []))
 
     def get_white_rooks(self):
-        return self._get_pieces('rook', self.pieces.get('white', []))
+        return self._get_pieces("rook", self.pieces.get("white", []))
 
     def get_white_bishops(self):
-        return self._get_pieces('bishop', self.pieces.get('white', []))
+        return self._get_pieces("bishop", self.pieces.get("white", []))
 
     def get_white_knights(self):
-        return self._get_pieces('knight', self.pieces.get('white', []))
+        return self._get_pieces("knight", self.pieces.get("white", []))
 
     def get_white_queen(self):
-        return self._get_pieces('queen', self.pieces.get('white', []))
+        return self._get_pieces("queen", self.pieces.get("white", []))
 
     def get_white_king(self):
-        return self._get_pieces('king', self.pieces.get('white', []))
+        return self._get_pieces("king", self.pieces.get("white", []))
 
     def get_black_pawns(self):
-        return self._get_pieces('pawn', self.pieces.get('black', []))
+        return self._get_pieces("pawn", self.pieces.get("black", []))
 
     def get_black_rooks(self):
-        return self._get_pieces('rook', self.pieces.get('black', []))
+        return self._get_pieces("rook", self.pieces.get("black", []))
 
     def get_black_bishops(self):
-        return self._get_pieces('bishop', self.pieces.get('black', []))
+        return self._get_pieces("bishop", self.pieces.get("black", []))
 
     def get_black_knights(self):
-        return self._get_pieces('knight', self.pieces.get('black', []))
+        return self._get_pieces("knight", self.pieces.get("black", []))
 
     def get_black_queen(self):
-        return self._get_pieces('queen', self.pieces.get('black', []))
+        return self._get_pieces("queen", self.pieces.get("black", []))
 
     def get_black_king(self):
-        return self._get_pieces('king', self.pieces.get('black', []))
+        return self._get_pieces("king", self.pieces.get("black", []))

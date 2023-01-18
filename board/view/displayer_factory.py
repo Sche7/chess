@@ -5,18 +5,18 @@ from board.view.pygame_view import PygameView
 from enum import Enum
 
 
-View = TypeVar('View', TerminalView, PygameView)
+View = TypeVar("View", TerminalView, PygameView)
 
 
 class Displayer(Enum):
-    terminal: str = 'terminal'
-    pygame: str = 'pygame'
+    terminal: str = "terminal"
+    pygame: str = "pygame"
 
 
 def displayer_factory(displayer: Displayer, config_path: str) -> Generic[View]:
-    if displayer.name == 'terminal':
+    if displayer.name == "terminal":
         return TerminalView(config_path)
-    elif displayer.name == 'pygame':
+    elif displayer.name == "pygame":
         return PygameView(config_path)
     else:
-        raise ValueError(f'Displayer {displayer} is not supported.')
+        raise ValueError(f"Displayer {displayer} is not supported.")

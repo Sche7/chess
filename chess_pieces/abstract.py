@@ -11,13 +11,7 @@ class AbstractChessPiece(ABC):
     grid_size = 8  # Grid size of a chess board
     status = 1  # Status of chess piece: Alive [1] or dead [0]
 
-    def __init__(
-        self,
-        position: Tuple,
-        piece_nr: int,
-        group: Group,
-        color: Color
-    ):
+    def __init__(self, position: Tuple, piece_nr: int, group: Group, color: Color):
         self.position = position
         self.piece_nr = piece_nr
         self.group = group
@@ -32,8 +26,10 @@ class AbstractChessPiece(ABC):
 
     def is_inside_grid(self, position: Tuple):
         return (
-            (position[0] >= 0) and (position[1] < self.grid_size) and
-            (position[1] >= 0) and (position[0] < self.grid_size)
+            (position[0] >= 0)
+            and (position[1] < self.grid_size)
+            and (position[1] >= 0)
+            and (position[0] < self.grid_size)
         )
 
     def filter_by_grid_size(self, moves: list):
@@ -41,9 +37,7 @@ class AbstractChessPiece(ABC):
         Helper method to filter moves by grid size.
         Will filter out any moves resulting outside of grid.
         """
-        return [
-            coord for coord in moves if self.is_inside_grid(coord)
-        ]
+        return [coord for coord in moves if self.is_inside_grid(coord)]
 
     def apply_move(self, move: Tuple) -> Tuple:
         return (self.position[0] + move[0], self.position[1] + move[1])
