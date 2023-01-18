@@ -9,13 +9,13 @@ from chess_pieces.schema import Color, Group
 
 
 __all__ = [
-    'AbstractChessPiece',
-    'Bishop',
-    'King',
-    'Knight',
-    'Pawn',
-    'Queen',
-    'Rook',
-    'Color',
-    'Group'
+    "AbstractChessPiece",
+    "Bishop",
+    "King",
+    "Knight",
+    "Pawn",
+    "Queen",
+    "Rook",
+    "Color",
+    "Group",
 ]

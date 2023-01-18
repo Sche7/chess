@@ -16,20 +16,13 @@ class Chess:
         for more info.
     """
 
-    switch = {
-        'white': 'black',
-        'black': 'white'
-    }
+    switch = {"white": "black", "black": "white"}
 
-    def __init__(
-        self,
-        engine: Engine,
-        displayer: View
-    ):
+    def __init__(self, engine: Engine, displayer: View):
         self.engine = engine
         self.displayer = displayer
         self.game_over = False
-        self.player_turn = 'white'
+        self.player_turn = "white"
         self.game_state = None
 
     def switch_turn(self) -> None:
@@ -58,14 +51,12 @@ class Chess:
             self.game_state = self.engine.handle_game(
                 player=self.player_turn,
                 player_input=player_input,
-                game_state=self.game_state
+                game_state=self.game_state,
             )
 
             # Evaluate game state for player
             if self.engine.is_checkmate(player=self.switch[self.player_turn]):
                 self.game_over = True
-                self.displayer.game_over_message(
-                    player=self.player_turn
-                )
+                self.displayer.game_over_message(player=self.player_turn)
 
             self.switch_turn()
