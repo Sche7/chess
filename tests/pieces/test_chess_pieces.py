@@ -1,5 +1,5 @@
-from chess_pieces.abstract import AbstractChessPiece
-from chess_pieces.schema import Color, Group
+from src.pieces.abstract import AbstractChessPiece
+from src.pieces.schema import Color, Group
 
 
 class DummyChessPiece(AbstractChessPiece):

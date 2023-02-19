@@ -1,5 +1,5 @@
-from chess_pieces.king import King
-from chess_pieces.schema import Color, Group
+from src.pieces.king import King
+from src.pieces.schema import Color, Group
 
 
 # Test lower king moves from position (1, 1)

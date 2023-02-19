@@ -1,7 +1,7 @@
 from typing import TypeVar, Generic
 
-from board.view.terminal_view import TerminalView
-from board.view.pygame_view import PygameView
+from src.board.view.terminal_view import TerminalView
+from src.board.view.pygame_view import PygameView
 from enum import Enum
 
 

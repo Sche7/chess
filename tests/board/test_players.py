@@ -1,6 +1,6 @@
-from board.players import Player, ChessPlayers
-from chess_pieces import Color, Group
-from chess_pieces.pawn import Pawn
+from src.board.players import Player, ChessPlayers
+from src.pieces import Color, Group
+from src.pieces.pawn import Pawn
 
 
 def test_player_to_player_comparison():

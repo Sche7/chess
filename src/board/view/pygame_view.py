@@ -1,8 +1,8 @@
 import pygame
 
-from board.files import read_yaml
+from src.board.files import read_yaml
 from nptyping import NDArray
-from board.view import View
+from src.board.view import View
 
 
 class PygameView(View):

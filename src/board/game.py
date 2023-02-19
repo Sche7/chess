@@ -1,5 +1,5 @@
-from board.engine import Engine
-from board.view.displayer_factory import View
+from src.board.engine import Engine
+from src.board.view.displayer_factory import View
 
 
 class Chess:

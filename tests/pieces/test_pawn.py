@@ -1,7 +1,7 @@
 import pytest
 
-from chess_pieces.pawn import Pawn
-from chess_pieces.schema import Color, Group
+from src.pieces.pawn import Pawn
+from src.pieces.schema import Color, Group
 
 
 # Test lower pawn moves from position (1, 1)

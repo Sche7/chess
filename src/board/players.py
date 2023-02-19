@@ -1,8 +1,8 @@
 from typing import Union, Dict
 from enum import Enum
 from collections import defaultdict
-from chess_pieces.abstract import AbstractChessPiece
-from chess_pieces import Color
+from src.pieces.abstract import AbstractChessPiece
+from src.pieces import Color
 
 
 class ChessPieceType(Enum):

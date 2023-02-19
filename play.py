@@ -2,9 +2,9 @@
 Simple py.file to run chess game
 """
 
-from board.game import Chess
-from board.engine import Engine
-from board.view.displayer_factory import displayer_factory, Displayer
+from src.board.game import Chess
+from src.board.engine import Engine
+from src.board.view.displayer_factory import displayer_factory, Displayer
 
 
 config_path = "config.yml"

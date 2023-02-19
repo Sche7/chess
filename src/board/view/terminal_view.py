@@ -23,8 +23,8 @@ from typing import Tuple
 from string import ascii_lowercase
 import numpy as np
 
-from board.view import View
-from board.files import read_yaml
+from src.board.view import View
+from src.board.files import read_yaml
 from simple_term_menu import TerminalMenu
 
 

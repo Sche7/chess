@@ -1,5 +1,5 @@
-from chess_pieces.queen import Queen
-from chess_pieces.schema import Color, Group
+from src.pieces.queen import Queen
+from src.pieces.schema import Color, Group
 
 
 # Test lower queen moves from position (0, 0)

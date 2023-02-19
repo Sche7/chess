@@ -1,5 +1,5 @@
 import pytest
-from board.files import read_yaml
+from src.board.files import read_yaml
 
 
 @pytest.fixture

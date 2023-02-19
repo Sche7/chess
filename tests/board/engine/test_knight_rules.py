@@ -1,4 +1,4 @@
-from board.engine import Engine
+from src.board.engine import Engine
 
 
 def test_knight_start_game(config_path):

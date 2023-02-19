@@ -1,5 +1,5 @@
-from chess_pieces.bishop import Bishop
-from chess_pieces.schema import Color, Group
+from src.pieces.bishop import Bishop
+from src.pieces.schema import Color, Group
 
 
 # Test lower bishop moves from position (0, 0)

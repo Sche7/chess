@@ -1,5 +1,5 @@
-from chess_pieces.rook import Rook
-from chess_pieces.schema import Color, Group
+from src.pieces.rook import Rook
+from src.pieces.schema import Color, Group
 
 
 # Test lower rook moves from position (0, 0)

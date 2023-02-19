@@ -1,5 +1,5 @@
-from chess_pieces.knight import Knight
-from chess_pieces.schema import Color, Group
+from src.pieces.knight import Knight
+from src.pieces.schema import Color, Group
 
 
 # Test lower knight moves from position (1, 1)

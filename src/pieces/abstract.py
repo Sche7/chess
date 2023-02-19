@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from typing import Tuple
-from chess_pieces.schema import Color, Group
+from src.pieces.schema import Color, Group
 
 
 class AbstractChessPiece(ABC):

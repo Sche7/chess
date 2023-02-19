@@ -1,5 +1,5 @@
-from chess_pieces.abstract import AbstractChessPiece
-from chess_pieces.schema import Group
+from src.pieces.abstract import AbstractChessPiece
+from src.pieces.schema import Group
 
 
 class Pawn(AbstractChessPiece):

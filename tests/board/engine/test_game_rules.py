@@ -1,5 +1,5 @@
 import pytest
-from board.engine import Engine
+from src.board.engine import Engine
 
 
 @pytest.mark.parametrize("expect_protectable", [True, False])
