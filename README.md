@@ -35,3 +35,8 @@ This section describes and overview of the development progress and what is in t
 - Other chess board UI using for example Pygame (future ideas)
 
 # Installation
+In repository root, run:
+
+```bash
+make setup
+```
