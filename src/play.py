@@ -9,11 +9,8 @@ from src.board.view.displayer_factory import displayer_factory, Displayer
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Start Chess game.')
-    parser.add_argument(
-        '--c',
-        help='Chess game configuration-file'
-    )
+    parser = argparse.ArgumentParser(description="Start Chess game.")
+    parser.add_argument("--c", help="Chess game configuration-file")
     args = parser.parse_args()
     config_path = args.c
 
