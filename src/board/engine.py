@@ -1,10 +1,12 @@
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Literal, Type, Optional, Tuple, Union
+from typing import Dict, List, Literal, Type, Optional, Tuple, Union, TYPE_CHECKING
 
 from src.board.files import read_yaml
-from src.pieces.abstract import AbstractChessPiece
 from src.pieces import Pawn, Bishop, Knight, Rook, Queen, King, Color, Group
+
+if TYPE_CHECKING:
+    from src.pieces.abstract import AbstractChessPiece
 
 
 class GameError(Exception):
@@ -58,7 +60,7 @@ class Engine:
 
         return game_state
 
-    def create_piece(self, piece_nr: int, position: tuple) -> None:
+    def create_piece(self, piece_nr: int, position: tuple) -> AbstractChessPiece:
         """
         Method for creating a chess piece.
 
