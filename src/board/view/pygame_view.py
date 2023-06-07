@@ -1,7 +1,7 @@
 import pygame
+from nptyping import NDArray
 
 from src.board.files import read_yaml
-from nptyping import NDArray
 from src.board.view import View
 
 

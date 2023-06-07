@@ -1,9 +1,10 @@
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Type, Union
+
 import numpy as np
 from nptyping import NDArray
-from typing import Dict, List, Literal, Type, Optional, Tuple, Union, TYPE_CHECKING
 
 from src.board.files import read_yaml
-from src.pieces import Pawn, Bishop, Knight, Rook, Queen, King, Color, Group
+from src.pieces import Bishop, Color, Group, King, Knight, Pawn, Queen, Rook
 
 if TYPE_CHECKING:
     from src.pieces.abstract import AbstractChessPiece

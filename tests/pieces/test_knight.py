@@ -1,4 +1,5 @@
 import pytest
+
 from src.pieces.knight import Knight
 from src.pieces.schema import Color, Group
 

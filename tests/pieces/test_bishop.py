@@ -1,4 +1,5 @@
 import pytest
+
 from src.pieces.bishop import Bishop
 from src.pieces.schema import Color, Group
 

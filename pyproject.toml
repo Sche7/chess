@@ -1,6 +1,10 @@
 [tool.ruff]
 # Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-select = ["E", "F"]
+select = [
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "I001", # Sort imports
+]
 ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.

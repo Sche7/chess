@@ -3,9 +3,9 @@ Simple py.file to run chess game
 """
 import argparse
 
-from src.board.game import Chess
 from src.board.engine import Engine
-from src.board.view.displayer_factory import displayer_factory, Displayer
+from src.board.game import Chess
+from src.board.view.displayer_factory import Displayer, displayer_factory
 
 
 def main():

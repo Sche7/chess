@@ -18,14 +18,15 @@ White                        Black
 """
 
 
-from nptyping import NDArray
-from typing import Tuple
 from string import ascii_lowercase
-import numpy as np
+from typing import Tuple
 
-from src.board.view import View
-from src.board.files import read_yaml
+import numpy as np
+from nptyping import NDArray
 from simple_term_menu import TerminalMenu
+
+from src.board.files import read_yaml
+from src.board.view import View
 
 
 class TerminalView(View):

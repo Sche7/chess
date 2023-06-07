@@ -1,4 +1,5 @@
 import pytest
+
 from src.pieces.king import King
 from src.pieces.schema import Color, Group
 

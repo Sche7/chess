@@ -1,4 +1,5 @@
 import pytest
+
 from src.pieces.rook import Rook
 from src.pieces.schema import Color, Group
 

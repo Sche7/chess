@@ -1,5 +1,6 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Tuple
+
 from src.pieces.schema import Color, Group
 
 

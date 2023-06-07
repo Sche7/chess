@@ -7,7 +7,6 @@ from src.pieces.queen import Queen
 from src.pieces.rook import Rook
 from src.pieces.schema import Color, Group
 
-
 __all__ = [
     "AbstractChessPiece",
     "Bishop",

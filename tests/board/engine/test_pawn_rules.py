@@ -1,4 +1,5 @@
 import pytest
+
 from src.board.engine import Engine
 
 

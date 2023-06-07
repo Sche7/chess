@@ -1,4 +1,4 @@
-from src.board.players import Player, ChessPlayers
+from src.board.players import ChessPlayers, Player
 from src.pieces import Color, Group
 from src.pieces.pawn import Pawn
 
