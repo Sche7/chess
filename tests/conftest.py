@@ -1,10 +1,10 @@
 import pytest
-from board.files import read_yaml
+from src.board.files import read_yaml
 
 
 @pytest.fixture
 def config_path():
-    return 'tests/test_config.yml'
+    return "tests/test_config.yml"
 
 
 @pytest.fixture

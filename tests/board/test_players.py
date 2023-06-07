@@ -1,6 +1,6 @@
-from board.players import Player, ChessPlayers
-from chess_pieces import Color, Group
-from chess_pieces.pawn import Pawn
+from src.board.players import Player, ChessPlayers
+from src.pieces import Color, Group
+from src.pieces.pawn import Pawn
 
 
 def test_player_to_player_comparison():
@@ -21,8 +21,8 @@ def test_player_to_string_comparison():
     be compared with string
     """
     player = Player(Color.white)
-    assert player == 'white'
-    assert player != 'black'
+    assert player == "white"
+    assert player != "black"
 
 
 def test_add_remove_chess_piece():
@@ -31,20 +31,15 @@ def test_add_remove_chess_piece():
     to Player instance.
     """
     player_1 = Player(Color.white)
-    pawn = Pawn(
-        position=(0, 0),
-        piece_nr=1,
-        group=Group.lower,
-        color=Color.white
-    )
+    pawn = Pawn(position=(0, 0), piece_nr=1, group=Group.lower, color=Color.white)
 
     # See that chess pieces can be added
     player_1.add_chess_piece(pawn)
-    assert len(player_1.chess_pieces['Pawn']) == 1
+    assert len(player_1.chess_pieces["Pawn"]) == 1
 
     # See that chess pieces can be removed
     player_1.remove_chess_piece(pawn.name, pawn.id)
-    assert len(player_1.chess_pieces['Pawn']) == 0
+    assert len(player_1.chess_pieces["Pawn"]) == 0
 
 
 def test_kill_chess_piece():
@@ -52,24 +47,14 @@ def test_kill_chess_piece():
     Test that Player.kill kills chess piece as expected
     """
     player_1 = Player(Color.white)
-    pawn = Pawn(
-        position=(0, 0),
-        piece_nr=1,
-        group=Group.lower,
-        color=Color.white
-    )
+    pawn = Pawn(position=(0, 0), piece_nr=1, group=Group.lower, color=Color.white)
 
     # See that pawn was added
     player_1.add_chess_piece(pawn)
-    assert len(player_1.chess_pieces['Pawn']) == 1, (
-        "Expected 1 pawn"
-    )
+    assert len(player_1.chess_pieces["Pawn"]) == 1, "Expected 1 pawn"
 
     # See that chess piece is killed as expected
-    player_1.kill(
-        chess_piece_name=pawn.name,
-        chess_piece_id=pawn.id
-    )
+    player_1.kill(chess_piece_name=pawn.name, chess_piece_id=pawn.id)
     assert player_1.chess_pieces[pawn.name][pawn.id].status == 0
 
 
@@ -82,10 +67,10 @@ def test_chess_players():
 
     # See that white starts as active player
     # and black starts as inactive player
-    assert chess_players.active_player == 'white'
-    assert chess_players.inactive_player == 'black'
+    assert chess_players.active_player == "white"
+    assert chess_players.inactive_player == "black"
 
     # See switch turn works
     chess_players.switch_turn()
-    assert chess_players.active_player == 'black'
-    assert chess_players.inactive_player == 'white'
+    assert chess_players.active_player == "black"
+    assert chess_players.inactive_player == "white"

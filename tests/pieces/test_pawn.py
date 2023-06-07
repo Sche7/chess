@@ -1,20 +1,13 @@
 import pytest
 
-from chess_pieces.pawn import Pawn
-from chess_pieces.schema import Color, Group
+from src.pieces.pawn import Pawn
+from src.pieces.schema import Color, Group
 
 
 # Test lower pawn moves from position (1, 1)
 def test_pawn_moves_lower_1_1():
-    expected_applied_moves = [
-        (0, 2), (1, 2), (2, 2), (1, 3)
-    ]
-    pawn = Pawn(
-        position=(1, 1),
-        piece_nr=1,
-        group=Group.lower,
-        color=Color.white
-    )
+    expected_applied_moves = [(0, 2), (1, 2), (2, 2), (1, 3)]
+    pawn = Pawn(position=(1, 1), piece_nr=1, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -27,15 +20,8 @@ def test_pawn_moves_lower_1_1():
 
 # Test lower pawn moves from position (4, 5)
 def test_pawn_moves_lower_4_5():
-    expected_applied_moves = [
-        (3, 6), (4, 6), (5, 6), (4, 7)
-    ]
-    pawn = Pawn(
-        position=(4, 5),
-        piece_nr=1,
-        group=Group.lower,
-        color=Color.white
-    )
+    expected_applied_moves = [(3, 6), (4, 6), (5, 6), (4, 7)]
+    pawn = Pawn(position=(4, 5), piece_nr=1, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -48,12 +34,7 @@ def test_pawn_moves_lower_4_5():
 
 # Test lower pawn moves from position (7, 7)
 def test_pawn_moves_lower_7_7():
-    pawn = Pawn(
-        position=(7, 7),
-        piece_nr=1,
-        group=Group.lower,
-        color=Color.white
-    )
+    pawn = Pawn(position=(7, 7), piece_nr=1, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -64,15 +45,8 @@ def test_pawn_moves_lower_7_7():
 
 # Test upper pawn moves from position (1, 1)
 def test_pawn_moves_upper_1_1():
-    expected_applied_moves = [
-        (0, 0), (1, 0), (2, 0)
-    ]
-    pawn = Pawn(
-        position=(1, 1),
-        piece_nr=7,
-        group=Group.upper,
-        color=Color.black
-    )
+    expected_applied_moves = [(0, 0), (1, 0), (2, 0)]
+    pawn = Pawn(position=(1, 1), piece_nr=7, group=Group.upper, color=Color.black)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -85,15 +59,8 @@ def test_pawn_moves_upper_1_1():
 
 # Test upper pawn moves from position (4, 5)
 def test_pawn_moves_upper_4_5():
-    expected_applied_moves = [
-        (3, 4), (4, 4), (5, 4), (4, 3)
-    ]
-    pawn = Pawn(
-        position=(4, 5),
-        piece_nr=7,
-        group=Group.upper,
-        color=Color.black
-    )
+    expected_applied_moves = [(3, 4), (4, 4), (5, 4), (4, 3)]
+    pawn = Pawn(position=(4, 5), piece_nr=7, group=Group.upper, color=Color.black)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -106,15 +73,8 @@ def test_pawn_moves_upper_4_5():
 
 # Test upper pawn moves from position (8, 8)
 def test_pawn_moves_upper_7_7():
-    expected_applied_moves = [
-        (6, 6), (7, 6), (7, 5)
-    ]
-    pawn = Pawn(
-        position=(7, 7),
-        piece_nr=7,
-        group=Group.upper,
-        color=Color.black
-    )
+    expected_applied_moves = [(6, 6), (7, 6), (7, 5)]
+    pawn = Pawn(position=(7, 7), piece_nr=7, group=Group.upper, color=Color.black)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
@@ -126,16 +86,11 @@ def test_pawn_moves_upper_7_7():
 
 
 def test_pawn_moves_exception():
-    pawn = Pawn(
-        position=(8, 8),
-        piece_nr=7,
-        group='not working',
-        color=Color.black
-    )
+    pawn = Pawn(position=(8, 8), piece_nr=7, group="not working", color=Color.black)
 
     # Make sure grid size is 8 when testing
     pawn.set_grid_size(size=8)
 
     with pytest.raises(ValueError) as e:
         pawn.moves()
-        assert 'Group [not working] is not supported' == str(e.value)
+        assert "Group [not working] is not supported" == str(e.value)

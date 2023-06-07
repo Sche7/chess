@@ -1,8 +1,7 @@
-from chess_pieces.abstract import AbstractChessPiece
+from src.pieces.abstract import AbstractChessPiece
 
 
 class Bishop(AbstractChessPiece):
-
     @property
     def moves(self):
         output = []

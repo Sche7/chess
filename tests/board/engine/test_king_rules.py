@@ -1,4 +1,4 @@
-from board.engine import Engine
+from src.board.engine import Engine
 
 
 def test_king_start_game(config_path):
@@ -21,25 +21,19 @@ def test_king_ally_blocking(config_path):
     engine.initiate_empty_board()
 
     # See that board is empty
-    assert len(engine.pieces['white']) == 0
-    assert len(engine.pieces['black']) == 0
+    assert len(engine.pieces["white"]) == 0
+    assert len(engine.pieces["black"]) == 0
 
     # Spawn white king
-    engine.spawn_piece(
-        piece_nr=6,
-        position=(0, 0)
-    )
+    engine.spawn_piece(piece_nr=6, position=(0, 0))
 
     # Spawn a pawn beside king
-    engine.spawn_piece(
-        piece_nr=1,
-        position=(0, 1)
-    )
+    engine.spawn_piece(piece_nr=1, position=(0, 1))
 
     # See that two white pieces are spawned
-    assert len(engine.pieces['white']) == 2
+    assert len(engine.pieces["white"]) == 2
 
-    white_king, _ = engine.pieces['white']
+    white_king, _ = engine.pieces["white"]
 
     # See that white king is blocked
     king_moves = engine.apply_game_rules(white_king)
@@ -58,28 +52,22 @@ def test_king_suicidal_moves_are_blocked(config_path):
     engine.initiate_empty_board()
 
     # See that board is empty
-    assert len(engine.pieces['white']) == 0
-    assert len(engine.pieces['black']) == 0
+    assert len(engine.pieces["white"]) == 0
+    assert len(engine.pieces["black"]) == 0
 
     # Spawn white king
-    engine.spawn_piece(
-        piece_nr=6,
-        position=(0, 0)
-    )
+    engine.spawn_piece(piece_nr=6, position=(0, 0))
 
     # Spawn an enemy pawn beside king
-    engine.spawn_piece(
-        piece_nr=7,
-        position=(2, 2)
-    )
+    engine.spawn_piece(piece_nr=7, position=(2, 2))
 
     # See that one white piece has spawned
-    assert len(engine.pieces['white']) == 1
+    assert len(engine.pieces["white"]) == 1
 
     # See that one black piece has spawned
-    assert len(engine.pieces['black']) == 1
+    assert len(engine.pieces["black"]) == 1
 
-    white_king = engine.pieces['white'][-1]
+    white_king = engine.pieces["white"][-1]
 
     # See that white king cannot move to (1, 1)
     king_moves = engine.apply_game_rules(white_king)
@@ -98,42 +86,33 @@ def test_king_suicidal_moves_check(config_path):
     engine.initiate_empty_board()
 
     # See that board is empty
-    assert len(engine.pieces['white']) == 0
-    assert len(engine.pieces['black']) == 0
+    assert len(engine.pieces["white"]) == 0
+    assert len(engine.pieces["black"]) == 0
 
     # Spawn white king
-    engine.spawn_piece(
-        piece_nr=6,
-        position=(0, 0)
-    )
+    engine.spawn_piece(piece_nr=6, position=(0, 0))
 
     # Spawn an black rook
-    engine.spawn_piece(
-        piece_nr=8,
-        position=(1, 7)
-    )
+    engine.spawn_piece(piece_nr=8, position=(1, 7))
 
     # Spawn white pawn to 'protect'
     # the path for the king
-    engine.spawn_piece(
-        piece_nr=1,
-        position=(1, 2)
-    )
+    engine.spawn_piece(piece_nr=1, position=(1, 2))
 
     # See that two white pieces has spawned
-    assert len(engine.pieces['white']) == 2
+    assert len(engine.pieces["white"]) == 2
 
     # See that one black piece has spawned
-    assert len(engine.pieces['black']) == 1
+    assert len(engine.pieces["black"]) == 1
 
-    white_king, white_pawn = engine.pieces['white']
+    white_king, white_pawn = engine.pieces["white"]
 
     # See that white king cannot move to (1, 1)
     king_moves = engine.apply_game_rules(white_king)
 
     # See that correct pieces are spawned
-    assert white_king.name == 'King'
-    assert white_pawn.name == 'Pawn'
+    assert white_king.name == "King"
+    assert white_pawn.name == "Pawn"
 
     # See that positions are correct
     assert white_king.position == (0, 0)
@@ -155,26 +134,20 @@ def test_king_and_pawn_interaction(config_path):
     engine.initiate_empty_board()
 
     # See that board is empty
-    assert len(engine.pieces['white']) == 0
-    assert len(engine.pieces['black']) == 0
+    assert len(engine.pieces["white"]) == 0
+    assert len(engine.pieces["black"]) == 0
 
     # Spawn white king
-    engine.spawn_piece(
-        piece_nr=6,
-        position=(3, 2)
-    )
+    engine.spawn_piece(piece_nr=6, position=(3, 2))
 
     # Spawn enemy pawn
-    engine.spawn_piece(
-        piece_nr=7,
-        position=(4, 4)
-    )
+    engine.spawn_piece(piece_nr=7, position=(4, 4))
 
     # See that one white piece has spawned
-    assert len(engine.pieces['white']) == 1
+    assert len(engine.pieces["white"]) == 1
 
     # See that one black piece has spawned
-    assert len(engine.pieces['black']) == 1
+    assert len(engine.pieces["black"]) == 1
 
     white_king = engine.get_white_king()[-1]
 
@@ -182,7 +155,7 @@ def test_king_and_pawn_interaction(config_path):
     king_moves = engine.apply_game_rules(white_king)
 
     # See that correct pieces are spawned
-    assert white_king.name == 'King'
+    assert white_king.name == "King"
 
     # See that positions are correct
     assert white_king.position == (3, 2)

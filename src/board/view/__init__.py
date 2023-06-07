@@ -1,5 +1,4 @@
 from nptyping import NDArray
-from board.files import read_yaml
 from abc import abstractmethod
 
 
@@ -7,9 +6,6 @@ class View:
     """
     Interface for chess viewer
     """
-    def __init__(self, config_path: str):
-        self.config = read_yaml(config_path)
-        self.representation = self.config['PIECE_REPRESENTATION']
 
     @abstractmethod
     def initialize(self):
@@ -25,9 +21,7 @@ class View:
 
     @abstractmethod
     def display_player_turn(self, player: str):
-        raise NotImplementedError(
-            'method "display_player_turn" is not implemented'
-        )
+        raise NotImplementedError('method "display_player_turn" is not implemented')
 
     def surrender_message(self, player: str):
         raise NotImplementedError('method "surrender_message" is not implemented')

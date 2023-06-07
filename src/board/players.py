@@ -1,17 +1,17 @@
 from typing import Union, Dict
 from enum import Enum
 from collections import defaultdict
-from chess_pieces.abstract import AbstractChessPiece
-from chess_pieces import Color
+from src.pieces.abstract import AbstractChessPiece
+from src.pieces import Color
 
 
 class ChessPieceType(Enum):
-    pawn: str = 'Pawn'
-    bishop: str = 'Bishop'
-    rook: str = 'Rook'
-    knight: str = 'Knight'
-    queen: str = 'Queen'
-    king: str = 'King'
+    pawn: str = "Pawn"
+    bishop: str = "Bishop"
+    rook: str = "Rook"
+    knight: str = "Knight"
+    queen: str = "Queen"
+    king: str = "King"
 
 
 class Player:
@@ -19,6 +19,7 @@ class Player:
     Player class that holds information about
     all chess pieces belonging to player.
     """
+
     def __init__(self, color: Color):
         self.color = color
         self.chess_pieces = defaultdict(dict)
@@ -33,11 +34,7 @@ class Player:
         name = chess_piece.name
         self.chess_pieces[name][id] = chess_piece
 
-    def remove_chess_piece(
-        self,
-        chess_piece_name: str,
-        chess_piece_id: int
-    ) -> None:
+    def remove_chess_piece(self, chess_piece_name: str, chess_piece_id: int) -> None:
         self.chess_pieces[chess_piece_name].pop(chess_piece_id)
 
     def kill(self, chess_piece_name: str, chess_piece_id: int) -> None:
@@ -45,13 +42,12 @@ class Player:
 
     @classmethod
     def filter_alive_pieces(
-        self,
-        chess_pieces: Dict[int, AbstractChessPiece]
+        self, chess_pieces: Dict[int, AbstractChessPiece]
     ) -> Dict[int, AbstractChessPiece]:
         chess_pieces_alive = {
             chess_piece_id: chess_piece
-            for chess_piece_id, chess_piece in chess_pieces.items() if
-            chess_piece.status != 0
+            for chess_piece_id, chess_piece in chess_pieces.items()
+            if chess_piece.status != 0
         }
         return chess_pieces_alive
 
@@ -108,6 +104,7 @@ class ChessPlayers:
     for chess game. It keeps track on which player
     is active and inactive during game play.
     """
+
     def __init__(self):
         self.white = Player(color=Color.white)
         self.black = Player(color=Color.black)
