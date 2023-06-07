@@ -29,7 +29,7 @@ from src.pieces.schema import Color, Group
         ((7, 7), [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]),
     ],
 )
-def test_pawn_bishop(position, expected_applied_moves):
+def test_bishop_moves(position, expected_applied_moves):
     bishop = Bishop(position=position, piece_nr=4, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing

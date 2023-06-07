@@ -12,7 +12,7 @@ from src.pieces.schema import Color, Group
         ((7, 7), [(5, 6), (6, 5)]),
     ],
 )
-def test_knight_moves_lower_1_1(position, expected_applied_moves):
+def test_knight_moves(position, expected_applied_moves):
     knight = Knight(position=position, piece_nr=3, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing
