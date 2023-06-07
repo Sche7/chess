@@ -4,12 +4,19 @@ from src.pieces.schema import Color, Group
 
 
 @pytest.mark.parametrize(
-    "position, expected_diagonal_moves, expected_straight_moves",
+    "position, expected_applied_moves",
     [
         (
             (0, 0),
-            [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7)],
-            [
+            [  # diagonal moves
+                (1, 1),
+                (2, 2),
+                (3, 3),
+                (4, 4),
+                (5, 5),
+                (6, 6),
+                (7, 7),
+                # straight moves
                 (0, 1),
                 (0, 2),
                 (0, 3),
@@ -28,7 +35,7 @@ from src.pieces.schema import Color, Group
         ),
         (
             (4, 4),
-            [
+            [  # diagonal moves
                 (0, 0),
                 (1, 1),
                 (2, 2),
@@ -42,8 +49,7 @@ from src.pieces.schema import Color, Group
                 (5, 3),
                 (6, 2),
                 (7, 1),
-            ],
-            [
+                # straight moves
                 (4, 0),
                 (4, 1),
                 (4, 2),
@@ -62,8 +68,15 @@ from src.pieces.schema import Color, Group
         ),
         (
             (7, 7),
-            [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)],
-            [
+            [  # diagonal moves
+                (0, 0),
+                (1, 1),
+                (2, 2),
+                (3, 3),
+                (4, 4),
+                (5, 5),
+                (6, 6),
+                # straight moves
                 (7, 0),
                 (7, 1),
                 (7, 2),
@@ -82,10 +95,7 @@ from src.pieces.schema import Color, Group
         ),
     ],
 )
-def test_queen_moves(position, expected_diagonal_moves, expected_straight_moves):
-
-    expected_applied_moves = expected_diagonal_moves + expected_straight_moves
-
+def test_queen_moves(position, expected_applied_moves):
     queen = Queen(position=position, piece_nr=5, group=Group.lower, color=Color.white)
 
     # Make sure grid size is 8 when testing
