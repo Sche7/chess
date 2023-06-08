@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Type, Union
+from typing import Dict, List, Literal, Optional, Tuple, Type, Union
 
 import numpy as np
 from nptyping import NDArray
 
 from src.board.files import read_yaml
-from src.pieces import Bishop, Color, Group, King, Knight, Pawn, Queen, Rook
-
-if TYPE_CHECKING:
-    from src.pieces.abstract import AbstractChessPiece
+from src.pieces import Bishop, Color, King, Knight, Pawn, Queen, Rook
+from src.pieces.abstract import AbstractChessPiece
 
 
 class GameError(Exception):
@@ -61,7 +59,7 @@ class Engine:
 
         return game_state
 
-    def create_piece(self, piece_nr: int, position: tuple) -> AbstractChessPiece:
+    def create_piece(self, piece_nr: int, position: tuple) -> Union[AbstractChessPiece, None]:
         """
         Method for creating a chess piece.
 
@@ -87,13 +85,9 @@ class Engine:
             A tuple where the chess piece is desired to be spawned.
         """
         kwargs = {"position": position, "piece_nr": piece_nr}
-        # TODO: Eventually make it possible to
-        # open game with lower/upper options
         if (piece_nr < 7) and (piece_nr > 0):
-            kwargs["group"] = Group.lower
             kwargs["color"] = Color.white
         elif (piece_nr >= 7) and (piece_nr <= 12):
-            kwargs["group"] = Group.upper
             kwargs["color"] = Color.black
 
         if piece_nr in [1, 7]:

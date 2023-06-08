@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.queen import Queen
-from src.pieces.schema import Color, Group
+from src.pieces.schema import Color
 
 
 @pytest.mark.parametrize(
@@ -97,7 +97,7 @@ from src.pieces.schema import Color, Group
     ],
 )
 def test_queen_moves(position, expected_applied_moves):
-    queen = Queen(position=position, piece_nr=5, group=Group.lower, color=Color.white)
+    queen = Queen(position=position, piece_nr=5, color=Color.white)
 
     # Make sure grid size is 8 when testing
     queen.set_grid_size(size=8)

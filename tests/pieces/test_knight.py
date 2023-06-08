@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.knight import Knight
-from src.pieces.schema import Color, Group
+from src.pieces.schema import Color
 
 
 @pytest.mark.parametrize(
@@ -14,7 +14,7 @@ from src.pieces.schema import Color, Group
     ],
 )
 def test_knight_moves(position, expected_applied_moves):
-    knight = Knight(position=position, piece_nr=3, group=Group.lower, color=Color.white)
+    knight = Knight(position=position, piece_nr=3, color=Color.white)
 
     # Make sure grid size is 8 when testing
     knight.set_grid_size(size=8)

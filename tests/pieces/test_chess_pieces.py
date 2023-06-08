@@ -1,5 +1,5 @@
 from src.pieces.abstract import AbstractChessPiece
-from src.pieces.schema import Color, Group
+from src.pieces.schema import Color
 
 
 class DummyChessPiece(AbstractChessPiece):
@@ -15,7 +15,7 @@ class DummyChessPiece(AbstractChessPiece):
 
 def test_kill_chess_piece():
     chess_piece = DummyChessPiece(
-        position=(1, 1), piece_nr=4, group=Group.lower, color=Color.white
+        position=(1, 1), piece_nr=4, color=Color.white
     )
     assert chess_piece.status == 1
     chess_piece.kill()
@@ -24,7 +24,7 @@ def test_kill_chess_piece():
 
 def test_update_position():
     chess_piece = DummyChessPiece(
-        position=(1, 2), piece_nr=4, group=Group.lower, color=Color.white
+        position=(1, 2), piece_nr=4, color=Color.white
     )
     assert chess_piece.position == (1, 2)
     chess_piece.update(move=(-1, 3))
@@ -33,7 +33,7 @@ def test_update_position():
 
 def test_filter_by_grid_size_8():
     chess_piece = DummyChessPiece(
-        position=(7, 7), piece_nr=4, group=Group.lower, color=Color.white
+        position=(7, 7), piece_nr=4, color=Color.white
     )
 
     # Make sure grid size is 8 when testing
@@ -51,7 +51,7 @@ def test_filter_by_grid_size_8():
 
 def test_filter_by_grid_size_5():
     chess_piece = DummyChessPiece(
-        position=(3, 3), piece_nr=4, group=Group.lower, color=Color.white
+        position=(3, 3), piece_nr=4, color=Color.white
     )
 
     # Make sure grid size is 5 when testing

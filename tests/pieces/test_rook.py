@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.rook import Rook
-from src.pieces.schema import Color, Group
+from src.pieces.schema import Color
 
 
 @pytest.mark.parametrize(
@@ -67,7 +67,7 @@ from src.pieces.schema import Color, Group
     ],
 )
 def test_rook_moves(position, expected_applied_moves):
-    rook = Rook(position=position, piece_nr=2, group=Group.lower, color=Color.white)
+    rook = Rook(position=position, piece_nr=2, color=Color.white)
 
     # Make sure grid size is 8 when testing
     rook.set_grid_size(size=8)

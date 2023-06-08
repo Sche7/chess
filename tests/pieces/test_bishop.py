@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.bishop import Bishop
-from src.pieces.schema import Color, Group
+from src.pieces.schema import Color
 
 
 @pytest.mark.parametrize(
@@ -31,7 +31,7 @@ from src.pieces.schema import Color, Group
     ],
 )
 def test_bishop_moves(position, expected_applied_moves):
-    bishop = Bishop(position=position, piece_nr=4, group=Group.lower, color=Color.white)
+    bishop = Bishop(position=position, piece_nr=4, color=Color.white)
 
     # Make sure grid size is 8 when testing
     bishop.set_grid_size(size=8)
