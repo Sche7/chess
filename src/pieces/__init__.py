@@ -5,7 +5,7 @@ from src.pieces.knight import Knight
 from src.pieces.pawn import Pawn
 from src.pieces.queen import Queen
 from src.pieces.rook import Rook
-from src.pieces.schema import Color
+from src.pieces.color import Color
 
 __all__ = [
     "AbstractChessPiece",

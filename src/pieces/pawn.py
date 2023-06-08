@@ -1,5 +1,5 @@
 from src.pieces.abstract import AbstractChessPiece
-from src.pieces.schema import Color
+from src.pieces.color import Color
 
 
 class Pawn(AbstractChessPiece):

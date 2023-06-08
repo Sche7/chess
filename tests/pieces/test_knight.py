@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.knight import Knight
-from src.pieces.schema import Color
+from src.pieces.color import Color
 
 
 @pytest.mark.parametrize(

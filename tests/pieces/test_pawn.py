@@ -1,7 +1,7 @@
 import pytest
 
 from src.pieces.pawn import Pawn
-from src.pieces.schema import Color
+from src.pieces.color import Color
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
-from src.pieces.schema import Color
+from src.pieces.color import Color
 
 
 class AbstractChessPiece(ABC):
