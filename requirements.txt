@@ -3,7 +3,7 @@ backcall==0.2.0
 decorator==5.0.8
 flake8==3.9.2
 iniconfig==1.1.1
-ipython==7.23.1
+ipython==8.10.0
 ipython-genutils==0.2.0
 jedi==0.18.0
 matplotlib-inline==0.1.2
@@ -37,7 +37,7 @@ backcall==0.2.0
 decorator==5.0.8
 flake8==3.9.2
 iniconfig==1.1.1
-ipython==7.23.1
+ipython==8.10.0
 ipython-genutils==0.2.0
 jedi==0.18.0
 matplotlib-inline==0.1.2
