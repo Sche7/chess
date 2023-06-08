@@ -6,3 +6,5 @@
 *.pyc
 tmp
 /.vscode
+*.tar.gz
+*.whl

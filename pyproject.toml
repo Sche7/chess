@@ -43,5 +43,28 @@ line-length = 88
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-# Assume Python 3.9.
-target-version = "py39"
+[tool.poetry]
+name = "chess"
+version = "0.1.0"
+description = "Game dependencies"
+authors = ["Steven <stevencheung7@outlook.dk>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+black = "^23.3.0"
+numpy = "^1.24.3"
+pytest = "^7.3.1"
+pygame = "^2.4.0"
+pyyaml = "^6.0"
+flake8 = "^6.0.0"
+nptyping = "^2.5.0"
+simple-term-menu = "^1.6.1"
+
+[tool.poetry.scripts]
+chess = "src.play:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
