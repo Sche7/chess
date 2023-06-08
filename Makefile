@@ -1,7 +1,6 @@
 setup:
-	pip install -U pip setuptools
-	pip install -r requirements.txt
-	pip install -e .
+	poetry shell
+	poetry install
 
 play-chess:
-	chess --c src/config.yml
+	poetry run chess --c src/config.yml
