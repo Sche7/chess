@@ -1,5 +1,6 @@
-from nptyping import NDArray
 from abc import abstractmethod
+
+from nptyping import NDArray
 
 
 class View:

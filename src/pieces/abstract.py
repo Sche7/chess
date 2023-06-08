@@ -1,6 +1,7 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Tuple
-from src.pieces.schema import Color, Group
+
+from src.pieces.color import Color
 
 
 class AbstractChessPiece(ABC):
@@ -11,10 +12,9 @@ class AbstractChessPiece(ABC):
     grid_size = 8  # Grid size of a chess board
     status = 1  # Status of chess piece: Alive [1] or dead [0]
 
-    def __init__(self, position: Tuple, piece_nr: int, group: Group, color: Color):
+    def __init__(self, position: Tuple, piece_nr: int, color: Color):
         self.position = position
         self.piece_nr = piece_nr
-        self.group = group
         self.color = color
         self.name = self.__class__.__name__
         self.id = id(self)

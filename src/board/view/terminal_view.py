@@ -18,14 +18,17 @@ White                        Black
 """
 
 
-from nptyping import NDArray
-from typing import Tuple
 from string import ascii_lowercase
-import numpy as np
+from typing import Tuple, TYPE_CHECKING
 
-from src.board.view import View
-from src.board.files import read_yaml
+import numpy as np
 from simple_term_menu import TerminalMenu
+
+from src.board.files import read_yaml
+from src.board.view import View
+
+if TYPE_CHECKING:
+    from nptyping import NDArray
 
 
 class TerminalView(View):
@@ -39,7 +42,7 @@ class TerminalView(View):
         """
         pass
 
-    def generate_view(self, board: NDArray) -> str:
+    def generate_view(self, board: "NDArray") -> str:
         grid_size = len(board)
         copied_board = board.copy()
 
@@ -68,7 +71,7 @@ class TerminalView(View):
             divider()
         return "".join(output)
 
-    def display_board(self, board: NDArray) -> None:
+    def display_board(self, board: "NDArray") -> None:
         # Clear terminal
         print("\033c")
 

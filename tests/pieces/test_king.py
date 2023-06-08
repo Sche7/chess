@@ -1,6 +1,7 @@
 import pytest
+
 from src.pieces.king import King
-from src.pieces.schema import Color, Group
+from src.pieces.color import Color
 
 
 @pytest.mark.parametrize(
@@ -15,7 +16,6 @@ def test_king_moves(position, expected_applied_moves):
     king = King(
         position=position,
         piece_nr=6,
-        group=Group.lower,
         color=Color.white,
     )
     # Make sure grid size is 8 when testing

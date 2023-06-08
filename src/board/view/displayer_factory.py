@@ -1,9 +1,8 @@
-from typing import TypeVar, Generic
-
-from src.board.view.terminal_view import TerminalView
-from src.board.view.pygame_view import PygameView
 from enum import Enum
+from typing import Generic, TypeVar
 
+from src.board.view.pygame_view import PygameView
+from src.board.view.terminal_view import TerminalView
 
 View = TypeVar("View", TerminalView, PygameView)
 

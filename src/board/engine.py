@@ -1,10 +1,13 @@
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Type, Union
+
 import numpy as np
-from nptyping import NDArray
-from typing import Dict, List, Literal, Type, Optional, Tuple, Union
 
 from src.board.files import read_yaml
-from src.pieces.abstract import AbstractChessPiece
-from src.pieces import Pawn, Bishop, Knight, Rook, Queen, King, Color, Group
+from src.pieces import Bishop, Color, King, Knight, Pawn, Queen, Rook
+
+if TYPE_CHECKING:
+    from nptyping import NDArray
+    from src.pieces.abstract import AbstractChessPiece
 
 
 class GameError(Exception):
@@ -21,7 +24,7 @@ class Engine:
         self.start_state = self.config["GAME_START"]
         self.pieces = {}
 
-    def start_game(self) -> NDArray:
+    def start_game(self) -> "NDArray":
         """
         Initiates a new game.
         Starting game state depends on config.GAME_START input.
@@ -41,7 +44,7 @@ class Engine:
         # Starting game
         return game_state
 
-    def initiate_board_from_array(self, game_state: Union[NDArray, list]):
+    def initiate_board_from_array(self, game_state: Union["NDArray", list]):
         """
         Method for initiating chess board based on array input, 'game_state'.
         Current only supports array with dimension 8x8.
@@ -58,7 +61,9 @@ class Engine:
 
         return game_state
 
-    def create_piece(self, piece_nr: int, position: tuple) -> None:
+    def create_piece(
+        self, piece_nr: int, position: tuple
+    ) -> Union["AbstractChessPiece", None]:
         """
         Method for creating a chess piece.
 
@@ -84,13 +89,9 @@ class Engine:
             A tuple where the chess piece is desired to be spawned.
         """
         kwargs = {"position": position, "piece_nr": piece_nr}
-        # TODO: Eventually make it possible to
-        # open game with lower/upper options
         if (piece_nr < 7) and (piece_nr > 0):
-            kwargs["group"] = Group.lower
             kwargs["color"] = Color.white
         elif (piece_nr >= 7) and (piece_nr <= 12):
-            kwargs["group"] = Group.upper
             kwargs["color"] = Color.black
 
         if piece_nr in [1, 7]:
@@ -108,7 +109,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: NDArray) -> Dict[str, list]:
+    def initiate_pieces(self, board: "NDArray") -> Dict[str, list]:
         """
         Method used to initiate and keep track of position
         of each piece in the game.
@@ -154,7 +155,7 @@ class Engine:
         print(f"Spawned a {name} for {color} at position {position}")
 
     def attack_trajectory(
-        self, attacker: AbstractChessPiece, target: AbstractChessPiece
+        self, attacker: "AbstractChessPiece", target: "AbstractChessPiece"
     ) -> List[tuple]:
         """
         Method that returns the path trajectory of an attack (excluding
@@ -215,7 +216,7 @@ class Engine:
 
     def _threats_to_the_king(
         self, player: Literal["white", "black"]
-    ) -> List[AbstractChessPiece]:
+    ) -> List["AbstractChessPiece"]:
         """
         Method for retrieving all pieces that are a threat to
         the king, e.g., enemy units that in one turn can kill the king.
@@ -340,8 +341,8 @@ class Engine:
         return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
-        self, player: Literal["white", "black"], player_input: dict, game_state: NDArray
-    ) -> NDArray:
+        self, player: Literal["white", "black"], player_input: dict, game_state: "NDArray"
+    ) -> "NDArray":
         """
         Method for making updates according to player input.
         """
@@ -444,7 +445,7 @@ class Engine:
         """
         return self._get_positions_by_color(color=self.opponent_of[color])
 
-    def apply_game_rules(self, piece: Type[AbstractChessPiece]) -> list:
+    def apply_game_rules(self, piece: Type["AbstractChessPiece"]) -> list:
         """
         Method for applying game rules based on piece type.
         """
@@ -468,7 +469,7 @@ class Engine:
 
     def get_piece_by_id(
         self, id: int, player: Literal["white", "black"]
-    ) -> Type[AbstractChessPiece]:
+    ) -> Type["AbstractChessPiece"]:
         """
         Get piece in game by instance ID.
 
@@ -666,7 +667,7 @@ class Engine:
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_straight_path(
-        self, start_position: tuple, piece: Type[AbstractChessPiece]
+        self, start_position: tuple, piece: Type["AbstractChessPiece"]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the straight path
@@ -767,7 +768,7 @@ class Engine:
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_diagonal_path(
-        self, start_position: tuple, piece: Type[AbstractChessPiece]
+        self, start_position: tuple, piece: Type["AbstractChessPiece"]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the diagonal path
@@ -858,7 +859,7 @@ class Engine:
         ]
         return moves
 
-    def pawn_rules(self, piece: Type[AbstractChessPiece]):
+    def pawn_rules(self, piece: Type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         position = piece.position
         color = piece.color.name
@@ -889,23 +890,23 @@ class Engine:
         ]
         return moves
 
-    def rook_rules(self, piece: Type[AbstractChessPiece]):
+    def rook_rules(self, piece: Type["AbstractChessPiece"]):
         moves = self.handle_blocked_straight_path(
             start_position=piece.position, piece=piece
         )
         return moves
 
-    def knight_rules(self, piece: Type[AbstractChessPiece]):
+    def knight_rules(self, piece: Type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves, color=piece.color)
 
-    def bishop_rules(self, piece: Type[AbstractChessPiece]):
+    def bishop_rules(self, piece: Type["AbstractChessPiece"]):
         moves = self.handle_blocked_diagonal_path(
             start_position=piece.position, piece=piece
         )
         return moves
 
-    def king_rules(self, piece: Type[AbstractChessPiece]):
+    def king_rules(self, piece: Type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         enemy_pieces = self._get_enemy_pieces(color=piece.color.name)
 
@@ -949,7 +950,7 @@ class Engine:
 
         return self._remove_ally_positions(moves, color=piece.color)
 
-    def queen_rules(self, piece: Type[AbstractChessPiece]):
+    def queen_rules(self, piece: Type["AbstractChessPiece"]):
         # Get the straight pathing that is legally allowed
         straight_moves = self.handle_blocked_straight_path(
             start_position=piece.position, piece=piece
@@ -962,7 +963,7 @@ class Engine:
 
         return straight_moves + vertical_moves
 
-    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> NDArray:
+    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> "NDArray":
         """
         Initiates a new game with empty board.
         Mostly for testing purposes

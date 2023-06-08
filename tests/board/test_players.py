@@ -1,5 +1,5 @@
-from src.board.players import Player, ChessPlayers
-from src.pieces import Color, Group
+from src.board.players import ChessPlayers, Player
+from src.pieces import Color
 from src.pieces.pawn import Pawn
 
 
@@ -31,7 +31,7 @@ def test_add_remove_chess_piece():
     to Player instance.
     """
     player_1 = Player(Color.white)
-    pawn = Pawn(position=(0, 0), piece_nr=1, group=Group.lower, color=Color.white)
+    pawn = Pawn(position=(0, 0), piece_nr=1, color=Color.white)
 
     # See that chess pieces can be added
     player_1.add_chess_piece(pawn)
@@ -47,7 +47,7 @@ def test_kill_chess_piece():
     Test that Player.kill kills chess piece as expected
     """
     player_1 = Player(Color.white)
-    pawn = Pawn(position=(0, 0), piece_nr=1, group=Group.lower, color=Color.white)
+    pawn = Pawn(position=(0, 0), piece_nr=1, color=Color.white)
 
     # See that pawn was added
     player_1.add_chess_piece(pawn)
