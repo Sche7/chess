@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Type, Union
 
 import numpy as np
-from nptyping import NDArray
 
 from src.board.files import read_yaml
 from src.pieces import Bishop, Color, King, Knight, Pawn, Queen, Rook
 
 if TYPE_CHECKING:
+    from nptyping import NDArray
     from src.pieces.abstract import AbstractChessPiece
 
 
@@ -24,7 +24,7 @@ class Engine:
         self.start_state = self.config["GAME_START"]
         self.pieces = {}
 
-    def start_game(self) -> NDArray:
+    def start_game(self) -> "NDArray":
         """
         Initiates a new game.
         Starting game state depends on config.GAME_START input.
@@ -44,7 +44,7 @@ class Engine:
         # Starting game
         return game_state
 
-    def initiate_board_from_array(self, game_state: Union[NDArray, list]):
+    def initiate_board_from_array(self, game_state: Union["NDArray", list]):
         """
         Method for initiating chess board based on array input, 'game_state'.
         Current only supports array with dimension 8x8.
@@ -109,7 +109,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: NDArray) -> Dict[str, list]:
+    def initiate_pieces(self, board: "NDArray") -> Dict[str, list]:
         """
         Method used to initiate and keep track of position
         of each piece in the game.
@@ -341,8 +341,8 @@ class Engine:
         return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
-        self, player: Literal["white", "black"], player_input: dict, game_state: NDArray
-    ) -> NDArray:
+        self, player: Literal["white", "black"], player_input: dict, game_state: "NDArray"
+    ) -> "NDArray":
         """
         Method for making updates according to player input.
         """
@@ -963,7 +963,7 @@ class Engine:
 
         return straight_moves + vertical_moves
 
-    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> NDArray:
+    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> "NDArray":
         """
         Initiates a new game with empty board.
         Mostly for testing purposes
