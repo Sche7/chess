@@ -51,7 +51,7 @@ parso==0.8.2
 pexpect==4.8.0
 pickleshare==0.7.5
 pluggy==0.13.1
-prompt-toolkit==3.0.18
+prompt-toolkit<3.1.0
 ptyprocess==0.7.0
 py==1.10.0
 pycodestyle==2.7.0
