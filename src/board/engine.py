@@ -15,7 +15,6 @@ class GameError(Exception):
 
 
 class Engine:
-
     opponent_of = {"white": "black", "black": "white"}
 
     def __init__(self, config_path: str):
@@ -341,7 +340,10 @@ class Engine:
         return is_in_check and king_cannot_move and cannot_protect_king
 
     def handle_game(
-        self, player: Literal["white", "black"], player_input: dict, game_state: "NDArray"
+        self,
+        player: Literal["white", "black"],
+        player_input: dict,
+        game_state: "NDArray",
     ) -> "NDArray":
         """
         Method for making updates according to player input.
@@ -561,7 +563,6 @@ class Engine:
         player_pieces = self._get_ally_pieces(color=player)
         all_piece_actions = dict()
         for piece in player_pieces:
-
             # Create information dict
             name = piece.name
             color = piece.color.name
