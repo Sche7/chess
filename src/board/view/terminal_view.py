@@ -166,7 +166,6 @@ class TerminalView(View):
 
             # Handle choice of option.
             if main_option_selected == "[g] Give up":
-
                 # Extra safeguard from accidentally giving up
                 surrender_option_selected, _ = self.initialize_dialog(
                     title="Are you sure you want to surrender?", options=["No", "Yes"]
