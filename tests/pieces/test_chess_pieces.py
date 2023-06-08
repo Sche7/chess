@@ -14,27 +14,21 @@ class DummyChessPiece(AbstractChessPiece):
 
 
 def test_kill_chess_piece():
-    chess_piece = DummyChessPiece(
-        position=(1, 1), piece_nr=4, color=Color.white
-    )
+    chess_piece = DummyChessPiece(position=(1, 1), piece_nr=4, color=Color.white)
     assert chess_piece.status == 1
     chess_piece.kill()
     assert chess_piece.status == 0
 
 
 def test_update_position():
-    chess_piece = DummyChessPiece(
-        position=(1, 2), piece_nr=4, color=Color.white
-    )
+    chess_piece = DummyChessPiece(position=(1, 2), piece_nr=4, color=Color.white)
     assert chess_piece.position == (1, 2)
     chess_piece.update(move=(-1, 3))
     assert chess_piece.position == (0, 5)
 
 
 def test_filter_by_grid_size_8():
-    chess_piece = DummyChessPiece(
-        position=(7, 7), piece_nr=4, color=Color.white
-    )
+    chess_piece = DummyChessPiece(position=(7, 7), piece_nr=4, color=Color.white)
 
     # Make sure grid size is 8 when testing
     chess_piece.set_grid_size(size=8)
@@ -50,9 +44,7 @@ def test_filter_by_grid_size_8():
 
 
 def test_filter_by_grid_size_5():
-    chess_piece = DummyChessPiece(
-        position=(3, 3), piece_nr=4, color=Color.white
-    )
+    chess_piece = DummyChessPiece(position=(3, 3), piece_nr=4, color=Color.white)
 
     # Make sure grid size is 5 when testing
     chess_piece.set_grid_size(size=5)

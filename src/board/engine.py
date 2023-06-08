@@ -61,7 +61,9 @@ class Engine:
 
         return game_state
 
-    def create_piece(self, piece_nr: int, position: tuple) -> Union["AbstractChessPiece", None]:
+    def create_piece(
+        self, piece_nr: int, position: tuple
+    ) -> Union["AbstractChessPiece", None]:
         """
         Method for creating a chess piece.
 
