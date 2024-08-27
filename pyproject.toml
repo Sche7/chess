@@ -60,7 +60,7 @@ pygame = "^2.4.0"
 pyyaml = "^6.0"
 flake8 = "^7.1.1"
 nptyping = "^2.5.0"
-simple-term-menu = "^1.6.1"
+simple-term-menu = "^1.6.4"
 
 [tool.poetry.scripts]
 chess = "src.play:main"

@@ -417,13 +417,13 @@ files = [
 
 [[package]]
 name = "simple-term-menu"
-version = "1.6.1"
+version = "1.6.4"
 description = "A Python package which creates simple interactive menus on the command line."
 optional = false
 python-versions = "~=3.5"
 files = [
-    {file = "simple-term-menu-1.6.1.tar.gz", hash = "sha256:368b4158d1749b868552fb6c054b8301785086c71a7253dac8404cc3cb2d30e8"},
-    {file = "simple_term_menu-1.6.1-py3-none-any.whl", hash = "sha256:f12945d5c6998088e86a228e0aff12ff655f5bfad786c86677f23faa1d2afa50"},
+    {file = "simple-term-menu-1.6.4.tar.gz", hash = "sha256:be9c5dbd8df12a404b14cd8e95d6fc02d58c60e2555f65ddde41777c487fb3b9"},
+    {file = "simple_term_menu-1.6.4-py3-none-any.whl", hash = "sha256:5edc5e239060a780d089b6a079f113aeda6dbf91740327c2c70c541ea3a04b8d"},
 ]
 
 [[package]]
@@ -451,4 +451,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "f55d7d22ed033a8d91e494487501212b5897918ebf2b6ceb082b59ccf3e79be6"
+content-hash = "c6e4dab2f9eb0fe2d5cc43c359e7993738ad50e5f7954040467331e74623ed97"
