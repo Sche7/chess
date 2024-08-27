@@ -7,6 +7,7 @@ from src.pieces import Bishop, Color, King, Knight, Pawn, Queen, Rook
 
 if TYPE_CHECKING:
     from nptyping import NDArray
+
     from src.pieces.abstract import AbstractChessPiece
 
 

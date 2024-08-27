@@ -1,7 +1,7 @@
 import pytest
 
-from src.pieces.king import King
 from src.pieces.color import Color
+from src.pieces.king import King
 
 
 @pytest.mark.parametrize(

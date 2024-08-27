@@ -1,6 +1,7 @@
 """
 Simple py.file to run chess game
 """
+
 import argparse
 
 from src.board.engine import Engine
