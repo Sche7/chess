@@ -112,7 +112,6 @@ files = [
 
 [package.dependencies]
 numpy = {version = ">=1.20.0,<2.0.0", markers = "python_version >= \"3.8\""}
-typing-extensions = {version = ">=4.0.0,<5.0.0", markers = "python_version < \"3.10\""}
 
 [package.extras]
 build = ["invoke (>=1.6.0)", "pip-tools (>=6.5.0)"]
@@ -469,17 +468,6 @@ files = [
 ]
 
 [[package]]
-name = "typing-extensions"
-version = "4.12.2"
-description = "Backported and Experimental Type Hints for Python 3.8+"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
-    {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
-]
-
-[[package]]
 name = "virtualenv"
 version = "20.26.3"
 description = "Virtual Python Environment builder"
@@ -501,5 +489,5 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.9.14"
-content-hash = "9d5204f6ce2d372d762997b93cc5eb9ae7041c19528cbb436bf34af1f0da60a1"
+python-versions = "^3.10.12"
+content-hash = "153e15a78bb63ff13848328350f9592a343283b4198e068a6e43016f09da7e94"
