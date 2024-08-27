@@ -13,3 +13,6 @@ lint:
 
 testing:
 	poetry run pytest .
+
+upgrade-python:
+	bash ./scripts/upgrade-python.sh

@@ -18,7 +18,7 @@ White                        Black
 """
 
 from string import ascii_lowercase
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 import numpy as np
 from simple_term_menu import TerminalMenu
@@ -80,7 +80,7 @@ class TerminalView(View):
     def display_player_turn(self, player: str) -> None:
         print(f"It is {player}´s turn to make a move")
 
-    def _convert_cell_index(self, index_tuple: Tuple[int, int]) -> Tuple[int, str]:
+    def _convert_cell_index(self, index_tuple: tuple[int, int]) -> tuple[int, str]:
         """
         Converts numpy cell indices to their respective
         readable representation.
@@ -112,18 +112,18 @@ class TerminalView(View):
                 output[name] = piece
         return output
 
-    def menu(self, possible_actions) -> Tuple[list, TerminalMenu]:
+    def menu(self, possible_actions) -> tuple[list, TerminalMenu]:
         """
         Menu method initiates TerminalMenu class.
         """
-        choices = [key for key in possible_actions.keys()]
+        choices = [key for key in possible_actions]
 
         # Display exit option
         choices.append("[g] Give up")
 
         return choices, TerminalMenu(choices)
 
-    def initialize_dialog(self, title: str, options: list) -> Tuple[str, int]:
+    def initialize_dialog(self, title: str, options: list) -> tuple[str, int]:
         menu = TerminalMenu(options, title=title)
         option_index = menu.show()
         option_selected = options[option_index]

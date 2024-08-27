@@ -34,4 +34,4 @@ def test_pawn_moves_exception():
 
     with pytest.raises(ValueError) as e:
         pawn.moves()
-        assert "Color [not working] is not supported" == str(e.value)
+        assert str(e.value) == "Color [not working] is not supported"

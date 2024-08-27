@@ -1,15 +1,23 @@
-[tool.ruff]
-# Enable pycodestyle (`E`) and Pyflakes (`F`) codes by default.
-lint.select = [
-    "E", # pycodestyle
-    "F", # Pyflakes
-    "I001", # Sort imports
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
 ]
-lint.ignore = []
+ignore = []
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-lint.fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
-lint.unfixable = []
+fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
 
 # Exclude a variety of commonly ignored directories.
 exclude = [
@@ -35,13 +43,10 @@ exclude = [
     "node_modules",
     "venv",
 ]
-lint.per-file-ignores = {}
-
-# Same as Black.
-line-length = 88
+per-file-ignores = {}
 
 # Allow unused variables when underscore-prefixed.
-lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.poetry]
 name = "chess"
@@ -52,7 +57,7 @@ readme = "README.md"
 packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.9.14"
+python = "^3.10.12"
 numpy = "^1.24.4"
 pygame = "^2.6.0"
 pyyaml = "^6.0"
@@ -66,6 +71,8 @@ chess = "src.play:main"
 pytest = "^8.3.2"
 ruff = "^0.6.2"
 pre-commit = "^3.8.0"
+pyupgrade = "^3.17.0"
+pyright = "^1.1.377"
 
 [build-system]
 requires = ["poetry-core"]

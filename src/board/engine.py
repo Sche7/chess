@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Literal, Union
 
 import numpy as np
 
@@ -109,7 +109,7 @@ class Engine:
         else:
             return
 
-    def initiate_pieces(self, board: "NDArray") -> Dict[str, list]:
+    def initiate_pieces(self, board: "NDArray") -> dict[str, list]:
         """
         Method used to initiate and keep track of position
         of each piece in the game.
@@ -156,7 +156,7 @@ class Engine:
 
     def attack_trajectory(
         self, attacker: "AbstractChessPiece", target: "AbstractChessPiece"
-    ) -> List[tuple]:
+    ) -> list[tuple]:
         """
         Method that returns the path trajectory of an attack (excluding
         positions of the target and the attacker).
@@ -216,7 +216,7 @@ class Engine:
 
     def _threats_to_the_king(
         self, player: Literal["white", "black"]
-    ) -> List["AbstractChessPiece"]:
+    ) -> list["AbstractChessPiece"]:
         """
         Method for retrieving all pieces that are a threat to
         the king, e.g., enemy units that in one turn can kill the king.
@@ -410,7 +410,7 @@ class Engine:
         """
         return self._get_all_pieces_by_color(color=color)
 
-    def _get_positions_by_color(self, color: Literal["white", "black"]) -> List[tuple]:
+    def _get_positions_by_color(self, color: Literal["white", "black"]) -> list[tuple]:
         """
         Collect all positions of chess pieces by color.
         This method is different from '_get_all_pieces_by_color' as
@@ -448,7 +448,7 @@ class Engine:
         """
         return self._get_positions_by_color(color=self.opponent_of[color])
 
-    def apply_game_rules(self, piece: Type["AbstractChessPiece"]) -> list:
+    def apply_game_rules(self, piece: type["AbstractChessPiece"]) -> list:
         """
         Method for applying game rules based on piece type.
         """
@@ -472,7 +472,7 @@ class Engine:
 
     def get_piece_by_id(
         self, id: int, player: Literal["white", "black"]
-    ) -> Type["AbstractChessPiece"]:
+    ) -> type["AbstractChessPiece"]:
         """
         Get piece in game by instance ID.
 
@@ -497,7 +497,7 @@ class Engine:
 
     def get_possible_actions(
         self, id: int, color: Literal["white", "black"]
-    ) -> List[tuple]:
+    ) -> list[tuple]:
         """
         Get all possible actions on specific chess piece
         on desired player color.
@@ -513,7 +513,7 @@ class Engine:
     def get_all_possible_actions(
         self,
         player: Literal["white", "black"],
-    ) -> Dict[str, list]:
+    ) -> dict[str, list]:
         """
         Get possible actions for all pieces that belong to the desired
         player.
@@ -669,7 +669,7 @@ class Engine:
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_straight_path(
-        self, start_position: tuple, piece: Type["AbstractChessPiece"]
+        self, start_position: tuple, piece: type["AbstractChessPiece"]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the straight path
@@ -770,7 +770,7 @@ class Engine:
         return not_walk_through_allies and not_walk_through_enemies
 
     def handle_blocked_diagonal_path(
-        self, start_position: tuple, piece: Type["AbstractChessPiece"]
+        self, start_position: tuple, piece: type["AbstractChessPiece"]
     ) -> list:
         """
         Removes moves where allies or enemies are blocking the diagonal path
@@ -861,7 +861,7 @@ class Engine:
         ]
         return moves
 
-    def pawn_rules(self, piece: Type["AbstractChessPiece"]):
+    def pawn_rules(self, piece: type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         position = piece.position
         color = piece.color.name
@@ -892,23 +892,23 @@ class Engine:
         ]
         return moves
 
-    def rook_rules(self, piece: Type["AbstractChessPiece"]):
+    def rook_rules(self, piece: type["AbstractChessPiece"]):
         moves = self.handle_blocked_straight_path(
             start_position=piece.position, piece=piece
         )
         return moves
 
-    def knight_rules(self, piece: Type["AbstractChessPiece"]):
+    def knight_rules(self, piece: type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         return self._remove_ally_positions(moves, color=piece.color)
 
-    def bishop_rules(self, piece: Type["AbstractChessPiece"]):
+    def bishop_rules(self, piece: type["AbstractChessPiece"]):
         moves = self.handle_blocked_diagonal_path(
             start_position=piece.position, piece=piece
         )
         return moves
 
-    def king_rules(self, piece: Type["AbstractChessPiece"]):
+    def king_rules(self, piece: type["AbstractChessPiece"]):
         moves = piece.get_applied_moves()
         enemy_pieces = self._get_enemy_pieces(color=piece.color.name)
 
@@ -952,7 +952,7 @@ class Engine:
 
         return self._remove_ally_positions(moves, color=piece.color)
 
-    def queen_rules(self, piece: Type["AbstractChessPiece"]):
+    def queen_rules(self, piece: type["AbstractChessPiece"]):
         # Get the straight pathing that is legally allowed
         straight_moves = self.handle_blocked_straight_path(
             start_position=piece.position, piece=piece
@@ -965,7 +965,7 @@ class Engine:
 
         return straight_moves + vertical_moves
 
-    def initiate_empty_board(self, grid_size: Optional[int] = 8) -> "NDArray":
+    def initiate_empty_board(self, grid_size: int | None = 8) -> "NDArray":
         """
         Initiates a new game with empty board.
         Mostly for testing purposes
@@ -1025,7 +1025,7 @@ class Engine:
         starting position.
         """
 
-        def is_diagonally_aligned(a: Tuple[int, int], b: Tuple[int, int]) -> bool:
+        def is_diagonally_aligned(a: tuple[int, int], b: tuple[int, int]) -> bool:
             """
             Helper method to check that coordinate a
             is diagonally aligned with coordinate b.
