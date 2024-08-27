@@ -85,7 +85,7 @@ def test_get_possible_actions_invalid_id(config_path):
     # Apply method with invalid id
     with pytest.raises(ValueError) as e:
         engine.get_possible_actions(12345, color="white")
-        assert "ID [12345] does not exist" == str(e.value)
+        assert str(e.value) == "ID [12345] does not exist"
 
 
 def test_pawn_positions_game_start(config_path):

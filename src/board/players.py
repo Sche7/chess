@@ -1,6 +1,6 @@
 from collections import defaultdict
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING
 
 from src.pieces import Color
 
@@ -27,7 +27,7 @@ class Player:
         self.color = color
         self.chess_pieces = defaultdict(dict)
 
-    def __eq__(self, other: Union[str, object]) -> bool:
+    def __eq__(self, other: str | object) -> bool:
         if isinstance(other, str):
             return self.color.value == other
         return self.color.value == other.color.value
@@ -45,8 +45,8 @@ class Player:
 
     @classmethod
     def filter_alive_pieces(
-        self, chess_pieces: Dict[int, "AbstractChessPiece"]
-    ) -> Dict[int, "AbstractChessPiece"]:
+        self, chess_pieces: dict[int, "AbstractChessPiece"]
+    ) -> dict[int, "AbstractChessPiece"]:
         chess_pieces_alive = {
             chess_piece_id: chess_piece
             for chess_piece_id, chess_piece in chess_pieces.items()
@@ -54,7 +54,7 @@ class Player:
         }
         return chess_pieces_alive
 
-    def get_pawns(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_pawns(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active Pawns
         """
@@ -62,7 +62,7 @@ class Player:
         active_pawns = self.filter_alive_pieces(pawns)
         return active_pawns
 
-    def get_bishops(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_bishops(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active Bishops
         """
@@ -70,7 +70,7 @@ class Player:
         active_bishops = self.filter_alive_pieces(bishops)
         return active_bishops
 
-    def get_rooks(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_rooks(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active Rooks
         """
@@ -78,7 +78,7 @@ class Player:
         active_rooks = self.filter_alive_pieces(rooks)
         return active_rooks
 
-    def get_knights(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_knights(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active Knights
         """
@@ -86,7 +86,7 @@ class Player:
         active_knights = self.filter_alive_pieces(knights)
         return active_knights
 
-    def get_queens(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_queens(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active Queens
         """
@@ -94,7 +94,7 @@ class Player:
         active_queens = self.filter_alive_pieces(queens)
         return active_queens
 
-    def get_king(self) -> Dict[int, "AbstractChessPiece"]:
+    def get_king(self) -> dict[int, "AbstractChessPiece"]:
         """
         Returns a dictionary of active King
         """
