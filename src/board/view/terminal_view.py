@@ -17,9 +17,8 @@ White                        Black
 
 """
 
-
 from string import ascii_lowercase
-from typing import Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 import numpy as np
 from simple_term_menu import TerminalMenu

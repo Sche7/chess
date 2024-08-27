@@ -1,7 +1,7 @@
 import pytest
 
-from src.pieces.rook import Rook
 from src.pieces.color import Color
+from src.pieces.rook import Rook
 
 
 @pytest.mark.parametrize(
