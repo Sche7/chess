@@ -68,7 +68,7 @@ simple-term-menu = "^1.6.4"
 chess = "src.play:main"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.3.2"
+pytest = "^8.3.3"
 ruff = "^0.6.3"
 pre-commit = "^3.8.0"
 pyupgrade = "^3.17.0"
