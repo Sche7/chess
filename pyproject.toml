@@ -72,7 +72,7 @@ pytest = "^8.4.2"
 ruff = "^0.13.0"
 pre-commit = "^4.1.0"
 pyupgrade = "^3.17.0"
-pyright = "^1.1.403"
+pyright = "^1.1.406"
 
 [build-system]
 requires = ["poetry-core"]
