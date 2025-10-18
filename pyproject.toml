@@ -71,7 +71,7 @@ chess = "src.play:main"
 pytest = "^8.4.2"
 ruff = "^0.14.0"
 pre-commit = "^4.1.0"
-pyupgrade = "^3.17.0"
+pyupgrade = "^3.21.0"
 pyright = "^1.1.406"
 
 [build-system]
