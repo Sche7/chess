@@ -69,9 +69,9 @@ chess = "src.play:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
-ruff = "^0.14.7"
+ruff = "^0.17.4"
 pre-commit = "^4.1.0"
-pyupgrade = "^3.21.0"
+pyupgrade = "^3.21.2"
 pyright = "^1.1.406"
 
 [build-system]
